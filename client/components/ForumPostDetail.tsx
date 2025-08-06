@@ -20,13 +20,20 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
   const { user, isAuthenticated } = useAuth();
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasViewedPost, setHasViewedPost] = useState(false);
 
-  // Increment views when post is opened
+  // Increment views when post is opened (only once per session)
   useEffect(() => {
-    if (isOpen && post.id) {
+    if (isOpen && post.id && !hasViewedPost) {
       incrementViews(post.id);
+      setHasViewedPost(true);
     }
-  }, [isOpen, post.id, incrementViews]);
+  }, [isOpen, post.id, incrementViews, hasViewedPost]);
+
+  // Reset view tracking when post changes
+  useEffect(() => {
+    setHasViewedPost(false);
+  }, [post.id]);
 
   const handleAddComment = async () => {
     if (!commentContent.trim() || !post.id || !user?.username) return;
