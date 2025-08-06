@@ -53,10 +53,10 @@ export function FirebaseStatusIndicator({
             <AlertTriangle className="h-4 w-4 text-orange-500" />
             <AlertDescription className="flex items-center justify-between">
               <div>
-                <span className="font-medium text-orange-600">Mode local activé</span>
+                <span className="font-medium text-orange-600">Mode local forcé</span>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Firebase temporairement indisponible ({errorCount} erreurs détectées). 
-                  L'application fonctionne en mode local.
+                  Firebase désactivé pour éviter les erreurs réseau.
+                  Toutes les fonctionnalités sont disponibles en mode local.
                 </p>
               </div>
               <Button
