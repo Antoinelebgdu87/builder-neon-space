@@ -9,7 +9,7 @@ export function useBanChecker() {
   useEffect(() => {
     if (!user) return;
 
-    // Check ban status every 2 seconds
+    // Check ban status function
     const checkBanStatus = () => {
       const banStatus = isUsernameBanned(user.username);
 
@@ -37,9 +37,25 @@ export function useBanChecker() {
     // Check immediately
     checkBanStatus();
 
-    // Then check every 2 seconds
-    const interval = setInterval(checkBanStatus, 2000);
+    // Listen for instant ban update events
+    const handleBanUpdate = () => {
+      console.log('Instant ban update triggered');
+      checkBanStatus();
+    };
 
-    return () => clearInterval(interval);
+    // Add event listeners for instant updates
+    window.addEventListener('banStatusChanged', handleBanUpdate);
+    window.addEventListener('userBanned', handleBanUpdate);
+    window.addEventListener('userUnbanned', handleBanUpdate);
+
+    // Check every 500ms for faster updates (reduced from 2 seconds)
+    const interval = setInterval(checkBanStatus, 500);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('banStatusChanged', handleBanUpdate);
+      window.removeEventListener('userBanned', handleBanUpdate);
+      window.removeEventListener('userUnbanned', handleBanUpdate);
+    };
   }, [user, isUsernameBanned, updateUser]);
 }
