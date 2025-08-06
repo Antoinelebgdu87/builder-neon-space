@@ -150,8 +150,11 @@ export function useHybridForum() {
       createdAt: new Date().toISOString()
     };
 
-    if (useFirebase) {
-      try {
+    return await safeFirebaseOperation(
+      // Firebase operation
+      async () => {
+        if (!useFirebase) throw new Error('Firebase disabled');
+
         const docRef = await addDoc(collection(db, 'forum'), {
           ...post,
           replies: 0,
@@ -159,63 +162,64 @@ export function useHybridForum() {
           createdAt: serverTimestamp(),
           lastReply: serverTimestamp()
         });
-        
-        return { 
-          id: docRef.id, 
-          ...post, 
-          replies: 0, 
-          views: 0 
-        };
-      } catch (error) {
-        console.error('Firebase add error, falling back to localStorage:', error);
-        setUseFirebase(false);
-        // Continue with localStorage save below
-      }
-    }
 
-    // localStorage fallback
-    const updatedPosts = [newPost, ...posts];
-    saveToLocalStorage(updatedPosts);
-    return newPost;
+        return {
+          id: docRef.id,
+          ...post,
+          replies: 0,
+          views: 0
+        };
+      },
+      // Local fallback
+      async () => {
+        console.log('Using local storage for addPost');
+        setUseFirebase(false);
+        const updatedPosts = [newPost, ...posts];
+        saveToLocalStorage(updatedPosts);
+        return newPost;
+      }
+    );
   };
 
   const updatePost = async (id: string, updates: Partial<ForumPost>) => {
-    if (useFirebase) {
-      try {
+    return await safeFirebaseOperation(
+      // Firebase operation
+      async () => {
+        if (!useFirebase) throw new Error('Firebase disabled');
+
         await updateDoc(doc(db, 'forum', id), {
           ...updates,
           lastReply: serverTimestamp()
         });
-        return;
-      } catch (error) {
-        console.error('Firebase update error, falling back to localStorage:', error);
+      },
+      // Local fallback
+      async () => {
+        console.log('Using local storage for updatePost');
         setUseFirebase(false);
-        // Continue with localStorage update below
+        const updatedPosts = posts.map(post =>
+          post.id === id ? { ...post, ...updates } : post
+        );
+        saveToLocalStorage(updatedPosts);
       }
-    }
-
-    // localStorage fallback
-    const updatedPosts = posts.map(post => 
-      post.id === id ? { ...post, ...updates } : post
     );
-    saveToLocalStorage(updatedPosts);
   };
 
   const deletePost = async (id: string) => {
-    if (useFirebase) {
-      try {
-        await deleteDoc(doc(db, 'forum', id));
-        return;
-      } catch (error) {
-        console.error('Firebase delete error, falling back to localStorage:', error);
-        setUseFirebase(false);
-        // Continue with localStorage delete below
-      }
-    }
+    return await safeFirebaseOperation(
+      // Firebase operation
+      async () => {
+        if (!useFirebase) throw new Error('Firebase disabled');
 
-    // localStorage fallback
-    const updatedPosts = posts.filter(post => post.id !== id);
-    saveToLocalStorage(updatedPosts);
+        await deleteDoc(doc(db, 'forum', id));
+      },
+      // Local fallback
+      async () => {
+        console.log('Using local storage for deletePost');
+        setUseFirebase(false);
+        const updatedPosts = posts.filter(post => post.id !== id);
+        saveToLocalStorage(updatedPosts);
+      }
+    );
   };
 
   const incrementViews = async (id: string) => {
