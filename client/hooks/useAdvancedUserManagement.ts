@@ -167,7 +167,7 @@ export function useAdvancedUserManagement() {
     loadFromLocalStorage();
     setLoading(false);
 
-    if (useFirebase && firebaseOnline) {
+    if (useFirebase && firebaseOnline && globalFirebaseAvailable) {
       // Add error handling for initial sync
       syncWithFirebase().catch((error) => {
         console.error('Initial sync failed:', error);
@@ -175,12 +175,15 @@ export function useAdvancedUserManagement() {
         setError('Impossible de se connecter à Firebase - mode local activé');
       });
 
-      try {
-        setupRealtimeListeners();
-      } catch (error) {
-        console.error('Failed to setup listeners:', error);
-        setUseFirebase(false);
-      }
+      // Temporairement désactivé les listeners en temps réel pour éviter les erreurs "Failed to fetch"
+      // try {
+      //   setupRealtimeListeners();
+      // } catch (error) {
+      //   console.error('Failed to setup listeners:', error);
+      //   setUseFirebase(false);
+      // }
+
+      console.log('⚠️ Listeners Firebase désactivés temporairement pour éviter les erreurs réseau');
     }
 
     return () => {
@@ -484,7 +487,7 @@ export function useAdvancedUserManagement() {
       const account = accounts.find(acc => acc.id === userId);
       
       if (!account) {
-        throw new Error('Utilisateur non trouv��');
+        throw new Error('Utilisateur non trouvé');
       }
 
       const updatedAccount = { ...account, passwordHash };
