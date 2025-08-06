@@ -86,6 +86,7 @@ function AppContent() {
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <MaintenanceMode />
       <ConnectivityStatus />
+      <AdminBanNotifications />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/scripts" element={<Scripts />} />
