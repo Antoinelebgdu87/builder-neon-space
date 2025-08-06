@@ -291,9 +291,19 @@ export function UserManagement({ className }: UserManagementProps) {
     );
   }
 
-  // Ensure accounts is always an array
+  // Ensure accounts is always an array and handle loading state properly
   const safeAccounts = Array.isArray(accounts) ? accounts : [];
   const safeOnlineSessions = Array.isArray(onlineSessions) ? onlineSessions : [];
+
+  // Early return if still loading or if accounts is not ready
+  if (loading || accounts === undefined) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Chargement des utilisateurs...</span>
+      </div>
+    );
+  }
 
   // Recalculate with safe data
   const safeStatistics = {
