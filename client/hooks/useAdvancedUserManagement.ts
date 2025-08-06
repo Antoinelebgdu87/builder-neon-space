@@ -648,13 +648,51 @@ export function useAdvancedUserManagement() {
   const validateLogin = async (username: string, password: string): Promise<UserAccount | null> => {
     try {
       setError(null);
-      
+
       const passwordHash = await hashPassword(password);
-      const account = accounts.find(acc => 
+      let account = accounts.find(acc =>
         acc.username === username && acc.passwordHash === passwordHash
       );
 
       if (account) {
+        // Double-check ban status from Firebase if online
+        if (firebaseOnline) {
+          try {
+            const userDoc = await getDoc(doc(db, 'userAccounts', account.id));
+            if (userDoc.exists()) {
+              const firebaseData = userDoc.data();
+
+              // Update local account with Firebase data
+              account = { ...account, ...firebaseData };
+
+              // Check if banned
+              if (firebaseData.isBanned) {
+                // Check if temporary ban has expired
+                if (firebaseData.banType === 'temporary' && firebaseData.banExpiry) {
+                  const now = new Date();
+                  const expiry = new Date(firebaseData.banExpiry);
+
+                  if (now > expiry) {
+                    // Ban expired, remove it
+                    await unbanUser(account.id);
+                    account.isBanned = false;
+                  } else {
+                    throw new Error(`Compte banni: ${firebaseData.banReason || 'Raison non spécifiée'}\nExpire le: ${expiry.toLocaleString('fr-FR')}`);
+                  }
+                } else {
+                  throw new Error(`Compte banni: ${firebaseData.banReason || 'Raison non spécifiée'}`);
+                }
+              }
+            }
+          } catch (error: any) {
+            if (error.message.includes('Compte banni')) {
+              throw error; // Re-throw ban errors
+            }
+            console.error('Error checking Firebase ban status:', error);
+          }
+        }
+
+        // Final local check
         if (account.isBanned) {
           throw new Error(`Compte banni: ${account.banReason || 'Raison non spécifiée'}`);
         }
