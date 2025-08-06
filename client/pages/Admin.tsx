@@ -21,7 +21,7 @@ export default function Admin() {
   const { exploits, loading: exploitsLoading, addExploit, updateExploit, deleteExploit, error: exploitsError } = useHybridExploits();
   const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript, error: scriptsError } = useHybridScripts();
   const { posts, loading: postsLoading, addPost, updatePost, deletePost, error: forumError } = useHybridForum();
-  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError } = useHybridMaintenance();
+  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError, isOnline } = useHybridMaintenance();
   const { user } = useAuth();
   
   const [activeTab, setActiveTab] = useState("exploits");
