@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "Suggestions"];
 
 export default function NewPostDialog() {
-  const { addPost } = useFirebaseForum();
+  const { addPost } = useHybridForum();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
