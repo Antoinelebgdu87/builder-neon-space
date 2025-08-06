@@ -25,48 +25,28 @@ export function useGlobalDisplayName() {
     return true;
   };
 
-  // Écouter les changements de nom d'affichage (local et Firebase)
+  // Écouter les changements de nom d'affichage (simplifié)
   useEffect(() => {
     const handleDisplayNameChange = (event: CustomEvent) => {
-      const { userId, newDisplayName, source } = event.detail;
-
-      if (anonymousUser && anonymousUser.id === userId) {
-        // Mettre à jour l'état global
-        setDisplayState(prev => ({
-          ...prev,
-          displayName: newDisplayName
-        }));
-
-        // Si le changement vient du local, le pousser vers Firebase
-        if (source !== 'firebase') {
-          pushToFirebase(newDisplayName);
-        }
-
-        console.log('📢 Nom d\'affichage synchronisé globalement:', newDisplayName, 'source:', source || 'local');
-      }
-    };
-
-    const handleFirebaseSync = (event: CustomEvent) => {
       const { userId, newDisplayName } = event.detail;
 
       if (anonymousUser && anonymousUser.id === userId) {
+        // Mettre à jour l'état global seulement
         setDisplayState(prev => ({
           ...prev,
           displayName: newDisplayName
         }));
 
-        console.log('🔄 Synchronisation depuis Firebase:', newDisplayName);
+        console.log('📢 Nom d\'affichage mis à jour:', newDisplayName);
       }
     };
 
     window.addEventListener('displayNameChanged', handleDisplayNameChange as EventListener);
-    window.addEventListener('displayNameSynced', handleFirebaseSync as EventListener);
 
     return () => {
       window.removeEventListener('displayNameChanged', handleDisplayNameChange as EventListener);
-      window.removeEventListener('displayNameSynced', handleFirebaseSync as EventListener);
     };
-  }, [anonymousUser?.id, pushToFirebase]); // Simplifié les dépendances
+  }, [anonymousUser?.id]); // Dépendances minimales
 
   // Initialiser le nom d'affichage
   useEffect(() => {
