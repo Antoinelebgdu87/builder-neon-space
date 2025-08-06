@@ -336,6 +336,25 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                 🧪 Tester Modal Ban Global
               </Button>
 
+              {/* Test spécial pour Guest7862 qui est banni */}
+              {accounts.find(u => u.username === 'Guest7862' && u.isBanned) && (
+                <Button
+                  onClick={async () => {
+                    const user = accounts.find(u => u.username === 'Guest7862');
+                    if (user) {
+                      console.log('🎯 Test spécial Guest7862 banni');
+                      const result = await triggerBanCheck(user.id, user.username);
+                      console.log('Résultat:', result);
+                      alert(`Test Guest7862: ${result.message}`);
+                    }
+                  }}
+                  disabled={isTriggering || !isOnline}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  🎯 Test Guest7862 Banni
+                </Button>
+              )}
+
               <Button
                 variant="outline"
                 onClick={() => {
