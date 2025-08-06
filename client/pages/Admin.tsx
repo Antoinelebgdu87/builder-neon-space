@@ -327,7 +327,10 @@ export default function Admin() {
               Gestion complète avec Firebase
             </p>
           </div>
-          <FirebaseStatusIndicator showWhenWorking={true} compact={false} />
+          <div className="flex items-start space-x-4">
+            <UserPermissionsDisplay />
+            <FirebaseStatusIndicator showWhenWorking={true} compact={false} />
+          </div>
         </motion.div>
 
         {/* Status général Firebase */}
