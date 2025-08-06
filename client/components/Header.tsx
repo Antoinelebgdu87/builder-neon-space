@@ -11,6 +11,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { maintenanceState } = useHybridMaintenance();
+  const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
+  const { isUserBanned } = useBanSystem();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
