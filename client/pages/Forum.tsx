@@ -137,7 +137,11 @@ export default function Forum() {
           {!loading && sortedPosts.length > 0 && (
             <div className="space-y-4">
               {sortedPosts.map((post) => (
-                <ForumPostCard key={post.id} {...post} />
+                <ForumPostCard
+                  key={post.id}
+                  post={post}
+                  onClick={() => setSelectedPost(post)}
+                />
               ))}
             </div>
           )}
