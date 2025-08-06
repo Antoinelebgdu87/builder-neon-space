@@ -3,6 +3,7 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimest
 import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
+import { FirebaseErrorHandler, safeFirebaseOperation } from '@/utils/firebaseErrorHandler';
 
 export interface ForumComment {
   id: string;
@@ -35,7 +36,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(shouldUseFirebaseOnly() ? true : true);
+  const [useFirebase, setUseFirebase] = useState(!FirebaseErrorHandler.isBlocked() && shouldUseFirebaseOnly() ? true : true);
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
@@ -77,12 +78,14 @@ export function useHybridForum() {
     loadFromLocalStorage();
     setLoading(false);
 
-    // Try Firebase if online
-    if (useFirebase && firebaseOnline) {
+    // Try Firebase if online and not blocked
+    if (useFirebase && firebaseOnline && !FirebaseErrorHandler.isBlocked()) {
       console.log('Setting up Firebase listener for forum');
-      const unsubscribe = onSnapshot(
-        collection(db, 'forum'),
-        (snapshot) => {
+
+      const setupListener = () => {
+        return onSnapshot(
+          collection(db, 'forum'),
+          (snapshot) => {
           console.log('Firebase forum data received');
           const postsData = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -108,17 +111,31 @@ export function useHybridForum() {
 
           // Also save to localStorage as backup
           saveToLocalStorage(postsData);
-        },
-        (err) => {
-          console.error('Firebase forum listener error:', err);
-          setUseFirebase(false);
-          if (err.code === 'permission-denied') {
-            setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
-          } else {
-            setError('Mode hors ligne - Firebase inaccessible');
+          },
+          (err) => {
+            console.error('Firebase forum listener error:', err);
+            const shouldFallback = FirebaseErrorHandler.handleError(err);
+
+            if (shouldFallback) {
+              setUseFirebase(false);
+              setError('⚠️ Mode hors ligne - Données locales utilisées');
+            } else if (err.code === 'permission-denied') {
+              setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+            } else {
+              setError('Mode hors ligne - Firebase inaccessible');
+            }
           }
-        }
-      );
+        );
+      };
+
+      try {
+        const unsubscribe = setupListener();
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Failed to setup Firebase listener:', error);
+        FirebaseErrorHandler.handleError(error);
+        setUseFirebase(false);
+      }
 
       return () => unsubscribe();
     }
