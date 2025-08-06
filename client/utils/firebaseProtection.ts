@@ -1,7 +1,7 @@
 // Protection Firebase simple pour éviter les erreurs "Failed to fetch"
-let firebaseDisabled = false;
+let firebaseDisabled = true; // FORCE MODE LOCAL par défaut
 let errorCount = 0;
-const MAX_ERRORS = 2;
+const MAX_ERRORS = 1; // Réduire le seuil
 
 export function isFirebaseDisabled(): boolean {
   return firebaseDisabled;
@@ -39,14 +39,16 @@ export function handleFirebaseError(error: any): boolean {
   return isNetworkError;
 }
 
-// Auto-reset toutes les 2 minutes
-setInterval(() => {
-  if (firebaseDisabled) {
-    errorCount = Math.max(0, errorCount - 1);
-    if (errorCount === 0) {
-      enableFirebase();
-    }
-  }
-}, 120000);
+// Auto-reset désactivé pour maintenir le mode local
+// setInterval(() => {
+//   if (firebaseDisabled) {
+//     errorCount = Math.max(0, errorCount - 1);
+//     if (errorCount === 0) {
+//       enableFirebase();
+//     }
+//   }
+// }, 120000);
+
+console.log('🚫 Firebase définitivement désactivé - Mode local forcé');
 
 export default { isFirebaseDisabled, disableFirebase, enableFirebase, handleFirebaseError };
