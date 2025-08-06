@@ -48,12 +48,23 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
 
 // Stockage local simple des rôles
 const LOCAL_ROLES_KEY = 'sysbreak_local_roles';
+const CUSTOM_ROLES_KEY = 'sysbreak_custom_roles';
 
 interface LocalUserRole {
   userId: string;
   role: Role;
   assignedBy: string;
   assignedAt: string;
+}
+
+export interface CustomRole {
+  id: string;
+  name: string;
+  displayName: string;
+  color: string;
+  permissions: RolePermissions;
+  createdBy: string;
+  createdAt: string;
 }
 
 export function useLocalRoleSystem() {
