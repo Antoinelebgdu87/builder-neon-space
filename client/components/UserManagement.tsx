@@ -206,7 +206,7 @@ export function UserManagement({ className }: UserManagementProps) {
     }
   };
 
-  // Handle ban user
+  // Handle ban user - Simple and instant
   const handleBanUser = async () => {
     if (!userToBan || !banFormData.reason.trim()) {
       alert('Veuillez sélectionner un utilisateur et spécifier une raison');
@@ -215,12 +215,22 @@ export function UserManagement({ className }: UserManagementProps) {
 
     setIsSubmitting(true);
     try {
-      await banUser(
-        userToBan.id,
-        banFormData.reason,
-        banFormData.banType,
-        banFormData.banType === 'temporary' ? banFormData.hours : undefined
-      );
+      const banData: any = {
+        isBanned: true,
+        banReason: banFormData.reason,
+        banType: banFormData.banType,
+        bannedAt: new Date().toISOString(),
+        bannedBy: 'Admin'
+      };
+
+      if (banFormData.banType === 'temporary' && banFormData.hours) {
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + banFormData.hours);
+        banData.banExpiry = expiryDate.toISOString();
+      }
+
+      // Update user directly - instant
+      await updateUserProfile(userToBan.id, banData);
 
       setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
       setUserToBan(null);
@@ -234,10 +244,17 @@ export function UserManagement({ className }: UserManagementProps) {
     }
   };
 
-  // Handle unban user
+  // Handle unban user - Simple and instant
   const handleUnbanUser = async (user: UserAccount) => {
     try {
-      await unbanUser(user.id);
+      await updateUserProfile(user.id, {
+        isBanned: false,
+        banReason: undefined,
+        banType: undefined,
+        banExpiry: undefined,
+        bannedAt: undefined,
+        bannedBy: undefined
+      });
       alert('Utilisateur débanni avec succès');
       refresh();
     } catch (error: any) {
