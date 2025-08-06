@@ -76,7 +76,10 @@ export function UserDisplayName({
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
       <div className="flex items-center space-x-1">
-        <RoleIcon className={`${iconSizes[size]} ${roleColor}`} />
+        <RoleIcon
+          className={`${iconSizes[size]}`}
+          style={{ color: roleColor }}
+        />
         <span className={`font-medium ${sizeClasses[size]}`}>
           {displayName}
         </span>
@@ -86,13 +89,18 @@ export function UserDisplayName({
           </span>
         )}
       </div>
-      
+
       {showRole && userRole !== 'user' && (
         <Badge
           variant="outline"
-          className={`${roleBadgeClass} ${badgeSizes[size]}`}
+          className={`${badgeSizes[size]}`}
+          style={{
+            color: roleColor,
+            borderColor: roleColor + '50',
+            backgroundColor: roleColor + '20'
+          }}
         >
-          {roleLabel}
+          {roleDisplayName}
         </Badge>
       )}
     </div>
