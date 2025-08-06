@@ -27,6 +27,7 @@ function AppContent() {
     <>
       <Header />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
+      <MaintenanceMode />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/scripts" element={<Scripts />} />
