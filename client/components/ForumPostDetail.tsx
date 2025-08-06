@@ -253,9 +253,9 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
             </motion.div>
           )}
 
-          {!isAuthenticated && (
+          {!currentUser && (
             <div className="text-center py-8 text-muted-foreground">
-              <p>Connectez-vous pour commenter ce post.</p>
+              <p>Chargement de l'utilisateur...</p>
             </div>
           )}
 
