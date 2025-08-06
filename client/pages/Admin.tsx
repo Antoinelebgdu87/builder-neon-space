@@ -909,6 +909,13 @@ export default function Admin() {
                 <WarningSystem />
               </ErrorBoundary>
             </TabsContent>
+
+            {/* Firebase Debug Tab */}
+            <TabsContent value="debug" className="space-y-6">
+              <ErrorBoundary>
+                <FirebaseDebugPanel />
+              </ErrorBoundary>
+            </TabsContent>
           </Tabs>
         </motion.div>
       </div>
