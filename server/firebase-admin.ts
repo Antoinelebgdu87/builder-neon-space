@@ -8,26 +8,21 @@ export function getAdminFirestore() {
   if (adminDb) return adminDb;
 
   try {
-    const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (!serviceAccount) {
-      console.log('No Firebase service account found in environment variables');
-      return null;
-    }
-
-    const parsedServiceAccount = JSON.parse(serviceAccount);
+    // Utiliser le fichier service account directement
+    const serviceAccount = require('./firebase-service-account.json');
     
     // Initialize Firebase Admin if not already done
     if (getApps().length === 0) {
       adminApp = initializeApp({
-        credential: cert(parsedServiceAccount),
-        projectId: parsedServiceAccount.project_id,
+        credential: cert(serviceAccount),
+        projectId: serviceAccount.project_id,
       });
     } else {
       adminApp = getApps()[0];
     }
 
     adminDb = getFirestore(adminApp);
-    console.log('Firebase Admin initialized successfully');
+    console.log('🔥 Firebase Admin initialized with new keys');
     return adminDb;
   } catch (error) {
     console.error('Failed to initialize Firebase Admin:', error);
