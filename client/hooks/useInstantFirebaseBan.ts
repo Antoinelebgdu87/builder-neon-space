@@ -16,11 +16,11 @@ export interface BanData {
 export interface BannedUser {
   userId: string;
   username: string;
-  email?: string;
+  email?: string; // Optional to avoid undefined issues
   isBanned: boolean;
   banReason: string;
   banType: 'temporary' | 'permanent';
-  banExpiry?: string;
+  banExpiry?: string; // Optional for permanent bans
   bannedAt: string;
   bannedBy: string;
   banId: string;
