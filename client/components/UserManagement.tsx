@@ -207,6 +207,51 @@ export function UserManagement({ className }: UserManagementProps) {
     }
   };
 
+  // Handle ban user
+  const handleBanUser = async () => {
+    if (!userToBan || !banFormData.reason.trim()) {
+      alert('Veuillez sélectionner un utilisateur et spécifier une raison');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await banUser(
+        userToBan.id,
+        banFormData.reason,
+        banFormData.banType,
+        banFormData.banType === 'temporary' ? banFormData.hours : undefined
+      );
+
+      setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+      setUserToBan(null);
+      setIsBanDialogOpen(false);
+      alert('Utilisateur banni avec succès');
+      refresh();
+    } catch (error: any) {
+      alert(error.message || 'Erreur lors du bannissement');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle unban user
+  const handleUnbanUser = async (user: UserAccount) => {
+    try {
+      await unbanUser(user.id);
+      alert('Utilisateur débanni avec succès');
+      refresh();
+    } catch (error: any) {
+      alert(error.message || 'Erreur lors du débannissement');
+    }
+  };
+
+  // Open ban dialog
+  const openBanDialog = (user: UserAccount) => {
+    setUserToBan(user);
+    setIsBanDialogOpen(true);
+  };
+
   // Open edit dialog
   const openEditDialog = (user: UserAccount) => {
     setSelectedUser(user);
