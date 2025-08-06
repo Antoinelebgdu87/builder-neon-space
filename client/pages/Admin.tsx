@@ -35,11 +35,17 @@ export default function Admin() {
   const { user } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
   const { getUserById } = useAdvancedUserManagement();
+  const { getUserRole, getUserPermissions } = useRoleSystem();
 
   // Vérifier si l'utilisateur a les permissions admin
   const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
   const isAnonymousAdmin = anonymousUserAccount?.isAdmin || false;
   const hasAdminAccess = user || isAnonymousAdmin;
+
+  // Obtenir le rôle et permissions de l'utilisateur actuel
+  const currentUserId = user?.id || anonymousUser?.id;
+  const currentUserRole = currentUserId ? getUserRole(currentUserId) : 'user';
+  const currentUserPermissions = currentUserId ? getUserPermissions(currentUserId) : null;
   
   const [activeTab, setActiveTab] = useState("exploits");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -623,7 +629,7 @@ export default function Admin() {
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
                     <div className="text-2xl font-bold text-green-400">{exploits.filter(e => e.isVerified).length}</div>
-                    <div className="text-sm text-muted-foreground">Vérifiés</div>
+                    <div className="text-sm text-muted-foreground">Vérifi��s</div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
