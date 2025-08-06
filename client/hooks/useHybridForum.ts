@@ -80,8 +80,8 @@ export function useHybridForum() {
       );
 
       return () => unsubscribe();
-
-      return () => unsubscribe();
+    } else {
+      setLoading(false);
     }
   }, [useFirebase, firebaseOnline]);
 
