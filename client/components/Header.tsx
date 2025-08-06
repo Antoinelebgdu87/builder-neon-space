@@ -21,7 +21,20 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
+    <>
+      {/* Maintenance Banner for Admins */}
+      {maintenanceState.isActive && isAuthenticated && (
+        <div className="bg-red-500/20 border-b border-red-500/30 px-4 py-2">
+          <div className="container mx-auto flex items-center justify-center space-x-2 text-sm">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
+            <span className="text-red-400 font-medium">
+              MAINTENANCE ACTIVE - Seuls les admins peuvent voir le site
+            </span>
+          </div>
+        </div>
+      )}
+
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -177,5 +190,6 @@ export default function Header() {
         )}
       </div>
     </header>
+    </>
   );
 }
