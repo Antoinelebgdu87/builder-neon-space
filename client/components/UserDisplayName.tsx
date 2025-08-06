@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Shield, Crown, User } from 'lucide-react';
 import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
 import { useAuth } from '@/contexts/LocalAuthContext';
+import { useRoleSystem } from '@/hooks/useRoleSystem';
 
 interface UserDisplayNameProps {
   username: string;
