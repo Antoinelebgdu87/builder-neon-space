@@ -9,10 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff, Code, MessageSquare, Shield, Loader2 } from "lucide-react";
-import { useFirebaseExploits, type Exploit } from "@/hooks/useFirebaseExploits";
-import { useFirebaseScripts, type Script } from "@/hooks/useFirebaseScripts";
-import { useFirebaseForum, type ForumPost } from "@/hooks/useFirebaseForum";
-import { useFirebaseMaintenance } from "@/hooks/useFirebaseMaintenance";
+import { useHybridExploits, type Exploit } from "@/hooks/useHybridExploits";
+import { useHybridScripts, type Script } from "@/hooks/useHybridScripts";
+import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
+import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
