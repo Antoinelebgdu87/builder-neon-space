@@ -192,8 +192,16 @@ export function useAdvancedUserManagement() {
         },
         (error) => {
           console.error('Error listening to accounts:', error);
-          setError('Erreur de synchronisation des comptes - utilisation du mode local');
-          setUseFirebase(false);
+          const errorAnalysis = FirebaseSafeWrapper.analyzeError ? FirebaseSafeWrapper.analyzeError(error) : { message: error.message, retryable: true };
+
+          if (errorAnalysis.retryable) {
+            console.log('🔄 Erreur temporaire Firebase, maintien de la connexion...');
+            setError('⚠️ Connexion Firebase instable - données locales utilisées');
+          } else {
+            console.log('❌ Erreur Firebase permanente, basculement en mode local');
+            setError('Erreur de synchronisation des comptes - mode local activé');
+            setUseFirebase(false);
+          }
         }
       );
 
