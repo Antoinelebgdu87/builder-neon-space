@@ -74,7 +74,6 @@ function AppContent() {
   return (
     <>
       <Header />
-      <UserDisplay />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <MaintenanceMode />
       <Routes>
