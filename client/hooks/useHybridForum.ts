@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
+export interface ForumComment {
+  id: string;
+  postId: string;
+  content: string;
+  author: string;
+  createdAt: any;
+}
+
 export interface ForumPost {
   id?: string;
   title: string;
@@ -15,6 +23,7 @@ export interface ForumPost {
   createdAt?: any;
   lastReply?: any;
   tags?: string[];
+  comments?: ForumComment[];
 }
 
 const LOCAL_STORAGE_KEY = 'sysbreak_forum_hybrid';
