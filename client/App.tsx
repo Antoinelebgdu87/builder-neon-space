@@ -11,6 +11,7 @@ import { useAdminShortcut } from "@/hooks/useAdminShortcut";
 import Header from "@/components/Header";
 import AdminLogin from "@/components/AdminLogin";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import MaintenanceMode from "@/components/MaintenanceMode";
 import Index from "./pages/Index";
 import Scripts from "./pages/Scripts";
 import Forum from "./pages/Forum";
