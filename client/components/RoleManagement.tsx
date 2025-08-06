@@ -13,15 +13,15 @@ import { useAuth } from '@/contexts/LocalAuthContext';
 import { motion } from 'framer-motion';
 
 export function RoleManagement() {
-  const { 
-    userRoles, 
-    loading, 
-    error, 
-    getUserRole, 
-    getUserPermissions, 
-    assignRole, 
-    revokeRole 
-  } = useRoleSystem();
+  const {
+    userRoles,
+    loading,
+    error,
+    getUserRole,
+    getUserPermissions,
+    assignRole,
+    revokeRole
+  } = useLocalRoleSystem();
   const { accounts } = useAdvancedUserManagement();
   const { user: adminUser } = useAuth();
   
