@@ -69,12 +69,35 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
   const handleAddComment = async () => {
     if (!commentContent.trim() || !post.id || !currentUser?.username) return;
 
+    // Create optimistic comment for instant display
+    const optimisticComment: ForumComment = {
+      id: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      postId: post.id,
+      content: commentContent.trim(),
+      author: currentUser.username,
+      createdAt: new Date().toISOString()
+    };
+
     setIsSubmitting(true);
+
+    // Add optimistic comment immediately for instant display
+    setOptimisticComments(prev => [...prev, optimisticComment]);
+    const originalContent = commentContent;
+    setCommentContent(""); // Clear input immediately
+
     try {
-      await addComment(post.id, commentContent.trim(), currentUser.username);
-      setCommentContent("");
+      await addComment(post.id, originalContent, currentUser.username);
+
+      // Remove optimistic comment after successful addition (real comment will replace it)
+      setTimeout(() => {
+        setOptimisticComments(prev => prev.filter(c => c.id !== optimisticComment.id));
+      }, 1000);
+
     } catch (error) {
       console.error('Error adding comment:', error);
+      // Remove optimistic comment and restore input on error
+      setOptimisticComments(prev => prev.filter(c => c.id !== optimisticComment.id));
+      setCommentContent(originalContent);
     } finally {
       setIsSubmitting(false);
     }
