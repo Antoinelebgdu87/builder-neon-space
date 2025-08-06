@@ -10,6 +10,7 @@ import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
+import { useGlobalDisplayName } from "@/hooks/useGlobalDisplayName";
 import { motion, AnimatePresence } from "framer-motion";
 
 const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "Suggestions"];
