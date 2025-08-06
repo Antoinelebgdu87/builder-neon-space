@@ -96,12 +96,12 @@ export function UserDisplayName({
         )}
       </div>
       
-      {showRole && role !== 'user' && (
-        <Badge 
-          variant="outline" 
-          className={`${roleBadgeClass} ${badgeSizes[size]} capitalize`}
+      {showRole && userRole !== 'user' && (
+        <Badge
+          variant="outline"
+          className={`${roleBadgeClass} ${badgeSizes[size]}`}
         >
-          {role}
+          {roleLabel}
         </Badge>
       )}
     </div>
