@@ -102,20 +102,6 @@ export function UserManagement({ className }: UserManagementProps) {
     confirmPassword: ''
   });
 
-  // Filter users based on search and status
-  const filteredUsers = safeAllUsersWithStatus.filter(user => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.profile?.displayName?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesStatus = statusFilter === 'all' || 
-                         (statusFilter === 'online' && user.isOnline) ||
-                         (statusFilter === 'offline' && !user.isOnline) ||
-                         (statusFilter === 'banned' && user.isBanned);
-
-    return matchesSearch && matchesStatus;
-  });
-
   // Reset forms
   const resetForms = () => {
     setCreateForm({ username: '', email: '', password: '', isAdmin: false });
