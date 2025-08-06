@@ -8,6 +8,7 @@ import { ArrowLeft, MessageSquare, Trash2, User, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useHybridForum, type ForumPost, type ForumComment } from "@/hooks/useHybridForum";
 import { useAuth } from "@/contexts/LocalAuthContext";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 
 interface ForumPostDetailProps {
   post: ForumPost;
