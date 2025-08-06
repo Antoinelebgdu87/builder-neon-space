@@ -168,9 +168,8 @@ export function useWarningSystem() {
         snapshot = await getDocs(warningsQuery);
       }
       
-      const snapshot = await getDocs(warningsQuery);
       const userWarnings: WarningData[] = [];
-      
+
       snapshot.forEach((doc) => {
         const data = doc.data();
         
