@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Crown, Shield, Users, UserCheck, UserX, Search } from 'lucide-react';
-import { useRoleSystem, type Role } from '@/hooks/useRoleSystem';
+import { useLocalRoleSystem, type Role } from '@/hooks/useLocalRoleSystem';
 import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
 import { useAuth } from '@/contexts/LocalAuthContext';
 import { motion } from 'framer-motion';
