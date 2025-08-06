@@ -101,6 +101,26 @@ export default function Admin() {
     }));
   };
 
+  const handleMaintenanceToggle = async () => {
+    try {
+      if (maintenanceState.isActive) {
+        await disableMaintenance();
+      } else {
+        await enableMaintenance(maintenanceMessage, user?.username || 'Admin');
+      }
+    } catch (error) {
+      console.error('Error toggling maintenance:', error);
+    }
+  };
+
+  const handleMaintenanceMessageUpdate = async () => {
+    try {
+      await updateMaintenanceMessage(maintenanceMessage);
+    } catch (error) {
+      console.error('Error updating maintenance message:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="container mx-auto max-w-7xl">
