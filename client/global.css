@@ -119,16 +119,22 @@
   }
 
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300;
+  }
+
+  .glass:hover {
+    @apply bg-white/10 border-white/20;
   }
 
   .glow {
     box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.3);
+    transition: box-shadow 0.3s ease;
   }
 
   .glow-hover:hover {
     box-shadow: 0 0 30px hsla(217, 91%, 60%, 0.5);
-    transition: box-shadow 0.3s ease;
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
   }
 
   .line-clamp-3 {
@@ -146,6 +152,39 @@
     animation: glow 2s ease-in-out infinite alternate;
   }
 
+  .animate-pulse-soft {
+    animation: pulse-soft 3s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 4s ease infinite;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out;
+  }
+
+  .animate-bounce-soft {
+    animation: bounce-soft 2s infinite;
+  }
+
+  .smooth-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .smooth-hover:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-20px); }
@@ -154,5 +193,66 @@
   @keyframes glow {
     from { box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.3); }
     to { box-shadow: 0 0 30px hsla(217, 91%, 60%, 0.7); }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes bounce-soft {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced focus states */
+  .focus\\:glow:focus {
+    box-shadow: 0 0 0 2px hsla(217, 91%, 60%, 0.5), 0 0 20px hsla(217, 91%, 60%, 0.3);
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Loading states */
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
   }
 }
