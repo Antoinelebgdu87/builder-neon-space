@@ -30,7 +30,11 @@ function AppContent() {
         <Route path="/" element={<Index />} />
         <Route path="/scripts" element={<Scripts />} />
         <Route path="/forum" element={<Forum />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
