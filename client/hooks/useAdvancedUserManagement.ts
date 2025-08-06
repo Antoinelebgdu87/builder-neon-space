@@ -806,6 +806,32 @@ export function useAdvancedUserManagement() {
     };
   };
 
+  // Fonction pour enregistrer automatiquement un utilisateur anonyme
+  const registerAnonymousUser = async (anonymousUser: { id: string; username: string; displayName?: string; createdAt: string }): Promise<void> => {
+    try {
+      // Vérifier si l'utilisateur existe déjà
+      const existingUser = accounts.find(acc => acc.id === anonymousUser.id);
+      if (existingUser) {
+        console.log('Utilisateur anonyme déjà enregistré:', anonymousUser.username);
+        return;
+      }
+
+      console.log('🆕 Enregistrement nouvel utilisateur anonyme:', anonymousUser.username);
+
+      // Créer le compte dans le système de gestion avancée
+      await createAccount(
+        anonymousUser.id,
+        anonymousUser.username,
+        '', // Pas d'email pour les utilisateurs anonymes
+        'anonymous_user_no_password' // Mot de passe spécial pour les anonymes
+      );
+
+      console.log('✅ Utilisateur anonyme enregistré avec succès');
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement de l\'utilisateur anonyme:', error);
+    }
+  };
+
   return {
     // State
     accounts,
@@ -849,6 +875,9 @@ export function useAdvancedUserManagement() {
       } else {
         loadFromLocalStorage();
       }
-    }
+    },
+
+    // Synchronisation utilisateur anonyme
+    registerAnonymousUser
   };
 }
