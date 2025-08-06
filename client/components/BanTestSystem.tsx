@@ -16,6 +16,7 @@ import {
 import { motion } from 'framer-motion';
 import { useInstantFirebaseBan } from '@/hooks/useInstantFirebaseBan';
 import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
+import { useBanTrigger } from '@/hooks/useBanTrigger';
 import { cn } from '@/lib/utils';
 
 interface BanTestSystemProps {
