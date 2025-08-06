@@ -26,10 +26,21 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { isAdminLoginOpen, closeAdminLogin } = useAdminShortcut();
+  const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
+  const { isUserBanned } = useBanSystem();
+
+  // Check if current user is banned
+  const banStatus = anonymousUser ? isUserBanned(anonymousUser.id) : { isBanned: false };
+
+  // Show ban notification if user is banned
+  if (!userLoading && banStatus.isBanned && banStatus.banRecord) {
+    return <BanNotification banRecord={banStatus.banRecord} />;
+  }
 
   return (
     <>
       <Header />
+      <UserDisplay />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <MaintenanceMode />
       <Routes>
