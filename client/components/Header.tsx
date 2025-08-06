@@ -84,9 +84,9 @@ export default function Header() {
               <>
                 {/* Admin User Display */}
                 {isAuthenticated && user && (
-                  <div className="flex items-center space-x-3 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+                  <div className="flex items-center space-x-3 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-2">
                     <div className="flex items-center space-x-2">
-                      <Shield className="w-4 h-4 text-red-400" />
+                      <Shield className="w-4 h-4 text-amber-400" />
                       <span className="text-sm font-medium text-white">{user.username}</span>
                       <span className="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded-full">Fondateur</span>
                     </div>
