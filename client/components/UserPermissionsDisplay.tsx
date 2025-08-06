@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/LocalAuthContext';
 import { useAnonymousUser } from '@/hooks/useAnonymousUser';
 
 export function UserPermissionsDisplay() {
-  const { getUserRole, getUserPermissions } = useRoleSystem();
+  const { getUserRole, getUserPermissions } = useLocalRoleSystem();
   const { user: adminUser } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
   
