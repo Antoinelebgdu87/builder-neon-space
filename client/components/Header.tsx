@@ -94,7 +94,7 @@ export default function Header() {
                       onClick={handleLogout}
                       variant="ghost"
                       size="sm"
-                      className="text-xs text-red-300 hover:text-red-200 hover:bg-red-500/20 h-7 px-2"
+                      className="text-xs text-amber-300 hover:text-amber-200 hover:bg-amber-500/20 h-7 px-2"
                     >
                       <LogOut className="w-3 h-3 mr-1" />
                       Déconnexion
