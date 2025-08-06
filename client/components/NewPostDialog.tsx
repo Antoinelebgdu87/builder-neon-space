@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Send, X, Tag } from "lucide-react";
-import { useLocalForum, type ForumPost } from "@/hooks/useLocalForum";
+import { useFirebaseForum, type ForumPost } from "@/hooks/useFirebaseForum";
 import { motion, AnimatePresence } from "framer-motion";
 
 const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "Suggestions"];
