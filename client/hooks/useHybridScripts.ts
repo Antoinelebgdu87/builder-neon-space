@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
 
 export interface Script {
   id?: string;
@@ -25,7 +26,7 @@ export function useHybridScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(shouldUseFirebaseOnly() ? true : true);
 
   const loadFromLocalStorage = () => {
     try {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
 
 export interface ForumComment {
   id: string;
@@ -34,7 +35,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(shouldUseFirebaseOnly() ? true : true);
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
@@ -62,7 +63,12 @@ export function useHybridForum() {
   // Update Firebase usage based on connectivity
   useEffect(() => {
     if (hasChecked) {
-      setUseFirebase(firebaseOnline);
+      // En production, toujours essayer Firebase d'abord
+      if (shouldUseFirebaseOnly()) {
+        setUseFirebase(true);
+      } else {
+        setUseFirebase(firebaseOnline);
+      }
     }
   }, [firebaseOnline, hasChecked]);
 

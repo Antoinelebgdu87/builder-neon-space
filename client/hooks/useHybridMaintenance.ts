@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
 
 interface MaintenanceState {
   isActive: boolean;
@@ -20,7 +21,7 @@ export function useHybridMaintenance() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(shouldUseFirebaseOnly() ? true : true);
 
   const loadFromLocalStorage = () => {
     try {
