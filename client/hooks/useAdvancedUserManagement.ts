@@ -129,13 +129,34 @@ export function useAdvancedUserManagement() {
     if (firebaseOnline) {
       // Add a delay to prevent immediate connection attempts
       const timer = setTimeout(() => {
-        setUseFirebase(firebaseOnline);
+        // Test Firebase connection before enabling
+        testFirebaseConnection().then((isWorking) => {
+          setUseFirebase(isWorking);
+          if (!isWorking) {
+            setError('🌐 Firebase inaccessible - fonctionnement en mode local');
+          }
+        });
       }, 1000);
       return () => clearTimeout(timer);
     } else {
       setUseFirebase(false);
     }
   }, [firebaseOnline]);
+
+  // Test basic Firebase connectivity
+  const testFirebaseConnection = async (): Promise<boolean> => {
+    try {
+      const testResult = await safeFirebaseRead(
+        () => getDoc(doc(db, 'test', 'connection')),
+        'test-connection'
+      );
+
+      return testResult.success || testResult.retryable; // Allow retryable errors to pass
+    } catch (error) {
+      console.warn('Firebase connection test failed:', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     loadFromLocalStorage();
