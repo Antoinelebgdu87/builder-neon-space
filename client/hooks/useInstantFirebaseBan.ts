@@ -261,15 +261,19 @@ export function useInstantFirebaseBan() {
         adminId: 'admin'
       });
 
-      // Execute all operations atomically
-      await batch.commit();
+      // Execute all operations atomically with safety wrapper
+      const batchResult = await safeFirebaseBatch(batch, 'unban user');
+
+      if (!batchResult.success) {
+        throw new Error(batchResult.error || 'Erreur lors du débannissement Firebase');
+      }
 
       // Trigger real-time event for immediate UI updates
       window.dispatchEvent(new CustomEvent('userUnbannedInstant', {
         detail: { userId, username }
       }));
 
-      console.log(`User ${username} unbanned instantly`);
+      console.log(`✅ User ${username} unbanned instantly`);
 
     } catch (error: any) {
       console.error('Error unbanning user instantly:', error);
