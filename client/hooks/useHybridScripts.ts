@@ -20,34 +20,11 @@ export interface Script {
   updatedAt?: any;
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_scripts_hybrid';
-
 export function useHybridScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [useFirebase, setUseFirebase] = useState(true);
-
-  const loadFromLocalStorage = () => {
-    try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (stored) {
-        const parsedScripts = JSON.parse(stored);
-        setScripts(parsedScripts);
-      }
-    } catch (err) {
-      console.error('Error loading from localStorage:', err);
-    }
-  };
-
-  const saveToLocalStorage = (newScripts: Script[]) => {
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newScripts));
-      setScripts(newScripts);
-    } catch (err) {
-      console.error('Error saving to localStorage:', err);
-    }
-  };
 
   useEffect(() => {
     if (useFirebase) {
