@@ -7,8 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff, Code, MessageSquare, Shield } from "lucide-react";
 import { useLocalExploits as useExploits, type Exploit } from "@/hooks/useLocalExploits";
+import { useLocalScripts, type Script } from "@/hooks/useLocalScripts";
+import { useLocalForum, type ForumPost } from "@/hooks/useLocalForum";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { useAuth } from "@/contexts/LocalAuthContext";
 
