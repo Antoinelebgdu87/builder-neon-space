@@ -121,7 +121,20 @@ export function useLocalRoleSystem() {
   // Obtenir les permissions d'un utilisateur
   const getUserPermissions = (userId: string): RolePermissions => {
     const role = getUserRole(userId);
-    return ROLE_PERMISSIONS[role];
+
+    // Vérifier si c'est un rôle par défaut
+    if (ROLE_PERMISSIONS[role as keyof typeof ROLE_PERMISSIONS]) {
+      return ROLE_PERMISSIONS[role as keyof typeof ROLE_PERMISSIONS];
+    }
+
+    // Vérifier si c'est un rôle personnalisé
+    const customRole = customRoles.find(cr => cr.id === role);
+    if (customRole) {
+      return customRole.permissions;
+    }
+
+    // Par défaut, permissions utilisateur
+    return ROLE_PERMISSIONS.user;
   };
 
   // Assigner un rôle (mode local)
