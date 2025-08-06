@@ -69,6 +69,7 @@ export interface CustomRole {
 
 export function useLocalRoleSystem() {
   const [localRoles, setLocalRoles] = useState<LocalUserRole[]>([]);
+  const [customRoles, setCustomRoles] = useState<CustomRole[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
