@@ -13,6 +13,7 @@ import { useHybridExploits, type Exploit } from "@/hooks/useHybridExploits";
 import { useHybridScripts, type Script } from "@/hooks/useHybridScripts";
 import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
 import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
+import { useBanSystem } from "@/hooks/useBanSystem";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { motion, AnimatePresence } from "framer-motion";
