@@ -42,6 +42,9 @@ function AppContent() {
   // Enable ban synchronization
   useBanSync();
 
+  // Bootstrap ban system from Firebase
+  const { isBootstraped, banCount } = useBanBootstrap();
+
   // Listen for instant ban updates and force refresh
   useEffect(() => {
     const handleInstantRefresh = () => {
