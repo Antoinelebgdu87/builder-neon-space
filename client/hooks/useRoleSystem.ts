@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, updateDoc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { safeFirebaseOperation } from './useFirebaseGlobalControl';
+import { safeFirebaseOperation, useFirebaseAvailable, reportFirebaseError } from './useFirebaseGlobalControl';
 
 export type Role = 'fondateur' | 'admin' | 'moderateur' | 'user';
 
