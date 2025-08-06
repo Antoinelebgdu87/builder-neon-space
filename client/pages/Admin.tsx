@@ -36,7 +36,7 @@ export default function Admin() {
   const { user } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
   const { getUserById } = useAdvancedUserManagement();
-  const { getUserRole, getUserPermissions } = useRoleSystem();
+  const { getUserRole, getUserPermissions } = useLocalRoleSystem();
 
   // Vérifier si l'utilisateur a les permissions admin
   const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
