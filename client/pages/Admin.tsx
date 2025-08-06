@@ -452,6 +452,11 @@ export default function Admin() {
                   <span>Warnings</span>
                   <Badge variant="secondary" className="ml-1">Nouveau</Badge>
                 </TabsTrigger>
+                <TabsTrigger value="debug" className="flex items-center space-x-2">
+                  <Settings className="w-4 h-4" />
+                  <span>Debug FB</span>
+                  <Badge variant="destructive" className="ml-1">Fix</Badge>
+                </TabsTrigger>
               </TabsList>
 
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
