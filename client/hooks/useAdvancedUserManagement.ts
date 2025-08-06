@@ -309,7 +309,8 @@ export function useAdvancedUserManagement() {
 
       if (useFirebase) {
         try {
-          await setDoc(doc(db, 'userAccounts', userId), newAccount);
+          const cleanedAccount = cleanUndefinedValues(newAccount);
+          await setDoc(doc(db, 'userAccounts', userId), cleanedAccount);
         } catch (error) {
           console.error('Firebase create error:', error);
           setError('Erreur lors de la création du compte sur Firebase');
