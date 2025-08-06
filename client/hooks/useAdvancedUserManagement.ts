@@ -270,11 +270,73 @@ export function useAdvancedUserManagement() {
     }
   };
 
+  // Ban user function
+  const banUser = async (userId: string, reason: string, banType: 'temporary' | 'permanent', hours?: number): Promise<void> => {
+    try {
+      setError(null);
+
+      const account = accounts.find(acc => acc.id === userId);
+      if (!account) {
+        throw new Error('Utilisateur non trouvé');
+      }
+
+      const banData: any = {
+        isBanned: true,
+        banReason: reason,
+        banType,
+        bannedAt: new Date().toISOString(),
+        bannedBy: 'Admin'
+      };
+
+      if (banType === 'temporary' && hours) {
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + hours);
+        banData.banExpiry = expiryDate.toISOString();
+      }
+
+      await updateUserProfile(userId, banData);
+
+      // End user session if they're online
+      if (account.isOnline) {
+        await endUserSession(userId);
+      }
+
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  // Unban user function
+  const unbanUser = async (userId: string): Promise<void> => {
+    try {
+      setError(null);
+
+      const account = accounts.find(acc => acc.id === userId);
+      if (!account) {
+        throw new Error('Utilisateur non trouvé');
+      }
+
+      await updateUserProfile(userId, {
+        isBanned: false,
+        banReason: undefined,
+        banType: undefined,
+        banExpiry: undefined,
+        bannedAt: undefined,
+        bannedBy: undefined
+      });
+
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
   // Account management functions
   const createAccount = async (username: string, password: string, email?: string): Promise<UserAccount> => {
     try {
       setError(null);
-      
+
       // Check if username already exists
       const existingAccount = accounts.find(acc => acc.username === username);
       if (existingAccount) {
