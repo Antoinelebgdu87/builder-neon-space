@@ -36,10 +36,8 @@ function AppContent() {
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Temporarily disabled ban systems to unblock interface
-  // useBanChecker();
-  // useBanSync();
-  // const { isBootstraped, banCount } = useBanBootstrap();
+  // Re-enable ban systems with Firebase properly configured
+  useBanChecker();
 
   // Listen for instant ban updates and force refresh
   useEffect(() => {
