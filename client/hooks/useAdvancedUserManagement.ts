@@ -128,14 +128,20 @@ export function useAdvancedUserManagement() {
         (snapshot) => {
           const firebaseAccounts: UserAccount[] = [];
           snapshot.forEach((doc) => {
-            firebaseAccounts.push({ id: doc.id, ...doc.data() } as UserAccount);
+            const data = doc.data();
+            // Ensure profile object exists
+            if (!data.profile) {
+              data.profile = { displayName: data.username };
+            }
+            firebaseAccounts.push({ id: doc.id, ...data } as UserAccount);
           });
           setAccounts(firebaseAccounts);
           saveToLocalStorage(firebaseAccounts);
         },
         (error) => {
           console.error('Error listening to accounts:', error);
-          setError('Erreur de synchronisation des comptes');
+          setError('Erreur de synchronisation des comptes - utilisation du mode local');
+          setUseFirebase(false);
         }
       );
 
@@ -151,13 +157,15 @@ export function useAdvancedUserManagement() {
         },
         (error) => {
           console.error('Error listening to sessions:', error);
+          // Don't disable Firebase completely for session errors
         }
       );
 
       unsubscribes.current = [accountsUnsubscribe, sessionsUnsubscribe];
     } catch (error) {
       console.error('Error setting up listeners:', error);
-      setError('Erreur lors de la configuration des écouteurs en temps réel');
+      setError('Erreur lors de la configuration des écouteurs en temps réel - mode local activé');
+      setUseFirebase(false);
     }
   };
 
