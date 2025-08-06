@@ -434,6 +434,11 @@ export default function Admin() {
                   <span>Utilisateurs</span>
                   <Badge variant="secondary" className="ml-1">Gestion</Badge>
                 </TabsTrigger>
+                <TabsTrigger value="activation" className="flex items-center space-x-2">
+                  <Settings className="w-4 h-4" />
+                  <span>Activation</span>
+                  <Badge variant="secondary" className="ml-1">Firebase</Badge>
+                </TabsTrigger>
               </TabsList>
 
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
