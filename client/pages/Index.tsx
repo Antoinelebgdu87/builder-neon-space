@@ -115,11 +115,27 @@ export default function Index() {
 
           {/* Grid */}
           {!loading && filteredExploits.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredExploits.map((exploit) => (
-                <ExploitCard key={exploit.id} {...exploit} />
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              {filteredExploits.map((exploit, index) => (
+                <motion.div
+                  key={exploit.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: "easeOut"
+                  }}
+                >
+                  <ExploitCard {...exploit} />
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
 
           {/* No Results */}
@@ -141,7 +157,7 @@ export default function Index() {
           <h2 className="text-3xl font-bold mb-8">SysBreak Pro</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="glass p-6 rounded-xl border-border/50">
-              <h3 className="text-xl font-semibold mb-2">Sécurisé & Vérifié</h3>
+              <h3 className="text-xl font-semibold mb-2">Sécurisé & V��rifié</h3>
               <p className="text-muted-foreground">Tous les exploits sont testés et vérifiés.</p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
