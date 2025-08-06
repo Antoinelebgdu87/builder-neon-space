@@ -71,10 +71,11 @@ export function useAdvancedUserManagement() {
 
       if (stored) {
         const parsedAccounts = JSON.parse(stored);
-        // Ensure all accounts have a profile object
+        // Ensure all accounts have a profile object and statistics
         const accountsWithProfile = parsedAccounts.map((account: any) => ({
           ...account,
-          profile: account.profile || { displayName: account.username }
+          profile: account.profile || { displayName: account.username },
+          statistics: account.statistics || { loginCount: 0, totalTimeOnline: 0 }
         }));
         setAccounts(accountsWithProfile);
       }
