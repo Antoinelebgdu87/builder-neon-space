@@ -109,10 +109,28 @@ export default function Header() {
                   <div className="flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 rounded-lg px-3 py-2">
                     <User className="w-4 h-4 text-blue-400" />
                     <span className="text-sm font-medium text-white">{anonymousUser.username}</span>
+                    {anonymousUser.hasPassword && anonymousUser.isLoggedIn && (
+                      <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                        Connecté
+                      </span>
+                    )}
                     {(isUserBanned(anonymousUser.id).isBanned || anonymousUser.isBanned) && (
                       <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">
                         Banni
                       </span>
+                    )}
+                    {anonymousUser.hasPassword && anonymousUser.isLoggedIn && (
+                      <Button
+                        onClick={() => {
+                          // Trigger logout - will be handled by UserAuthManager
+                          window.dispatchEvent(new CustomEvent('userLogout'));
+                        }}
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-blue-300 hover:text-blue-200 hover:bg-blue-500/20 h-6 px-2 ml-2"
+                      >
+                        <LogOut className="w-3 h-3" />
+                      </Button>
                     )}
                   </div>
                 )}
