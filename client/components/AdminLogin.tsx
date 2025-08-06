@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/LocalAuthContext";
 import { Lock, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
