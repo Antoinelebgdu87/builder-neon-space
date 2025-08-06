@@ -23,6 +23,7 @@ import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import MaintenanceMode from "@/components/MaintenanceMode";
+import LocalModeInfo from "@/components/LocalModeInfo";
 import Index from "./pages/Index";
 import Scripts from "./pages/Scripts";
 import Forum from "./pages/Forum";
