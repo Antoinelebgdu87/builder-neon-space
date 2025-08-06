@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
+import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import MaintenanceMode from "@/components/MaintenanceMode";
