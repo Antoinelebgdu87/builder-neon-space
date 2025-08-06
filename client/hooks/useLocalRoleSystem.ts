@@ -80,6 +80,11 @@ export function useLocalRoleSystem() {
       if (stored) {
         setLocalRoles(JSON.parse(stored));
       }
+
+      const customStored = localStorage.getItem(CUSTOM_ROLES_KEY);
+      if (customStored) {
+        setCustomRoles(JSON.parse(customStored));
+      }
     } catch (err) {
       console.error('Erreur lors du chargement des rôles locaux:', err);
     }
@@ -176,7 +181,7 @@ export function useLocalRoleSystem() {
       const updatedRoles = localRoles.filter(r => r.userId !== targetUserId);
       saveRoles(updatedRoles);
       
-      console.log(`✅ [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
+      console.log(`��� [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
 
     } catch (err: any) {
       setError(err.message);
