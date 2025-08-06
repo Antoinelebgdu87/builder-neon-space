@@ -140,14 +140,19 @@ export function useBanSystem() {
     if (useFirebase) {
       try {
         await deleteDoc(doc(db, 'bans', userId));
+        console.log('Ban successfully removed from Firebase');
         return;
       } catch (error) {
         console.error('Firebase unban error, falling back to localStorage:', error);
+        if (error instanceof Error) {
+          console.error('Error details:', error.message);
+        }
         setUseFirebase(false);
       }
     }
 
     // localStorage fallback
+    console.log('Using localStorage for unban operation');
     const updatedBans = bans.filter(ban => ban.userId !== userId);
     saveToLocalStorage(updatedBans);
   };
