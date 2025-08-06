@@ -213,9 +213,9 @@ export default function Admin() {
 
     setIsSubmitting(true);
     try {
-      // Create a mock user object for the ban (since we only have username)
+      // Create a mock user object for the ban - use username as ID for easier matching
       const mockUser = {
-        id: `user_${banFormData.username}_${Date.now()}`, // Generate unique ID based on username
+        id: banFormData.username, // Use username as ID for direct matching
         username: banFormData.username,
         isBanned: false,
         createdAt: new Date().toISOString()
