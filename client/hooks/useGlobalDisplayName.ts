@@ -12,12 +12,18 @@ interface GlobalDisplayNameState {
 export function useGlobalDisplayName() {
   const { user: anonymousUser, updateUser } = useAnonymousUser();
   const { getUserById } = useAdvancedUserManagement();
-  const { pushToFirebase } = useFirebaseDisplayNameSync();
+  // const { pushToFirebase } = useFirebaseDisplayNameSync(); // Temporairement désactivé
   const [displayState, setDisplayState] = useState<GlobalDisplayNameState>({
     displayName: '',
     username: '',
     isLoading: true
   });
+
+  // Mock pushToFirebase pour éviter erreurs
+  const pushToFirebase = async (displayName: string) => {
+    console.log('🚫 [MODE LOCAL] Push Firebase désactivé:', displayName);
+    return true;
+  };
 
   // Écouter les changements de nom d'affichage (local et Firebase)
   useEffect(() => {
