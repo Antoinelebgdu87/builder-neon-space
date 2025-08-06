@@ -144,16 +144,29 @@ export function useWarningSystem() {
     }
   };
 
-  // Obtenir les warnings d'un utilisateur
-  const getUserWarnings = async (userId: string): Promise<WarningData[]> => {
+  // Obtenir les warnings d'un utilisateur (par username ou userId)
+  const getUserWarnings = async (userIdentifier: string): Promise<WarningData[]> => {
     if (!isOnline) return [];
 
     try {
-      const warningsQuery = query(
+      // Essayer d'abord par username, puis par userId
+      let warningsQuery = query(
         collection(db, 'userWarnings'),
-        where('userId', '==', userId),
+        where('username', '==', userIdentifier),
         where('isActive', '==', true)
       );
+
+      let snapshot = await getDocs(warningsQuery);
+
+      // Si aucun résultat par username, essayer par userId
+      if (snapshot.empty) {
+        warningsQuery = query(
+          collection(db, 'userWarnings'),
+          where('userId', '==', userIdentifier),
+          where('isActive', '==', true)
+        );
+        snapshot = await getDocs(warningsQuery);
+      }
       
       const snapshot = await getDocs(warningsQuery);
       const userWarnings: WarningData[] = [];
