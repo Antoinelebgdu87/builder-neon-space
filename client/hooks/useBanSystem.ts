@@ -56,60 +56,28 @@ export function useBanSystem() {
     setLoading(false);
 
     if (useFirebase && firebaseOnline) {
-      let unsubscribe: (() => void) | null = null;
+      console.log('Setting up Firebase listener for bans');
+      const unsubscribe = onSnapshot(
+        collection(db, 'bans'),
+        (snapshot) => {
+          console.log('Firebase bans data received');
+          const banList: BanRecord[] = [];
+          snapshot.forEach((doc) => {
+            banList.push({ ...doc.data() } as BanRecord);
+          });
+          setBans(banList);
+          saveToLocalStorage(banList); // Also save to localStorage as backup
 
-      try {
-        unsubscribe = onSnapshot(
-          collection(db, 'bans'),
-          (snapshot) => {
-            try {
-              const banList: BanRecord[] = [];
-              snapshot.forEach((doc) => {
-                banList.push({ ...doc.data() } as BanRecord);
-              });
-              setBans(banList);
-              saveToLocalStorage(banList); // Also save to localStorage as backup
-
-              // Trigger instant update events when ban data changes
-              window.dispatchEvent(new CustomEvent('banStatusChanged'));
-
-              setLoading(false);
-            } catch (err) {
-              console.error('Error processing Firebase bans data:', err);
-              loadFromLocalStorage();
-              setUseFirebase(false);
-              setLoading(false);
-            }
-          },
-          (err) => {
-            console.error('Firebase bans connection error:', err);
-            console.log('Switching to localStorage mode due to Firebase error');
-            loadFromLocalStorage();
-            setUseFirebase(false);
-            setLoading(false);
-          }
-        );
-      } catch (error) {
-        console.error('Failed to initialize Firebase listener:', error);
-        console.log('Using localStorage mode due to Firebase initialization error');
-        loadFromLocalStorage();
-        setUseFirebase(false);
-        setLoading(false);
-        return;
-      }
-
-      return () => {
-        if (unsubscribe) {
-          try {
-            unsubscribe();
-          } catch (error) {
-            console.error('Error unsubscribing from Firebase:', error);
-          }
+          // Trigger instant update events when ban data changes
+          window.dispatchEvent(new CustomEvent('banStatusChanged'));
+        },
+        (err) => {
+          console.error('Firebase bans listener error:', err);
+          setUseFirebase(false);
         }
-      };
-    } else {
-      loadFromLocalStorage();
-      setLoading(false);
+      );
+
+      return () => unsubscribe();
     }
   }, [useFirebase]);
 
