@@ -42,7 +42,7 @@ export default function Index() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-4 text-lg glass border-border/50 focus:border-primary/50 focus:ring-primary/20"
                   style={{
-                    backgroundImage: "url(https://img.freepik.com/free-vector/grey-hexagons-black-background_78370-2098.jpg?semt=ais_hybrid&w=740&q=80)",
+                    backgroundImage: "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
                     backgroundSize: "cover"
