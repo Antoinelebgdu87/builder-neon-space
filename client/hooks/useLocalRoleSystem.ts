@@ -100,6 +100,15 @@ export function useLocalRoleSystem() {
     }
   };
 
+  const saveCustomRoles = (roles: CustomRole[]) => {
+    try {
+      localStorage.setItem(CUSTOM_ROLES_KEY, JSON.stringify(roles));
+      setCustomRoles(roles);
+    } catch (err) {
+      console.error('Erreur lors de la sauvegarde des rôles personnalisés:', err);
+    }
+  };
+
   // Obtenir le rôle d'un utilisateur
   const getUserRole = (userId: string): Role => {
     // Le fondateur est toujours l'admin officiel
@@ -181,7 +190,7 @@ export function useLocalRoleSystem() {
       const updatedRoles = localRoles.filter(r => r.userId !== targetUserId);
       saveRoles(updatedRoles);
       
-      console.log(`��� [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
+      console.log(`✅ [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
 
     } catch (err: any) {
       setError(err.message);
