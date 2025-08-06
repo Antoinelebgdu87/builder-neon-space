@@ -255,6 +255,31 @@ export function UserManagement({ className }: UserManagementProps) {
     return 'À l\'instant';
   };
 
+  // Load cleanup stats
+  const loadCleanupStats = async () => {
+    try {
+      const stats = await getCleanupStats();
+      setCleanupStats(stats);
+    } catch (error) {
+      console.error('Error loading cleanup stats:', error);
+    }
+  };
+
+  // Manual cleanup
+  const handleManualCleanup = async () => {
+    setIsCleaningUp(true);
+    try {
+      const result = await triggerManualCleanup();
+      alert(`Nettoyage effectué: ${result.expiredSessions} sessions expirées, ${result.offlineUsers} utilisateurs marqués hors ligne`);
+      await loadCleanupStats();
+      refresh();
+    } catch (error: any) {
+      alert(error.message || 'Erreur lors du nettoyage');
+    } finally {
+      setIsCleaningUp(false);
+    }
+  };
+
   // Export users data
   const exportUsersData = () => {
     const data = JSON.stringify(allUsersWithStatus, null, 2);
@@ -266,6 +291,13 @@ export function UserManagement({ className }: UserManagementProps) {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  // Load stats on mount
+  useEffect(() => {
+    if (isOnline) {
+      loadCleanupStats();
+    }
+  }, [isOnline]);
 
   if (loading) {
     return (
