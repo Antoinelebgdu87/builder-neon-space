@@ -39,7 +39,10 @@ export default function ForumPostCard({
   };
 
   return (
-    <Card className="group glass hover:bg-white/10 transition-all duration-300 border-border/50 overflow-hidden">
+    <Card
+      className="group glass hover:bg-white/10 transition-all duration-300 border-border/50 overflow-hidden cursor-pointer"
+      onClick={onClick}
+    >
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
