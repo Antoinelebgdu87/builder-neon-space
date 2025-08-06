@@ -56,7 +56,20 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
 
   return (
     <Dialog open={shouldShowModal} onOpenChange={() => {}} >
-      <DialogContent className="sm:max-w-md" hideCloseButton>
+      <DialogContent
+        className="sm:max-w-md bg-black border-red-500 border-2"
+        hideCloseButton
+        style={{
+          backgroundColor: '#000000',
+          color: '#ffffff',
+          border: '2px solid #ef4444',
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2 text-red-400">
             <Ban className="w-6 h-6" />
