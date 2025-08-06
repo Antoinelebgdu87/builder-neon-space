@@ -80,6 +80,25 @@ export function useInstantFirebaseBan() {
     }
   };
 
+  // Clean undefined values from object for Firebase
+  const cleanFirebaseData = (obj: any): any => {
+    const cleaned: any = {};
+    for (const key in obj) {
+      if (obj[key] !== undefined && obj[key] !== null) {
+        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+          // Recursively clean nested objects
+          const cleanedNested = cleanFirebaseData(obj[key]);
+          if (Object.keys(cleanedNested).length > 0) {
+            cleaned[key] = cleanedNested;
+          }
+        } else {
+          cleaned[key] = obj[key];
+        }
+      }
+    }
+    return cleaned;
+  };
+
   // Ban user instantly
   const banUserInstant = async (
     userId: string,
