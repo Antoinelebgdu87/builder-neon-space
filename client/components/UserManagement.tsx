@@ -1005,6 +1005,112 @@ export function UserManagement({ className }: UserManagementProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Ban User Dialog */}
+      <Dialog open={isBanDialogOpen} onOpenChange={setIsBanDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2 text-orange-400">
+              <Ban className="w-5 h-5" />
+              <span>Bannir un utilisateur</span>
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {userToBan && (
+              <div className="p-3 bg-muted/30 rounded border">
+                <p className="text-sm">
+                  <strong>Utilisateur:</strong> {userToBan.username}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {userToBan.email || 'Aucun email'}
+                </p>
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="banReason">Raison du bannissement *</Label>
+              <Textarea
+                id="banReason"
+                value={banFormData.reason}
+                onChange={(e) => setBanFormData(prev => ({ ...prev, reason: e.target.value }))}
+                placeholder="Violation des conditions d'utilisation..."
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label>Type de bannissement</Label>
+              <div className="flex items-center space-x-4 mt-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="banTemporary"
+                    name="banType"
+                    value="temporary"
+                    checked={banFormData.banType === 'temporary'}
+                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                  />
+                  <label htmlFor="banTemporary" className="text-sm">Temporaire</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="banPermanent"
+                    name="banType"
+                    value="permanent"
+                    checked={banFormData.banType === 'permanent'}
+                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                  />
+                  <label htmlFor="banPermanent" className="text-sm">Permanent</label>
+                </div>
+              </div>
+            </div>
+
+            {banFormData.banType === 'temporary' && (
+              <div>
+                <Label htmlFor="banHours">Durée (heures)</Label>
+                <Input
+                  id="banHours"
+                  type="number"
+                  min="1"
+                  max="8760"
+                  value={banFormData.hours}
+                  onChange={(e) => setBanFormData(prev => ({ ...prev, hours: parseInt(e.target.value) || 24 }))}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Maximum: 8760 heures (1 an)
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsBanDialogOpen(false);
+                  setUserToBan(null);
+                  setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+                }}
+                disabled={isSubmitting}
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={handleBanUser}
+                disabled={isSubmitting || !banFormData.reason.trim()}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Ban className="w-4 h-4 mr-2" />
+                )}
+                {isSubmitting ? 'Bannissement...' : 'Bannir'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
