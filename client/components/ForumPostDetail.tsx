@@ -105,7 +105,13 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
 
   const handleDeleteComment = async (commentId: string) => {
     if (!post.id) return;
-    
+
+    // Check if it's an optimistic comment
+    if (commentId.startsWith('temp_')) {
+      setOptimisticComments(prev => prev.filter(c => c.id !== commentId));
+      return;
+    }
+
     try {
       await deleteComment(post.id, commentId);
     } catch (error) {
