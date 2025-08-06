@@ -896,6 +896,13 @@ export default function Admin() {
                 <BanTestSystem />
               </ErrorBoundary>
             </TabsContent>
+
+            {/* Warning System Tab */}
+            <TabsContent value="warnings" className="space-y-6">
+              <ErrorBoundary>
+                <WarningSystem />
+              </ErrorBoundary>
+            </TabsContent>
           </Tabs>
         </motion.div>
       </div>
