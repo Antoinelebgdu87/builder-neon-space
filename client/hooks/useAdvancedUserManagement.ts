@@ -217,6 +217,8 @@ export function useAdvancedUserManagement() {
         },
         (error) => {
           console.error('Error listening to sessions:', error);
+          const errorAnalysis = FirebaseSafeWrapper.analyzeError ? FirebaseSafeWrapper.analyzeError(error) : { message: error.message, retryable: true };
+          console.log('🔄 Erreur sessions Firebase (non critique):', errorAnalysis.message);
           // Don't disable Firebase completely for session errors
         }
       );
