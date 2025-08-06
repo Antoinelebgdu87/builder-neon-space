@@ -66,17 +66,30 @@ export function useUserAccounts() {
   const syncWithFirebase = async () => {
     try {
       console.log('Syncing user accounts with Firebase');
-      const querySnapshot = await getDocs(collection(db, 'userAccounts'));
+
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+      );
+
+      const querySnapshot = await Promise.race([
+        getDocs(collection(db, 'userAccounts')),
+        timeoutPromise
+      ]) as any;
+
       const firebaseAccounts: UserAccount[] = [];
-      
-      querySnapshot.forEach((doc) => {
+
+      querySnapshot.forEach((doc: any) => {
         firebaseAccounts.push(doc.data() as UserAccount);
       });
-      
+
       setAccounts(firebaseAccounts);
       saveToLocalStorage(firebaseAccounts);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error syncing with Firebase:', error);
+      if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
+        console.log('Firebase unavailable, using localStorage only');
+      }
       setUseFirebase(false);
     }
   };
