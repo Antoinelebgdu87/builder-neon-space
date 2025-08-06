@@ -81,6 +81,7 @@ function AppContent() {
 
   return (
     <>
+      <DevToolsProtection />
       <Header />
       <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
