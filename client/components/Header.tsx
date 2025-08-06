@@ -8,7 +8,7 @@ import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
-  const { maintenanceState } = useFirebaseMaintenance();
+  const { maintenanceState } = useHybridMaintenance();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
