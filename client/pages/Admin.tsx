@@ -252,6 +252,13 @@ export default function Admin() {
   const handleUnbanUser = async (userId: string) => {
     try {
       await unbanUser(userId);
+
+      // Trigger instant unban update event
+      window.dispatchEvent(new CustomEvent('userUnbanned', {
+        detail: { userId }
+      }));
+      window.dispatchEvent(new CustomEvent('banStatusChanged'));
+
       alert('Utilisateur débanni avec succès');
     } catch (error: any) {
       alert(error.message || 'Erreur lors du débannissement');
