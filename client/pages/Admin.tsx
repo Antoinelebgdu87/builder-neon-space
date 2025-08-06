@@ -47,6 +47,15 @@ export default function Admin() {
     downloads: "0", category: "Utility", language: "Lua", isVerified: false, isPopular: false, gradient: "from-blue-500 to-purple-500", downloadUrl: "", code: ""
   });
 
+  // Ban form states
+  const [banFormData, setBanFormData] = useState({
+    username: "",
+    reason: "",
+    banType: "temporary" as "temporary" | "permanent",
+    hours: 24
+  });
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+
   const [forumFormData, setForumFormData] = useState<Partial<ForumPost>>({
     title: "", content: "", author: user?.username || "Admin", category: "General", isSticky: false, isLocked: false, tags: []
   });
