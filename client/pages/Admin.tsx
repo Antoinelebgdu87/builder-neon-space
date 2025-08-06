@@ -23,6 +23,7 @@ import { WarningSystem } from "@/components/WarningSystem";
 import { InstantBanSystem } from "@/components/InstantBanSystem";
 import { RoleManagement } from "@/components/RoleManagement";
 import { UserPermissionsDisplay } from "@/components/UserPermissionsDisplay";
+import { DisplayNameSync } from "@/components/DisplayNameSync";
 import { useLocalRoleSystem } from "@/hooks/useLocalRoleSystem";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
