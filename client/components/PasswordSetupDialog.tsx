@@ -47,7 +47,7 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="max-w-md" hideClose>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2 text-center">
             <Shield className="w-5 h-5 text-primary" />
