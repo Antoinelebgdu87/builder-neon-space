@@ -34,8 +34,24 @@ export function BanProtection({ children }: BanProtectionProps) {
           }
         }
 
-        // Check anonymous user
-        if (anonUser && !anonUser.isBanned) {
+        // Check anonymous user with Firebase data
+        if (anonUser && !anonUser.isBanned && firebaseOnline) {
+          // First check Firebase for most up-to-date data
+          const firebaseUser = getUserByUsername(anonUser.username);
+          if (firebaseUser && firebaseUser.isBanned) {
+            const banData = {
+              reason: firebaseUser.banReason || 'Raison non spécifiée',
+              banType: firebaseUser.banType || 'permanent',
+              expiryDate: firebaseUser.banExpiry,
+              bannedAt: firebaseUser.bannedAt,
+              bannedBy: firebaseUser.bannedBy || 'Admin'
+            };
+            setBanInfo(banData);
+            setShowBanModal(true);
+            return;
+          }
+
+          // Fallback to legacy ban system
           const banCheck = isUsernameBanned(anonUser.username);
           if (banCheck.isBanned && banCheck.banRecord) {
             const banData = {
