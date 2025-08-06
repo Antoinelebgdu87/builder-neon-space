@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, db } from '@/lib/firebaseSafe';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
 import { FirebaseErrorHandler, safeFirebaseOperation } from '@/utils/firebaseErrorHandler';
 
