@@ -30,6 +30,13 @@ export default function Admin() {
   const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError, isOnline } = useHybridMaintenance();
   const { bans, banUser, unbanUser, loading: bansLoading } = useBanSystem();
   const { user } = useAuth();
+  const { user: anonymousUser } = useAnonymousUser();
+  const { getUserById } = useAdvancedUserManagement();
+
+  // Vérifier si l'utilisateur a les permissions admin
+  const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
+  const isAnonymousAdmin = anonymousUserAccount?.isAdmin || false;
+  const hasAdminAccess = user || isAnonymousAdmin;
   
   const [activeTab, setActiveTab] = useState("exploits");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
