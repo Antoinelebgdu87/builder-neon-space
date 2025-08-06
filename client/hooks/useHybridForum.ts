@@ -116,7 +116,7 @@ export function useHybridForum() {
 
       return () => unsubscribe();
     }
-  }, [useFirebase]);
+  }, [useFirebase, firebaseOnline]);
 
   const addPost = async (post: Omit<ForumPost, 'id' | 'createdAt' | 'replies' | 'views'>) => {
     const newPost: ForumPost = {
