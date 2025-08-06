@@ -15,25 +15,44 @@ interface ForumPostDetailProps {
   onClose: () => void;
 }
 
+const VIEWED_POSTS_KEY = 'sysbreak_viewed_posts';
+
 export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDetailProps) {
   const { incrementViews, addComment, deleteComment } = useHybridForum();
   const { user, isAuthenticated } = useAuth();
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasViewedPost, setHasViewedPost] = useState(false);
 
-  // Increment views when post is opened (only once per session)
-  useEffect(() => {
-    if (isOpen && post.id && !hasViewedPost) {
-      incrementViews(post.id);
-      setHasViewedPost(true);
+  // Check if user has already viewed this post
+  const hasAlreadyViewed = (postId: string): boolean => {
+    try {
+      const viewedPosts = JSON.parse(localStorage.getItem(VIEWED_POSTS_KEY) || '[]');
+      return viewedPosts.includes(postId);
+    } catch {
+      return false;
     }
-  }, [isOpen, post.id, incrementViews, hasViewedPost]);
+  };
 
-  // Reset view tracking when post changes
+  // Mark post as viewed
+  const markAsViewed = (postId: string) => {
+    try {
+      const viewedPosts = JSON.parse(localStorage.getItem(VIEWED_POSTS_KEY) || '[]');
+      if (!viewedPosts.includes(postId)) {
+        viewedPosts.push(postId);
+        localStorage.setItem(VIEWED_POSTS_KEY, JSON.stringify(viewedPosts));
+      }
+    } catch (error) {
+      console.error('Error marking post as viewed:', error);
+    }
+  };
+
+  // Increment views when post is opened (only once per user ever)
   useEffect(() => {
-    setHasViewedPost(false);
-  }, [post.id]);
+    if (isOpen && post.id && !hasAlreadyViewed(post.id)) {
+      incrementViews(post.id);
+      markAsViewed(post.id);
+    }
+  }, [isOpen, post.id, incrementViews]);
 
   const handleAddComment = async () => {
     if (!commentContent.trim() || !post.id || !user?.username) return;
