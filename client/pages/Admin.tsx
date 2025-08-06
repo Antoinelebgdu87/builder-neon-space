@@ -432,30 +432,10 @@ export default function Admin() {
                   <span>Forum</span>
                   <Badge variant="secondary" className="ml-1">{posts.length}</Badge>
                 </TabsTrigger>
-                <TabsTrigger value="users" className="flex items-center space-x-2">
-                  <Users className="w-4 h-4" />
-                  <span>Utilisateurs</span>
-                  <Badge variant="secondary" className="ml-1">Gestion</Badge>
-                </TabsTrigger>
-                <TabsTrigger value="activation" className="flex items-center space-x-2">
-                  <Settings className="w-4 h-4" />
-                  <span>Activation</span>
-                  <Badge variant="secondary" className="ml-1">Firebase</Badge>
-                </TabsTrigger>
-                <TabsTrigger value="test" className="flex items-center space-x-2">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>Test Ban</span>
-                  <Badge variant="secondary" className="ml-1">Debug</Badge>
-                </TabsTrigger>
                 <TabsTrigger value="warnings" className="flex items-center space-x-2">
                   <MessageSquare className="w-4 h-4" />
-                  <span>Warnings</span>
-                  <Badge variant="secondary" className="ml-1">Nouveau</Badge>
-                </TabsTrigger>
-                <TabsTrigger value="debug" className="flex items-center space-x-2">
-                  <Settings className="w-4 h-4" />
-                  <span>Debug FB</span>
-                  <Badge variant="destructive" className="ml-1">Fix</Badge>
+                  <span>Avertissements</span>
+                  <Badge variant="secondary" className="ml-1">Système</Badge>
                 </TabsTrigger>
               </TabsList>
 
