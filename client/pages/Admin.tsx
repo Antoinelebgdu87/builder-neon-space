@@ -863,6 +863,13 @@ export default function Admin() {
               </Card>
             </TabsContent>
 
+            {/* Bans System Tab */}
+            <TabsContent value="bans" className="space-y-6">
+              <ErrorBoundary>
+                <InstantBanSystem />
+              </ErrorBoundary>
+            </TabsContent>
+
             {/* Warning System Tab */}
             <TabsContent value="warnings" className="space-y-6">
               <ErrorBoundary>
