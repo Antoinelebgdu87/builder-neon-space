@@ -491,8 +491,8 @@ export function useAdvancedUserManagement() {
           await updateUserProfile(userId, {
             isOnline: false,
             statistics: {
-              ...account.statistics,
-              totalTimeOnline: account.statistics.totalTimeOnline + sessionDuration
+              ...(account.statistics || { loginCount: 0, totalTimeOnline: 0 }),
+              totalTimeOnline: (account.statistics?.totalTimeOnline || 0) + sessionDuration
             }
           });
         }
