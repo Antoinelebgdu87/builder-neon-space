@@ -190,24 +190,26 @@ export function useRoleSystem() {
         throw new Error('Le rôle fondateur ne peut pas être révoqué');
       }
 
-      // Supprimer le rôle de Firebase
-      await safeFirebaseOperation(
-        () => updateDoc(doc(db, 'userRoles', targetUserId), {
-          role: 'user'
-        }),
-        Promise.resolve(),
-        'revoke-role'
-      );
+      // Temporairement désactivé pour éviter les erreurs Firebase
+      console.log(`🏷️ [MODE LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
 
-      // Mettre à jour le profil utilisateur
-      await safeFirebaseOperation(
-        () => updateDoc(doc(db, 'userAccounts', targetUserId), {
-          isAdmin: false,
-          role: 'user'
-        }),
-        Promise.resolve(),
-        'update-user-role-revoke'
-      );
+      // TODO: Réactiver quand Firebase sera stable
+      // await safeFirebaseOperation(
+      //   () => updateDoc(doc(db, 'userRoles', targetUserId), {
+      //     role: 'user'
+      //   }),
+      //   Promise.resolve(),
+      //   'revoke-role'
+      // );
+
+      // await safeFirebaseOperation(
+      //   () => updateDoc(doc(db, 'userAccounts', targetUserId), {
+      //     isAdmin: false,
+      //     role: 'user'
+      //   }),
+      //   Promise.resolve(),
+      //   'update-user-role-revoke'
+      // );
 
       console.log(`Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
 
