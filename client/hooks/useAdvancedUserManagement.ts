@@ -337,14 +337,30 @@ export function useAdvancedUserManagement() {
         throw new Error('Utilisateur non trouvé');
       }
 
-      await updateUserProfile(userId, {
-        isBanned: false,
-        banReason: undefined,
-        banType: undefined,
-        banExpiry: undefined,
-        bannedAt: undefined,
-        bannedBy: undefined
-      });
+      const unbanData = {
+        isBanned: false
+      };
+
+      // Force Firebase save
+      if (firebaseOnline) {
+        try {
+          await updateDoc(doc(db, 'userAccounts', userId), unbanData);
+          console.log('Unban saved to Firebase successfully:', userId);
+        } catch (error) {
+          console.error('Failed to save unban to Firebase:', error);
+          throw new Error('Erreur lors de la sauvegarde du déban sur Firebase');
+        }
+      } else {
+        throw new Error('Firebase nécessaire pour sauvegarder les débans');
+      }
+
+      // Update local state
+      await updateUserProfile(userId, unbanData);
+
+      // Trigger events for real-time updates
+      window.dispatchEvent(new CustomEvent('userUnbanned', {
+        detail: { userId, username: account.username }
+      }));
 
     } catch (error: any) {
       setError(error.message);
