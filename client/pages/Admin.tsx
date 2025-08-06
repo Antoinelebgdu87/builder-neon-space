@@ -14,8 +14,11 @@ import { useAuth } from "@/contexts/LocalAuthContext";
 
 export default function Admin() {
   const { exploits, loading, addExploit, updateExploit, deleteExploit } = useExploits();
+  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage } = useMaintenanceMode();
+  const { user } = useAuth();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingExploit, setEditingExploit] = useState<Exploit | null>(null);
+  const [maintenanceMessage, setMaintenanceMessage] = useState(maintenanceState.message);
 
   const [formData, setFormData] = useState<Partial<Exploit>>({
     name: "",
