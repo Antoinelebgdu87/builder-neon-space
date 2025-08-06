@@ -136,6 +136,29 @@ export default function Header() {
                       </span>
                     )}
 
+                    {/* Bouton Modifier nom pour tous les utilisateurs anonymes connectés */}
+                    {anonymousUser?.hasPassword && anonymousUser?.isLoggedIn && (
+                      <DisplayNameEditor
+                        userId={anonymousUser.id}
+                        currentDisplayName={anonymousUserAccount?.profile?.displayName}
+                        username={anonymousUser.username}
+                        trigger={
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className={`text-xs h-6 px-2 ${
+                              isAnonymousAdmin
+                                ? 'text-purple-300 hover:text-purple-200 hover:bg-purple-500/20'
+                                : 'text-blue-300 hover:text-blue-200 hover:bg-blue-500/20'
+                            }`}
+                          >
+                            <Edit3 className="w-3 h-3 mr-1" />
+                            Nom
+                          </Button>
+                        }
+                      />
+                    )}
+
                     {/* Bouton Admin Panel pour les admins anonymes */}
                     {isAnonymousAdmin && (
                       <Button
