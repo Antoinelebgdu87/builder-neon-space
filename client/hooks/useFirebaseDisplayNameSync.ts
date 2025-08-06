@@ -13,25 +13,22 @@ export function useFirebaseDisplayNameSync() {
     try {
       // Écouter les changements en temps réel du nom d'affichage Firebase
       const userDocRef = doc(db, 'userAccounts', anonymousUser.id);
-      
+
       listenerRef.current = onSnapshot(
         userDocRef,
         (docSnapshot) => {
           if (docSnapshot.exists()) {
             const data = docSnapshot.data();
             const firebaseDisplayName = data.profile?.displayName;
-            
+
             // Si le nom Firebase est différent du local, synchroniser
             if (firebaseDisplayName && firebaseDisplayName !== anonymousUser.displayName) {
               console.log('🔄 Synchronisation nom d\'affichage depuis Firebase:', firebaseDisplayName);
-              
-              // Mettre à jour l'utilisateur local
-              updateUser({ displayName: firebaseDisplayName });
-              
-              // Déclencher un événement global
+
+              // Déclencher un événement global SANS mettre à jour directement
               window.dispatchEvent(new CustomEvent('displayNameSynced', {
-                detail: { 
-                  userId: anonymousUser.id, 
+                detail: {
+                  userId: anonymousUser.id,
                   newDisplayName: firebaseDisplayName,
                   source: 'firebase'
                 }
@@ -54,7 +51,7 @@ export function useFirebaseDisplayNameSync() {
         listenerRef.current = null;
       }
     };
-  }, [anonymousUser?.id, updateUser]);
+  }, [anonymousUser?.id]); // Simplifié - pas de updateUser dans les dépendances
 
   // Fonction pour pousser les changements locaux vers Firebase
   const pushToFirebase = async (displayName: string) => {
