@@ -123,7 +123,7 @@ export class FirebaseSafeWrapper {
   }
 
   // Analyser les erreurs Firebase
-  private static analyzeError(error: any): {
+  static analyzeError(error: any): {
     message: string;
     code: string;
     retryable: boolean;
