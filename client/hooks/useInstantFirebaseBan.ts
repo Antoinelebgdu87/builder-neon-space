@@ -420,17 +420,24 @@ export function useInstantFirebaseBan() {
 
         // Add to ban log
         const banLogRef = doc(collection(db, 'banLogs'));
-        batch.set(banLogRef, {
+        const banLogData: any = {
           action: 'mass_ban',
           userId: user.userId,
           username: user.username,
           reason,
           banType,
-          banExpiry: banData.banExpiry,
           timestamp: now,
           adminId: 'admin',
           banId
-        });
+        };
+
+        // Only add banExpiry if it exists
+        if (banData.banExpiry) {
+          banLogData.banExpiry = banData.banExpiry;
+        }
+
+        const cleanedBanLogData = cleanFirebaseData(banLogData);
+        batch.set(banLogRef, cleanedBanLogData);
       }
 
       // Execute all operations atomically
