@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/LocalAuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function MaintenanceMode() {
-  const { maintenanceState } = useFirebaseMaintenance();
+  const { maintenanceState } = useHybridMaintenance();
   const { isAuthenticated } = useAuth();
 
   // Don't show maintenance mode if admin is authenticated
