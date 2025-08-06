@@ -15,6 +15,7 @@ import SmoothTransition from "@/components/SmoothTransition";
 import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
 import { firebaseOptimizer } from "@/utils/firebaseOptimization";
 import { FirebaseErrorHandler } from "@/utils/firebaseErrorHandler";
+import performFirebaseHealthCheck from "@/utils/firebaseHealthCheck";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
