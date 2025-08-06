@@ -143,22 +143,24 @@ export function useRoleSystem() {
         assignedAt: new Date().toISOString()
       };
 
-      // Sauvegarder dans Firebase
-      await safeFirebaseOperation(
-        () => setDoc(doc(db, 'userRoles', targetUserId), roleData),
-        Promise.resolve(),
-        'assign-role'
-      );
+      // Temporairement désactivé pour éviter les erreurs Firebase
+      console.log(`🏷️ [MODE LOCAL] Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`);
 
-      // Mettre à jour le profil utilisateur
-      await safeFirebaseOperation(
-        () => updateDoc(doc(db, 'userAccounts', targetUserId), {
-          isAdmin: role === 'admin' || role === 'moderateur',
-          role: role
-        }),
-        Promise.resolve(),
-        'update-user-role'
-      );
+      // TODO: Réactiver quand Firebase sera stable
+      // await safeFirebaseOperation(
+      //   () => setDoc(doc(db, 'userRoles', targetUserId), roleData),
+      //   Promise.resolve(),
+      //   'assign-role'
+      // );
+
+      // await safeFirebaseOperation(
+      //   () => updateDoc(doc(db, 'userAccounts', targetUserId), {
+      //     isAdmin: role === 'admin' || role === 'moderateur',
+      //     role: role
+      //   }),
+      //   Promise.resolve(),
+      //   'update-user-role'
+      // );
 
       console.log(`Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`);
 
