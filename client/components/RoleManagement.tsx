@@ -181,12 +181,16 @@ export function RoleManagement() {
                     </div>
                     
                     <div className="flex items-center space-x-2 mt-1">
-                      <Badge 
-                        variant="outline" 
-                        className={`${getRoleBadgeColor(userRole)} text-xs flex items-center space-x-1`}
+                      <Badge
+                        variant="outline"
+                        className="text-xs flex items-center space-x-1"
+                        style={{
+                          color: getRoleColor(userRole),
+                          borderColor: getRoleColor(userRole) + '50'
+                        }}
                       >
                         <RoleIcon className="w-3 h-3" />
-                        <span className="capitalize">{userRole}</span>
+                        <span>{getRoleDisplayName(userRole)}</span>
                       </Badge>
                       
                       {user.isOnline && (
