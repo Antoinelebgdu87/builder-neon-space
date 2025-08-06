@@ -26,10 +26,16 @@ export default function Forum() {
     if (!a.isSticky && b.isSticky) return 1;
 
     // Handle different date formats (Firebase timestamp vs ISO string)
-    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+    if (!a.createdAt || !b.createdAt) return 0;
 
-    return dateB.getTime() - dateA.getTime();
+    try {
+      const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+      const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+      return dateB.getTime() - dateA.getTime();
+    } catch (error) {
+      console.error('Error sorting forum posts by date:', error);
+      return 0;
+    }
   });
 
   return (
