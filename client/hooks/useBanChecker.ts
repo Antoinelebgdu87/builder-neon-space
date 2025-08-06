@@ -12,8 +12,11 @@ export function useBanChecker() {
     // Check ban status every 2 seconds
     const checkBanStatus = () => {
       const banStatus = isUsernameBanned(user.username);
-      
+
+      console.log('Ban check for', user.username, ':', banStatus);
+
       if (banStatus.isBanned && banStatus.banRecord) {
+        console.log('User is banned, updating local data');
         // User is banned, update local user data
         updateUser({
           isBanned: true,
@@ -21,6 +24,7 @@ export function useBanChecker() {
           banExpiry: banStatus.banRecord.expiryDate
         });
       } else if (user.isBanned && !banStatus.isBanned) {
+        console.log('User was unbanned, clearing local data');
         // User was unbanned, update local user data
         updateUser({
           isBanned: false,
