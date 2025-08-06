@@ -39,7 +39,7 @@ function AppContent() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
+    <LocalAuthProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -47,7 +47,7 @@ const App = () => (
           <AppContent />
         </BrowserRouter>
       </TooltipProvider>
-    </AuthProvider>
+    </LocalAuthProvider>
   </QueryClientProvider>
 );
 
