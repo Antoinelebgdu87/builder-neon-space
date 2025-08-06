@@ -42,21 +42,14 @@ export function AdminBanNotifications() {
     };
 
     const handleBanStatusChange = () => {
-      toast.info('Statuts de ban mis à jour', {
-        description: 'Les statuts de bannissement ont été synchronisés',
-        icon: <Users className="w-4 h-4 text-blue-400" />,
-        duration: 3000,
-      });
+      // Notification désactivée pour éviter le spam
+      console.log('Statuts de ban mis à jour');
     };
 
     const handleBanSync = (event: CustomEvent) => {
+      // Notification désactivée pour éviter le spam
       const { userAccounts = [], banRecords = [] } = event.detail || {};
-      
-      toast.success('Synchronisation des bans', {
-        description: `${userAccounts.length} comptes, ${banRecords.length} bans actifs`,
-        icon: <Clock className="w-4 h-4 text-purple-400" />,
-        duration: 3000,
-      });
+      console.log(`Synchronisation: ${userAccounts.length} comptes, ${banRecords.length} bans actifs`);
     };
 
     // Écouter les événements de ban
