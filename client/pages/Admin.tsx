@@ -29,7 +29,7 @@ export default function Admin() {
   const [editingPost, setEditingPost] = useState<ForumPost | null>(null);
   const [maintenanceMessage, setMaintenanceMessage] = useState(maintenanceState.message);
 
-  const [formData, setFormData] = useState<Partial<Exploit>>({
+  const [exploitFormData, setExploitFormData] = useState<Partial<Exploit>>({
     name: "",
     description: "",
     imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
@@ -39,6 +39,30 @@ export default function Admin() {
     isPopular: false,
     gradient: "from-blue-500 to-purple-500",
     downloadUrl: ""
+  });
+
+  const [scriptFormData, setScriptFormData] = useState<Partial<Script>>({
+    name: "",
+    description: "",
+    imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
+    downloads: "0",
+    category: "Utility",
+    language: "Lua",
+    isVerified: false,
+    isPopular: false,
+    gradient: "from-blue-500 to-purple-500",
+    downloadUrl: "",
+    code: ""
+  });
+
+  const [forumFormData, setForumFormData] = useState<Partial<ForumPost>>({
+    title: "",
+    content: "",
+    author: user?.username || "Admin",
+    category: "General",
+    isSticky: false,
+    isLocked: false,
+    tags: []
   });
 
   const platformOptions = ["windows", "android", "ios", "mac"];
