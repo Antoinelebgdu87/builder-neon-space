@@ -109,7 +109,7 @@ export function UserManagement({ className }: UserManagementProps) {
   const filteredUsers = allUsersWithStatus.filter(user => {
     const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.profile.displayName?.toLowerCase().includes(searchTerm.toLowerCase());
+                         user.profile?.displayName?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || 
                          (statusFilter === 'online' && user.isOnline) ||
@@ -215,8 +215,8 @@ export function UserManagement({ className }: UserManagementProps) {
     setEditForm({
       username: user.username,
       email: user.email || '',
-      displayName: user.profile.displayName || '',
-      bio: user.profile.bio || '',
+      displayName: user.profile?.displayName || '',
+      bio: user.profile?.bio || '',
       isAdmin: user.isAdmin,
       isBanned: user.isBanned,
       banReason: user.banReason || ''
@@ -628,13 +628,13 @@ export function UserManagement({ className }: UserManagementProps) {
                         "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
                         user.isOnline ? "bg-green-500" : "bg-gray-500"
                       )}>
-                        {user.profile.displayName?.[0] || user.username[0].toUpperCase()}
+                        {user.profile?.displayName?.[0] || user.username[0].toUpperCase()}
                       </div>
 
                       {/* User Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-lg">{user.profile.displayName || user.username}</h3>
+                          <h3 className="font-semibold text-lg">{user.profile?.displayName || user.username}</h3>
                           <Badge variant="outline" className="text-xs">@{user.username}</Badge>
                           
                           {user.isOnline && (
