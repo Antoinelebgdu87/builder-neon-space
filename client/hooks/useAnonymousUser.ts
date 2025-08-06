@@ -97,11 +97,50 @@ export function useAnonymousUser() {
     }
   };
 
+  const setPasswordCreated = () => {
+    if (user) {
+      const updatedUser = { ...user, hasPassword: true, isLoggedIn: true };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    }
+  };
+
+  const loginUser = (username: string) => {
+    if (user && user.username === username) {
+      const updatedUser = { ...user, isLoggedIn: true };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    } else {
+      // Create user session for existing account
+      const existingUser: AnonymousUser = {
+        id: username,
+        username,
+        hasPassword: true,
+        isLoggedIn: true,
+        isBanned: false,
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(existingUser));
+      setUser(existingUser);
+    }
+  };
+
+  const logoutUser = () => {
+    if (user) {
+      const updatedUser = { ...user, isLoggedIn: false };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    }
+  };
+
   return {
     user,
     loading,
     updateUser,
     refreshUserStatus,
-    createNewUser
+    createNewUser,
+    setPasswordCreated,
+    loginUser,
+    logoutUser
   };
 }
