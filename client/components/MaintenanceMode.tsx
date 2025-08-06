@@ -19,11 +19,6 @@ export default function MaintenanceMode() {
 
       <Card className="glass border-border/50 max-w-2xl w-full relative z-10">
         <CardContent className="p-12 text-center">
-          {/* Icon */}
-          <div className="bg-gradient-primary p-6 rounded-2xl w-24 h-24 mx-auto mb-8 flex items-center justify-center animate-pulse">
-            <Wrench className="w-12 h-12 text-white" />
-          </div>
-
           {/* Title */}
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
