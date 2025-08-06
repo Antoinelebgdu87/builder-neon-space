@@ -30,6 +30,9 @@ function AppContent() {
   const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
 
+  // Enable real-time ban checking
+  useBanChecker();
+
   // Check if current user is banned by username
   const banStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
 
