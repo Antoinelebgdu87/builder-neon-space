@@ -449,15 +449,19 @@ export function useInstantFirebaseBan() {
         batch.set(banLogRef, cleanedBanLogData);
       }
 
-      // Execute all operations atomically
-      await batch.commit();
+      // Execute all operations atomically with safety wrapper
+      const batchResult = await safeFirebaseBatch(batch, 'ban multiple users');
+
+      if (!batchResult.success) {
+        throw new Error(batchResult.error || 'Erreur lors du bannissement multiple Firebase');
+      }
 
       // Trigger real-time event
       window.dispatchEvent(new CustomEvent('multipleUsersBanned', {
         detail: { userCount: users.length, reason, banType }
       }));
 
-      console.log(`${users.length} users banned instantly`);
+      console.log(`✅ ${users.length} users banned instantly`);
 
     } catch (error: any) {
       console.error('Error banning multiple users:', error);
