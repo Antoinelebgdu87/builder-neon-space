@@ -103,19 +103,51 @@ export default function Header() {
 
                 {/* Anonymous User Display */}
                 {!isAuthenticated && anonymousUser && (
-                  <div className="flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 rounded-lg px-3 py-2">
-                    <User className="w-4 h-4 text-blue-400" />
-                    <span className="text-sm font-medium text-white">{anonymousUser.username}</span>
-                    {anonymousUser.hasPassword && anonymousUser.isLoggedIn && (
+                  <div className={`flex items-center space-x-2 rounded-lg px-3 py-2 ${
+                    isAnonymousAdmin
+                      ? 'bg-purple-500/10 border border-purple-500/30'
+                      : 'bg-blue-500/10 border border-blue-500/30'
+                  }`}>
+                    {isAnonymousAdmin ? (
+                      <Shield className="w-4 h-4 text-purple-400" />
+                    ) : (
+                      <User className="w-4 h-4 text-blue-400" />
+                    )}
+                    <span className="text-sm font-medium text-white">
+                      {anonymousUserAccount?.profile?.displayName || anonymousUser.username}
+                    </span>
+
+                    {isAnonymousAdmin && (
+                      <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
+                        Admin
+                      </span>
+                    )}
+
+                    {anonymousUser.hasPassword && anonymousUser.isLoggedIn && !isAnonymousAdmin && (
                       <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
                         Connecté
                       </span>
                     )}
+
                     {(isUserBanned(anonymousUser.id).isBanned || anonymousUser.isBanned) && (
                       <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">
                         Banni
                       </span>
                     )}
+
+                    {/* Bouton Admin Panel pour les admins anonymes */}
+                    {isAnonymousAdmin && (
+                      <Button
+                        onClick={() => navigate('/admin')}
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-purple-300 hover:text-purple-200 hover:bg-purple-500/20 h-6 px-2"
+                      >
+                        <Shield className="w-3 h-3 mr-1" />
+                        Admin
+                      </Button>
+                    )}
+
                     {anonymousUser.hasPassword && anonymousUser.isLoggedIn && (
                       <Button
                         onClick={() => {
@@ -124,7 +156,11 @@ export default function Header() {
                         }}
                         variant="ghost"
                         size="sm"
-                        className="text-xs text-blue-300 hover:text-blue-200 hover:bg-blue-500/20 h-6 px-2 ml-2"
+                        className={`text-xs h-6 px-2 ml-2 ${
+                          isAnonymousAdmin
+                            ? 'text-purple-300 hover:text-purple-200 hover:bg-purple-500/20'
+                            : 'text-blue-300 hover:text-blue-200 hover:bg-blue-500/20'
+                        }`}
                       >
                         <LogOut className="w-3 h-3" />
                       </Button>
