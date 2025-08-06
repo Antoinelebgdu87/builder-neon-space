@@ -862,38 +862,10 @@ export default function Admin() {
               </Card>
             </TabsContent>
 
-            {/* Users Management Tab */}
-            <TabsContent value="users" className="space-y-6">
-              <ErrorBoundary>
-                <InstantBanSystem />
-              </ErrorBoundary>
-            </TabsContent>
-
-            {/* Firebase User Activation Tab */}
-            <TabsContent value="activation" className="space-y-6">
-              <ErrorBoundary>
-                <FirebaseUserActivation />
-              </ErrorBoundary>
-            </TabsContent>
-
-            {/* Ban Test System Tab */}
-            <TabsContent value="test" className="space-y-6">
-              <ErrorBoundary>
-                <BanTestSystem />
-              </ErrorBoundary>
-            </TabsContent>
-
             {/* Warning System Tab */}
             <TabsContent value="warnings" className="space-y-6">
               <ErrorBoundary>
                 <WarningSystem />
-              </ErrorBoundary>
-            </TabsContent>
-
-            {/* Firebase Debug Tab */}
-            <TabsContent value="debug" className="space-y-6">
-              <ErrorBoundary>
-                <FirebaseDebugPanel />
               </ErrorBoundary>
             </TabsContent>
           </Tabs>
