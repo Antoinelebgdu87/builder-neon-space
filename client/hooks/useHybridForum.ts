@@ -34,7 +34,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(false); // FORCE MODE LOCAL
 
   // Firebase activé
   useEffect(() => {
@@ -42,8 +42,8 @@ export function useHybridForum() {
   }, []);
 
   useEffect(() => {
-    // Firebase listener uniquement
-    if (useFirebase && firebaseOnline && !isFirebaseDisabled()) {
+    // Firebase désactivé - Mode local uniquement
+    if (false) { // Désactivé temporairement
       console.log('Setting up Firebase listener for forum');
       const unsubscribe = onSnapshot(
         collection(db, 'forum'),

@@ -25,10 +25,11 @@ export function useHybridScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(false); // FORCE MODE LOCAL
 
   useEffect(() => {
-    if (useFirebase && !isFirebaseDisabled()) {
+    // Firebase désactivé - Mode local uniquement
+    if (false) { // Désactivé temporairement
       try {
         const unsubscribe = onSnapshot(
           collection(db, 'scripts'),

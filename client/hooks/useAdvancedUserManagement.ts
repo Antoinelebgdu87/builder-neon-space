@@ -78,7 +78,7 @@ export function useAdvancedUserManagement() {
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline } = useFirebaseConnectivity();
   const { isAvailable: globalFirebaseAvailable } = useFirebaseAvailable();
-  const [useFirebase, setUseFirebase] = useState(!isFirebaseDisabled());
+  const [useFirebase, setUseFirebase] = useState(false); // FORCE MODE LOCAL
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
   const unsubscribes = useRef<(() => void)[]>([]);
 
@@ -168,7 +168,8 @@ export function useAdvancedUserManagement() {
     loadFromLocalStorage();
     setLoading(false);
 
-    if (useFirebase && firebaseOnline && globalFirebaseAvailable && !isFirebaseDisabled()) {
+    // Firebase désactivé - Mode local uniquement
+    if (false) { // Désactivé temporairement
       // Add error handling for initial sync
       syncWithFirebase().catch((error) => {
         console.error('Initial sync failed:', error);
