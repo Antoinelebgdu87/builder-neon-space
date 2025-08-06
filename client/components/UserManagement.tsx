@@ -63,6 +63,12 @@ export function UserManagement({ className }: UserManagementProps) {
     refresh
   } = useAdvancedUserManagement();
 
+  const {
+    isRunning: cleanupRunning,
+    triggerManualCleanup,
+    getCleanupStats
+  } = useOnlineStatusCleanup();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'online' | 'offline' | 'banned'>('all');
   const [selectedUser, setSelectedUser] = useState<UserAccount | null>(null);
