@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface ForumComment {
   id: string;
