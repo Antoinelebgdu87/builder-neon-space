@@ -20,32 +20,46 @@ export function UserDisplayName({
 }: UserDisplayNameProps) {
   const { getUserByUsername } = useAdvancedUserManagement();
   const { user: adminUser } = useAuth();
-  
+  const { getUserRole } = useRoleSystem();
+
   // Chercher l'utilisateur dans la base de données
   const userAccount = getUserByUsername(username);
-  
-  // Déterminer le nom d'affichage
+
+  // Déterminer le nom d'affichage - TOUJOURS utiliser le nom d'affichage s'il existe
   const displayName = userAccount?.profile?.displayName || username;
-  
-  // Déterminer le rôle
-  let role = 'user';
+
+  // Obtenir le rôle depuis le système de rôles
+  const userRole = userAccount ? getUserRole(userAccount.id) : 'user';
+
+  // Déterminer les couleurs et icônes selon le rôle
   let roleColor = 'text-gray-400';
   let roleIcon = User;
   let roleBadgeClass = 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-  
-  // Vérifier si c'est le fondateur (Admin officiel authentifié)
-  if (username === 'Admin' && adminUser?.username === 'Admin' && adminUser?.id === 'admin-1') {
-    role = 'fondateur';
-    roleColor = 'text-amber-400';
-    roleIcon = Crown;
-    roleBadgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-  }
-  // Vérifier si c'est un admin
-  else if (userAccount?.isAdmin) {
-    role = 'admin';
-    roleColor = 'text-purple-400';
-    roleIcon = Shield;
-    roleBadgeClass = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+  let roleLabel = userRole;
+
+  switch (userRole) {
+    case 'fondateur':
+      roleColor = 'text-amber-400';
+      roleIcon = Crown;
+      roleBadgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      roleLabel = 'Fondateur';
+      break;
+    case 'admin':
+      roleColor = 'text-purple-400';
+      roleIcon = Shield;
+      roleBadgeClass = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      roleLabel = 'Admin';
+      break;
+    case 'moderateur':
+      roleColor = 'text-blue-400';
+      roleIcon = Shield;
+      roleBadgeClass = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      roleLabel = 'Modérateur';
+      break;
+    default:
+      // Pas de badge pour les utilisateurs normaux
+      roleLabel = 'user';
+      break;
   }
   
   const sizeClasses = {
