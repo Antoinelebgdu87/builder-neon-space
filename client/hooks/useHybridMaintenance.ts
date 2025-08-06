@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
+import { doc, onSnapshot, setDoc, serverTimestamp, db } from '@/lib/firebaseMock';
 
 interface MaintenanceState {
   isActive: boolean;
