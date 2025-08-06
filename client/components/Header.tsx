@@ -1,10 +1,22 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Youtube, MessageSquare, LogIn, Search, Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Youtube, MessageSquare, LogIn, LogOut, Search, Menu, Shield } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/LocalAuthContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -40,6 +52,15 @@ export default function Header() {
             >
               Forum
             </Link>
+            {isAuthenticated && (
+              <Link
+                to="/admin"
+                className="text-primary hover:text-primary/80 transition-colors font-medium flex items-center space-x-1"
+              >
+                <Shield className="w-4 h-4" />
+                <span>Admin</span>
+              </Link>
+            )}
           </nav>
 
           {/* Right Side Actions */}
@@ -59,11 +80,27 @@ export default function Header() {
               </Button>
             </div>
 
-            {/* Login Button */}
-            <Button className="bg-gradient-primary hover:opacity-90 text-white font-medium px-6 glow-hover">
-              <LogIn className="w-4 h-4 mr-2" />
-              Login
-            </Button>
+            {/* Auth Actions */}
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-muted-foreground hidden sm:inline">
+                  {user?.username}
+                </span>
+                <Button 
+                  onClick={handleLogout}
+                  variant="outline" 
+                  className="hover:bg-destructive/20 hover:text-destructive"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button className="bg-gradient-primary hover:opacity-90 text-white font-medium px-6 glow-hover">
+                <LogIn className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
@@ -102,6 +139,16 @@ export default function Header() {
               >
                 Forum
               </Link>
+              {isAuthenticated && (
+                <Link
+                  to="/admin"
+                  className="text-primary hover:text-primary/80 transition-colors font-medium px-2 py-1 flex items-center space-x-1"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Admin</span>
+                </Link>
+              )}
               <div className="flex items-center space-x-4 px-2 pt-2">
                 <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-400">
                   <Youtube className="h-4 w-4" />
@@ -112,6 +159,16 @@ export default function Header() {
                 <Button variant="ghost" size="icon">
                   <Search className="h-4 w-4" />
                 </Button>
+                {isAuthenticated && (
+                  <Button 
+                    onClick={handleLogout}
+                    variant="ghost" 
+                    size="icon"
+                    className="text-destructive hover:text-destructive/80"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
             </nav>
           </div>
