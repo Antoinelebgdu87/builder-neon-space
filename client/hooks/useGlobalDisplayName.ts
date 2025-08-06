@@ -31,9 +31,6 @@ export function useGlobalDisplayName() {
           displayName: newDisplayName
         }));
 
-        // Mettre à jour l'utilisateur anonyme
-        updateUser({ displayName: newDisplayName });
-
         // Si le changement vient du local, le pousser vers Firebase
         if (source !== 'firebase') {
           pushToFirebase(newDisplayName);
@@ -63,7 +60,7 @@ export function useGlobalDisplayName() {
       window.removeEventListener('displayNameChanged', handleDisplayNameChange as EventListener);
       window.removeEventListener('displayNameSynced', handleFirebaseSync as EventListener);
     };
-  }, [anonymousUser, updateUser, pushToFirebase]);
+  }, [anonymousUser?.id, pushToFirebase]); // Simplifié les dépendances
 
   // Initialiser le nom d'affichage
   useEffect(() => {
