@@ -51,24 +51,22 @@ export function useGlobalDisplayName() {
       // 1. Vérifier d'abord le nom d'affichage local de l'utilisateur
       if (anonymousUser.displayName) {
         currentDisplayName = anonymousUser.displayName;
-      }
-      // 2. Vérifier dans les données de compte avancées
-      else {
+      } else {
+        // 2. Vérifier dans les données de compte avancées
         const userAccount = getUserById(anonymousUser.id);
         if (userAccount?.profile?.displayName) {
           currentDisplayName = userAccount.profile.displayName;
-        }
-      }
-      // 3. Vérifier dans localStorage
-      else {
-        const localKey = `displayName_${anonymousUser.id}`;
-        const localData = localStorage.getItem(localKey);
-        if (localData) {
-          try {
-            const parsedData = JSON.parse(localData);
-            currentDisplayName = parsedData.displayName || '';
-          } catch (err) {
-            console.error('Erreur parsing nom local:', err);
+        } else {
+          // 3. Vérifier dans localStorage
+          const localKey = `displayName_${anonymousUser.id}`;
+          const localData = localStorage.getItem(localKey);
+          if (localData) {
+            try {
+              const parsedData = JSON.parse(localData);
+              currentDisplayName = parsedData.displayName || '';
+            } catch (err) {
+              console.error('Erreur parsing nom local:', err);
+            }
           }
         }
       }
