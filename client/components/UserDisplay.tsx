@@ -26,8 +26,10 @@ export default function UserDisplay() {
 
   // Show anonymous user info
   if (anonymousUser) {
-    const { isBanned, banRecord } = isUserBanned(anonymousUser.id);
-    
+    const { isBanned: firebaseBanned } = isUserBanned(anonymousUser.id);
+    const localBanned = anonymousUser.isBanned;
+    const isBanned = firebaseBanned || localBanned;
+
     return (
       <div className="fixed top-4 right-4 z-50 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 text-white">
         <div className="flex items-center space-x-2">
@@ -38,6 +40,10 @@ export default function UserDisplay() {
               Banni
             </span>
           )}
+        </div>
+        {/* Debug info - remove in production */}
+        <div className="text-xs text-gray-400 mt-1">
+          FB: {firebaseBanned ? 'Y' : 'N'} | Local: {localBanned ? 'Y' : 'N'}
         </div>
       </div>
     );
