@@ -329,8 +329,15 @@ export default function Admin() {
                 {exploits.map((exploit) => (
                   <div key={exploit.id} className="flex items-center justify-between p-4 glass rounded-lg border border-border/50">
                     <div className="flex items-center space-x-4">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exploit.gradient} p-3 flex items-center justify-center text-2xl`}>
-                        {exploit.icon}
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${exploit.gradient} p-1 flex items-center justify-center overflow-hidden`}>
+                        <img
+                          src={exploit.imageUrl}
+                          alt={exploit.name}
+                          className="w-full h-full object-cover rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzFGMkEzNyIvPgo8cGF0aCBkPSJNMjAgMTBMMjUgMTVIMjJWMjVIMThWMTVIMTVMMjAgMTBaIiBmaWxsPSIjMDA5NEZGIi8+CjwvcGc+";
+                          }}
+                        />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">{exploit.name}</h3>
