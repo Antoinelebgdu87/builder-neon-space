@@ -178,6 +178,15 @@ export default function Forum() {
           </div>
         </div>
       </section>
+
+      {/* Forum Post Detail Modal */}
+      {selectedPost && (
+        <ForumPostDetail
+          post={selectedPost}
+          isOpen={!!selectedPost}
+          onClose={() => setSelectedPost(null)}
+        />
+      )}
     </div>
   );
 }
