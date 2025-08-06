@@ -80,16 +80,7 @@ export default function Index() {
         <div className="container mx-auto">
           {/* Filters */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 space-y-4 sm:space-y-0">
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" className="glass border-border/50">
-                <Filter className="w-4 h-4 mr-2" />
-                Filtrer
-              </Button>
-              <Button variant="outline" className="glass border-border/50">
-                <SortDesc className="w-4 h-4 mr-2" />
-                Trier
-              </Button>
-            </div>
+            <div />
             <div className="text-sm text-muted-foreground">
               {filteredExploits.length} exploit(s) trouvé(s)
             </div>
