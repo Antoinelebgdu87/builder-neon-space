@@ -13,6 +13,7 @@ import { useBanSystem } from "@/hooks/useBanSystem";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
+import { RealTimeBanModal } from "@/components/RealTimeBanModal";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
 import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
