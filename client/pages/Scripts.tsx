@@ -2,7 +2,7 @@ import ScriptCard from "@/components/ScriptCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2, Code } from "lucide-react";
-import { useFirebaseScripts } from "@/hooks/useFirebaseScripts";
+import { useHybridScripts } from "@/hooks/useHybridScripts";
 import { useState } from "react";
 
 export default function Scripts() {
