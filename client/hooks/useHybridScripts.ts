@@ -51,46 +51,59 @@ export function useHybridScripts() {
   };
 
   useEffect(() => {
-    if (useFirebase) {
-      const unsubscribe = onSnapshot(
-        collection(db, 'scripts'),
-        (snapshot) => {
-          try {
-            const scriptsData = snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data()
-            })) as Script[];
-            
-            scriptsData.sort((a, b) => {
-              if (!a.createdAt || !b.createdAt) return 0;
-              return new Date(b.createdAt.toDate()).getTime() - new Date(a.createdAt.toDate()).getTime();
-            });
-            
-            setScripts(scriptsData);
-            setError(null);
-            setLoading(false);
-            saveToLocalStorage(scriptsData);
-          } catch (err) {
-            console.error('Error processing Firebase data:', err);
+    if (useFirebase && !FirebaseErrorHandler.isBlocked()) {
+      try {
+        const unsubscribe = onSnapshot(
+          collection(db, 'scripts'),
+          (snapshot) => {
+            try {
+              const scriptsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+              })) as Script[];
+
+              scriptsData.sort((a, b) => {
+                if (!a.createdAt || !b.createdAt) return 0;
+                return new Date(b.createdAt.toDate()).getTime() - new Date(a.createdAt.toDate()).getTime();
+              });
+
+              setScripts(scriptsData);
+              setError(null);
+              setLoading(false);
+              saveToLocalStorage(scriptsData);
+            } catch (err) {
+              console.error('Error processing Firebase data:', err);
+              loadFromLocalStorage();
+              setUseFirebase(false);
+              setLoading(false);
+            }
+          },
+          (err) => {
+            console.error('Firebase permission error:', err);
+            const shouldFallback = FirebaseErrorHandler.handleError(err);
+
             loadFromLocalStorage();
             setUseFirebase(false);
+
+            if (shouldFallback) {
+              setError('⚠️ Mode hors ligne - Données locales utilisées');
+            } else if (err.code === 'permission-denied') {
+              setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+            } else {
+              setError('Mode hors ligne - Firebase inaccessible');
+            }
             setLoading(false);
           }
-        },
-        (err) => {
-          console.error('Firebase permission error:', err);
-          loadFromLocalStorage();
-          setUseFirebase(false);
-          if (err.code === 'permission-denied') {
-            setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
-          } else {
-            setError('Mode hors ligne - Firebase inaccessible');
-          }
-          setLoading(false);
-        }
-      );
+        );
 
-      return () => unsubscribe();
+        return () => unsubscribe();
+      } catch (error) {
+        console.error('Failed to setup Firebase listener:', error);
+        FirebaseErrorHandler.handleError(error);
+        setUseFirebase(false);
+        loadFromLocalStorage();
+        setLoading(false);
+      }
     } else {
       loadFromLocalStorage();
       setLoading(false);
