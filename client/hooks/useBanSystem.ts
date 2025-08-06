@@ -184,6 +184,7 @@ export function useBanSystem() {
     banUser,
     unbanUser,
     isUserBanned,
+    isUsernameBanned,
     isOnline: useFirebase
   };
 }
