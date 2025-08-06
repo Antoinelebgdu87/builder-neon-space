@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Wrench, Clock, AlertTriangle, Settings, RefreshCw } from "lucide-react";
-import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { useFirebaseMaintenance } from "@/hooks/useFirebaseMaintenance";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
