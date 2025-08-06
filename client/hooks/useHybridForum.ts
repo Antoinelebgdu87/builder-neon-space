@@ -249,6 +249,8 @@ export function useHybridForum() {
     deletePost,
     incrementViews,
     addReply,
+    addComment,
+    deleteComment,
     isOnline: useFirebase
   };
 }
