@@ -8,7 +8,7 @@ import { useFirebaseMaintenance } from "@/hooks/useFirebaseMaintenance";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
-  const { maintenanceState } = useMaintenanceMode();
+  const { maintenanceState } = useFirebaseMaintenance();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
