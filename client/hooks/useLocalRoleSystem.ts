@@ -213,6 +213,105 @@ export function useLocalRoleSystem() {
     }
   };
 
+  // Créer un rôle personnalisé
+  const createCustomRole = async (
+    name: string,
+    displayName: string,
+    color: string,
+    permissions: RolePermissions,
+    creatorUserId: string,
+    creatorUsername: string
+  ): Promise<void> => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const creatorPermissions = getUserPermissions(creatorUserId);
+      if (!creatorPermissions.canAssignRoles) {
+        throw new Error('Vous n\'avez pas les permissions pour créer des rôles');
+      }
+
+      const roleId = `custom_${name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
+
+      const newRole: CustomRole = {
+        id: roleId,
+        name,
+        displayName,
+        color,
+        permissions,
+        createdBy: creatorUsername,
+        createdAt: new Date().toISOString()
+      };
+
+      const updatedCustomRoles = [...customRoles, newRole];
+      saveCustomRoles(updatedCustomRoles);
+
+      console.log(`✅ [LOCAL] Rôle personnalisé "${displayName}" créé par ${creatorUsername}`);
+
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Supprimer un rôle personnalisé
+  const deleteCustomRole = async (
+    roleId: string,
+    deleterUserId: string,
+    deleterUsername: string
+  ): Promise<void> => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const deleterPermissions = getUserPermissions(deleterUserId);
+      if (!deleterPermissions.canAssignRoles) {
+        throw new Error('Vous n\'avez pas les permissions pour supprimer des rôles');
+      }
+
+      // Retirer le rôle de tous les utilisateurs qui l'ont
+      const updatedUserRoles = localRoles.filter(r => r.role !== roleId);
+      saveRoles(updatedUserRoles);
+
+      // Supprimer le rôle personnalisé
+      const updatedCustomRoles = customRoles.filter(r => r.id !== roleId);
+      saveCustomRoles(updatedCustomRoles);
+
+      console.log(`✅ [LOCAL] Rôle personnalisé supprimé par ${deleterUsername}`);
+
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Obtenir le nom d'affichage d'un rôle
+  const getRoleDisplayName = (role: Role): string => {
+    if (ROLE_PERMISSIONS[role as keyof typeof ROLE_PERMISSIONS]) {
+      return role;
+    }
+
+    const customRole = customRoles.find(cr => cr.id === role);
+    return customRole?.displayName || role;
+  };
+
+  // Obtenir la couleur d'un rôle
+  const getRoleColor = (role: Role): string => {
+    switch (role) {
+      case 'fondateur': return '#F59E0B'; // amber
+      case 'admin': return '#8B5CF6'; // purple
+      case 'moderateur': return '#3B82F6'; // blue
+      default: {
+        const customRole = customRoles.find(cr => cr.id === role);
+        return customRole?.color || '#6B7280'; // gray
+      }
+    }
+  };
+
   // Obtenir le nom pour les actions
   const getDisplayNameForActions = (userId: string): string => {
     if (userId === 'admin-1') return 'Fondateur Antoine80';
@@ -221,12 +320,17 @@ export function useLocalRoleSystem() {
 
   return {
     userRoles: localRoles,
+    customRoles,
     loading,
     error,
     getUserRole,
     getUserPermissions,
     assignRole,
     revokeRole,
+    createCustomRole,
+    deleteCustomRole,
+    getRoleDisplayName,
+    getRoleColor,
     getDisplayNameForActions
   };
 }
