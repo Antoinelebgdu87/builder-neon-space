@@ -315,6 +315,7 @@ export function UserManagement({ className }: UserManagementProps) {
   const safeAllUsersWithStatus = safeAccounts.map(account => ({
     ...account,
     profile: account?.profile || { displayName: account?.username },
+    statistics: account?.statistics || { loginCount: 0, totalTimeOnline: 0 },
     sessionInfo: safeOnlineSessions.find(session => session?.userId === account?.id)
   }));
 
