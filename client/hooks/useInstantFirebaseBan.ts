@@ -362,18 +362,27 @@ export function useInstantFirebaseBan() {
 
         // Add to banned users collection
         const bannedUserRef = doc(db, 'bannedUsers', banId);
-        const bannedUserData: BannedUser = {
+        const bannedUserData: any = {
           userId: user.userId,
           username: user.username,
-          email: user.email,
           isBanned: true,
           banReason: reason,
           banType,
-          banExpiry: banData.banExpiry,
           bannedAt: now,
           bannedBy: 'Admin',
           banId
         };
+
+        // Only add email if it exists
+        if (user.email) {
+          bannedUserData.email = user.email;
+        }
+
+        // Only add banExpiry if it exists
+        if (banData.banExpiry) {
+          bannedUserData.banExpiry = banData.banExpiry;
+        }
+
         batch.set(bannedUserRef, bannedUserData);
 
         // Remove active session
