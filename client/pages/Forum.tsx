@@ -8,7 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Forum() {
-  const { posts, loading } = useFirebaseForum();
+  const { posts, loading } = useHybridForum();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredPosts = posts.filter(post =>
