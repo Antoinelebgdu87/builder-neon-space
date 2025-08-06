@@ -224,14 +224,14 @@ export function useAdvancedUserManagement() {
         },
         (error) => {
           console.error('Error listening to accounts:', error);
-          const errorAnalysis = FirebaseSafeWrapper.analyzeError ? FirebaseSafeWrapper.analyzeError(error) : { message: error.message, retryable: true };
+          const isNetworkError = handleFirebaseError(error);
 
-          if (errorAnalysis.retryable) {
-            console.log('🔄 Erreur temporaire Firebase, maintien de la connexion...');
-            setError('⚠️ Connexion Firebase instable - données locales utilisées');
+          if (isNetworkError) {
+            console.log('📶 Erreur réseau Firebase détectée');
+            setError('📶 Connexion Firebase impossible - mode local activé');
+            setUseFirebase(false);
           } else {
-            console.log('❌ Erreur Firebase permanente, basculement en mode local');
-            setError('Erreur de synchronisation des comptes - mode local activé');
+            setError('⚠️ Erreur de synchronisation des comptes - mode local activé');
             setUseFirebase(false);
           }
         }
@@ -249,8 +249,8 @@ export function useAdvancedUserManagement() {
         },
         (error) => {
           console.error('Error listening to sessions:', error);
-          const errorAnalysis = FirebaseSafeWrapper.analyzeError ? FirebaseSafeWrapper.analyzeError(error) : { message: error.message, retryable: true };
-          console.log('🔄 Erreur sessions Firebase (non critique):', errorAnalysis.message);
+          handleFirebaseError(error);
+          console.log('⚠️ Erreur sessions Firebase (non critique) - continue sans sessions temps réel');
           // Don't disable Firebase completely for session errors
         }
       );
