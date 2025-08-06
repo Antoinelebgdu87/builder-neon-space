@@ -207,7 +207,7 @@ export default function Header() {
               >
                 Forum
               </Link>
-              {isAuthenticated && (
+              {(isAuthenticated || isAnonymousAdmin) && (
                 <Link
                   to="/admin"
                   className="text-primary hover:text-primary/80 transition-colors font-medium px-2 py-1 flex items-center space-x-1"
