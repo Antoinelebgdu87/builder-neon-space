@@ -3,6 +3,7 @@ import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { BanNotificationModal } from './BanNotificationModal';
 import { useAnonymousUser } from '@/hooks/useAnonymousUser';
 import { useBanSystem } from '@/hooks/useBanSystem';
+import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
 
 interface BanProtectionProps {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ export function BanProtection({ children }: BanProtectionProps) {
   const { user: authUser, getCurrentBanStatus, forceLogout } = useFirebaseAuth();
   const { user: anonUser } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
+  const { getUserByUsername, isOnline: firebaseOnline } = useAdvancedUserManagement();
   const [showBanModal, setShowBanModal] = useState(false);
   const [banInfo, setBanInfo] = useState<any>(null);
 
