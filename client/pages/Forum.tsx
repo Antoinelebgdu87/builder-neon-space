@@ -22,7 +22,12 @@ export default function Forum() {
   const sortedPosts = filteredPosts.sort((a, b) => {
     if (a.isSticky && !b.isSticky) return -1;
     if (!a.isSticky && b.isSticky) return 1;
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+
+    // Handle different date formats (Firebase timestamp vs ISO string)
+    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+
+    return dateB.getTime() - dateA.getTime();
   });
 
   return (
