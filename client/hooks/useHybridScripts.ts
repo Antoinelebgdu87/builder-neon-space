@@ -74,7 +74,6 @@ export function useHybridScripts() {
         setLoading(false);
       }
     } else {
-      loadFromLocalStorage();
       setLoading(false);
     }
   }, [useFirebase]);
