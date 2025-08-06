@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export interface AnonymousUser {
   id: string;
   username: string;
+  displayName?: string; // Nom d'affichage personnalisé
   isBanned: boolean;
   banReason?: string;
   banExpiry?: string; // ISO string, null for permanent
