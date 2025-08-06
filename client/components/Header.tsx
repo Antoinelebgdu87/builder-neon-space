@@ -11,10 +11,14 @@ import { useHybridForum } from "@/hooks/useHybridForum";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
-  const { maintenanceState } = useHybridMaintenance();
+  const { maintenanceState, isOnline: maintenanceOnline } = useHybridMaintenance();
   const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
-  const { isUserBanned } = useBanSystem();
+  const { isUserBanned, isOnline: banSystemOnline } = useBanSystem();
+  const { isOnline: forumOnline } = useHybridForum();
   const navigate = useNavigate();
+
+  // Check if Firebase is working for any service
+  const isFirebaseOnline = maintenanceOnline || banSystemOnline || forumOnline;
 
   const handleLogout = async () => {
     try {
