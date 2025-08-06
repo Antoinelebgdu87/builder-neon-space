@@ -4,6 +4,7 @@ import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { FirebaseSafeWrapper, safeFirebaseRead, safeFirebaseWrite } from '@/lib/firebaseSafeWrapper';
 import { useFirebaseAvailable } from './useFirebaseGlobalControl';
+import { isFirebaseDisabled, handleFirebaseError } from '@/utils/firebaseProtection';
 
 export interface UserAccount {
   id: string;
@@ -77,7 +78,7 @@ export function useAdvancedUserManagement() {
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline } = useFirebaseConnectivity();
   const { isAvailable: globalFirebaseAvailable } = useFirebaseAvailable();
-  const [useFirebase, setUseFirebase] = useState(false);
+  const [useFirebase, setUseFirebase] = useState(!isFirebaseDisabled());
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
   const unsubscribes = useRef<(() => void)[]>([]);
 
@@ -167,23 +168,25 @@ export function useAdvancedUserManagement() {
     loadFromLocalStorage();
     setLoading(false);
 
-    if (useFirebase && firebaseOnline && globalFirebaseAvailable) {
+    if (useFirebase && firebaseOnline && globalFirebaseAvailable && !isFirebaseDisabled()) {
       // Add error handling for initial sync
       syncWithFirebase().catch((error) => {
         console.error('Initial sync failed:', error);
+        handleFirebaseError(error);
         setUseFirebase(false);
-        setError('Impossible de se connecter à Firebase - mode local activé');
+        setError('📶 Connexion Firebase impossible - mode local activé');
       });
 
-      // Temporairement désactivé les listeners en temps réel pour éviter les erreurs "Failed to fetch"
-      // try {
-      //   setupRealtimeListeners();
-      // } catch (error) {
-      //   console.error('Failed to setup listeners:', error);
-      //   setUseFirebase(false);
-      // }
-
-      console.log('⚠️ Listeners Firebase désactivés temporairement pour éviter les erreurs réseau');
+      // Réactiver les listeners avec protection contre les erreurs
+      try {
+        setupRealtimeListeners();
+        console.log('🔥 Listeners Firebase activés - Détection des nouveaux comptes OK');
+      } catch (error) {
+        console.error('Failed to setup listeners:', error);
+        handleFirebaseError(error);
+        setUseFirebase(false);
+        setError('⚠️ Impossible d\'activer la surveillance temps réel');
+      }
     }
 
     return () => {
