@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,13 +36,26 @@ export default function Admin() {
   const { bans, banUser, unbanUser, loading: bansLoading } = useBanSystem();
   const { user } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
-  const { getUserById } = useAdvancedUserManagement();
+  const { getUserById, registerAnonymousUser } = useAdvancedUserManagement();
   const { getUserRole, getUserPermissions } = useLocalRoleSystem();
 
   // Vérifier si l'utilisateur a les permissions admin
   const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
   const isAnonymousAdmin = anonymousUserAccount?.isAdmin || false;
   const hasAdminAccess = user || isAnonymousAdmin;
+
+  // Synchroniser automatiquement l'utilisateur anonyme
+  useEffect(() => {
+    if (anonymousUser && !getUserById(anonymousUser.id)) {
+      console.log('Synchronisation utilisateur anonyme avec le système de gestion');
+      registerAnonymousUser({
+        id: anonymousUser.id,
+        username: anonymousUser.username,
+        displayName: anonymousUser.displayName,
+        createdAt: anonymousUser.createdAt
+      });
+    }
+  }, [anonymousUser, getUserById, registerAnonymousUser]);
 
   // Obtenir le rôle et permissions de l'utilisateur actuel
   const currentUserId = user?.id || anonymousUser?.id;
