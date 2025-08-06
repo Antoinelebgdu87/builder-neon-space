@@ -477,6 +477,13 @@ export default function Admin() {
                   <span>Avertissements</span>
                   <Badge variant="secondary" className="ml-1">Système</Badge>
                 </TabsTrigger>
+                {currentUserPermissions?.canAssignRoles && (
+                  <TabsTrigger value="roles" className="flex items-center space-x-2">
+                    <Users className="w-4 h-4" />
+                    <span>Rôles</span>
+                    <Badge variant="secondary" className="ml-1 bg-amber-500/20 text-amber-400">Fondateur</Badge>
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
