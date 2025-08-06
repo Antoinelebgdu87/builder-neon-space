@@ -29,8 +29,8 @@ export function useBanSync() {
       }));
     };
 
-    // Synchroniser toutes les 5 secondes
-    const interval = setInterval(syncBanStatuses, 5000);
+    // Synchroniser toutes les 30 secondes pour éviter le spam
+    const interval = setInterval(syncBanStatuses, 30000);
 
     // Synchroniser immédiatement
     syncBanStatuses();
