@@ -7,6 +7,8 @@ export interface AnonymousUser {
   banReason?: string;
   banExpiry?: string; // ISO string, null for permanent
   createdAt: string;
+  hasPassword?: boolean;
+  isLoggedIn?: boolean;
 }
 
 const STORAGE_KEY = 'sysbreak_anonymous_user';
