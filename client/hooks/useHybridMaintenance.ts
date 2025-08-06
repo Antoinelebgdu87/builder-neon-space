@@ -20,7 +20,7 @@ export function useHybridMaintenance() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(true);
+  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
 
   const loadFromLocalStorage = () => {
     try {
