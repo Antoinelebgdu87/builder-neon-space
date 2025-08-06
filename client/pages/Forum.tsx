@@ -7,6 +7,7 @@ import { Search, Filter, SortDesc, Loader2, MessageSquare } from "lucide-react";
 import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import CategoryTransition from "@/components/CategoryTransition";
 
 export default function Forum() {
   const { posts, loading } = useHybridForum();
@@ -41,7 +42,8 @@ export default function Forum() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <CategoryTransition direction="up">
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Effects */}
@@ -196,5 +198,6 @@ export default function Forum() {
         />
       )}
     </div>
+    </CategoryTransition>
   );
 }
