@@ -41,9 +41,9 @@ function AppContent() {
   useAutoBanDetection(anonymousUser?.username || null);
 
 
-  // Initialisation Firebase
+  // Mode local forcé
   useEffect(() => {
-    console.log('🔥 Firebase activé avec les nouvelles clés');
+    console.log('💾 Mode local activé - Toutes les données sauvegardées localement');
   }, []);
 
   // Simple ban system - no complex synchronization
@@ -96,6 +96,7 @@ function AppContent() {
       <WarningModal userId={anonymousUser?.username || null} />
       <MaintenanceMode />
       <ConnectivityStatus />
+      <LocalModeInfo />
       <SmoothTransition>
         <Routes>
           <Route path="/" element={<Index />} />
