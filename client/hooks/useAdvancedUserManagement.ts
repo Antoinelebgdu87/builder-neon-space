@@ -294,12 +294,32 @@ export function useAdvancedUserManagement() {
         banData.banExpiry = expiryDate.toISOString();
       }
 
+      // Force Firebase save even if offline mode
+      if (firebaseOnline) {
+        try {
+          const cleanedData = cleanUndefinedValues(banData);
+          await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
+          console.log('Ban saved to Firebase successfully:', userId);
+        } catch (error) {
+          console.error('Failed to save ban to Firebase:', error);
+          throw new Error('Erreur lors de la sauvegarde du ban sur Firebase');
+        }
+      } else {
+        throw new Error('Firebase nécessaire pour sauvegarder les bans');
+      }
+
+      // Update local state
       await updateUserProfile(userId, banData);
 
       // End user session if they're online
       if (account.isOnline) {
         await endUserSession(userId);
       }
+
+      // Trigger events for real-time updates
+      window.dispatchEvent(new CustomEvent('userBanned', {
+        detail: { userId, username: account.username }
+      }));
 
     } catch (error: any) {
       setError(error.message);
