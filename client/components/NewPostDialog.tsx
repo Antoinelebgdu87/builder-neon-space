@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Plus, Send, X, Tag } from "lucide-react";
 import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { useAuth } from "@/contexts/LocalAuthContext";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
 import { motion, AnimatePresence } from "framer-motion";
 
 const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "Suggestions"];
