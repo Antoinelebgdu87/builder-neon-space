@@ -43,8 +43,19 @@ export function useBanSystem() {
     }
   };
 
+  // Update Firebase usage based on connectivity
   useEffect(() => {
-    if (useFirebase) {
+    if (hasChecked) {
+      setUseFirebase(firebaseOnline);
+    }
+  }, [firebaseOnline, hasChecked]);
+
+  useEffect(() => {
+    // Always load from localStorage first for instant data
+    loadFromLocalStorage();
+    setLoading(false);
+
+    if (useFirebase && firebaseOnline) {
       let unsubscribe: (() => void) | null = null;
 
       try {
