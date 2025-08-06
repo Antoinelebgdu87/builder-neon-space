@@ -53,6 +53,10 @@ export function useBanSystem() {
             });
             setBans(banList);
             saveToLocalStorage(banList); // Also save to localStorage as backup
+
+            // Trigger instant update events when ban data changes
+            window.dispatchEvent(new CustomEvent('banStatusChanged'));
+
             setLoading(false);
           } catch (err) {
             console.error('Error processing Firebase bans data:', err);
