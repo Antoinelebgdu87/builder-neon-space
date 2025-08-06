@@ -70,23 +70,33 @@ export function useDisplayNameManager(userId: string | null) {
       setLoading(true);
       setError(null);
 
-      const docRef = doc(db, 'userDisplayNames', userId);
-      const docSnap = await getDoc(docRef);
+      const defaultData: DisplayNameData = {
+        displayName: '',
+        lastChanged: '',
+        changeCount: 0
+      };
 
-      if (docSnap.exists()) {
+      const docRef = doc(db, 'userDisplayNames', userId);
+      const docSnap = await safeFirebaseOperation(
+        () => getDoc(docRef),
+        null,
+        'load-display-name'
+      );
+
+      if (docSnap && docSnap.exists()) {
         setDisplayNameData(docSnap.data() as DisplayNameData);
       } else {
-        // Première fois - créer un document par défaut
-        const defaultData: DisplayNameData = {
-          displayName: '',
-          lastChanged: '',
-          changeCount: 0
-        };
         setDisplayNameData(defaultData);
       }
     } catch (err: any) {
       console.error('Erreur lors du chargement des données:', err);
       setError('Erreur lors du chargement des données de nom d\'affichage');
+      // Fallback to default data
+      setDisplayNameData({
+        displayName: '',
+        lastChanged: '',
+        changeCount: 0
+      });
     } finally {
       setLoading(false);
     }
