@@ -291,7 +291,18 @@ export function useInstantFirebaseBan() {
         return { isBanned: false };
       }
 
-      const userDoc = await getDoc(doc(db, 'userAccounts', userId));
+      // Use safe wrapper for Firebase read
+      const readResult = await safeFirebaseWrite(
+        () => getDoc(doc(db, 'userAccounts', userId)),
+        'check ban status'
+      );
+
+      if (!readResult.success) {
+        console.error('❌ Erreur lors de la vérification du ban:', readResult.error);
+        return { isBanned: false };
+      }
+
+      const userDoc = readResult.data as any;
       if (!userDoc.exists()) {
         return { isBanned: false };
       }
