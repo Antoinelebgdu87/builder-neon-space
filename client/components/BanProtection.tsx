@@ -35,20 +35,41 @@ export function BanProtection({ children }: BanProtectionProps) {
         }
 
         // Check anonymous user with Firebase data
-        if (anonUser && !anonUser.isBanned && firebaseOnline) {
+        if (anonUser && firebaseOnline) {
           // First check Firebase for most up-to-date data
           const firebaseUser = getUserByUsername(anonUser.username);
           if (firebaseUser && firebaseUser.isBanned) {
-            const banData = {
-              reason: firebaseUser.banReason || 'Raison non spécifiée',
-              banType: firebaseUser.banType || 'permanent',
-              expiryDate: firebaseUser.banExpiry,
-              bannedAt: firebaseUser.bannedAt,
-              bannedBy: firebaseUser.bannedBy || 'Admin'
-            };
-            setBanInfo(banData);
-            setShowBanModal(true);
-            return;
+            // Check if temporary ban has expired
+            if (firebaseUser.banType === 'temporary' && firebaseUser.banExpiry) {
+              const now = new Date();
+              const expiry = new Date(firebaseUser.banExpiry);
+
+              if (now <= expiry) {
+                // Ban is still active
+                const banData = {
+                  reason: firebaseUser.banReason || 'Raison non spécifiée',
+                  banType: firebaseUser.banType,
+                  expiryDate: firebaseUser.banExpiry,
+                  bannedAt: firebaseUser.bannedAt,
+                  bannedBy: firebaseUser.bannedBy || 'Admin'
+                };
+                setBanInfo(banData);
+                setShowBanModal(true);
+                return;
+              }
+            } else if (firebaseUser.banType === 'permanent') {
+              // Permanent ban
+              const banData = {
+                reason: firebaseUser.banReason || 'Raison non spécifiée',
+                banType: firebaseUser.banType,
+                expiryDate: firebaseUser.banExpiry,
+                bannedAt: firebaseUser.bannedAt,
+                bannedBy: firebaseUser.bannedBy || 'Admin'
+              };
+              setBanInfo(banData);
+              setShowBanModal(true);
+              return;
+            }
           }
 
           // Fallback to legacy ban system
