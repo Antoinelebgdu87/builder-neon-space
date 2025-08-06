@@ -368,7 +368,7 @@ export default function Admin() {
                     id="maintenanceMessage"
                     value={maintenanceMessage}
                     onChange={(e) => setMaintenanceMessage(e.target.value)}
-                    placeholder="Site en maintenance. Nous reviendrons bientôt!"
+                    placeholder="Site en maintenance. Nous reviendrons bient��t!"
                     className="glass border-border/50 flex-1"
                     rows={3}
                   />
@@ -881,6 +881,13 @@ export default function Admin() {
             <TabsContent value="activation" className="space-y-6">
               <ErrorBoundary>
                 <FirebaseUserActivation />
+              </ErrorBoundary>
+            </TabsContent>
+
+            {/* Ban Test System Tab */}
+            <TabsContent value="test" className="space-y-6">
+              <ErrorBoundary>
+                <BanTestSystem />
               </ErrorBoundary>
             </TabsContent>
           </Tabs>
