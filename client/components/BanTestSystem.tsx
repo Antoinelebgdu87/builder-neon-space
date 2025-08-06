@@ -26,6 +26,7 @@ interface BanTestSystemProps {
 export function BanTestSystem({ className }: BanTestSystemProps) {
   const { checkUserBanStatus, isOnline } = useInstantFirebaseBan();
   const { accounts, getUserByUsername } = useAdvancedUserManagement();
+  const { triggerBanCheck, triggerTestBanModal, forceLogoutBannedUser, isTriggering } = useBanTrigger();
   
   const [testUsername, setTestUsername] = useState('');
   const [testResult, setTestResult] = useState<any>(null);
