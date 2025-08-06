@@ -38,6 +38,9 @@ function AppContent() {
   // Enable real-time ban checking
   useBanChecker();
 
+  // Enable ban synchronization
+  useBanSync();
+
   // Listen for instant ban updates and force refresh
   useEffect(() => {
     const handleInstantRefresh = () => {
