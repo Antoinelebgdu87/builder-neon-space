@@ -142,21 +142,8 @@ export function useAdvancedUserManagement() {
     setLoading(false);
 
     if (useFirebase && firebaseOnline) {
-      // Add error handling for initial sync with retry
-      FirebaseSafeWrapper.withRetry(
-        async () => {
-          await syncWithFirebase();
-          return { success: true, retryable: false };
-        },
-        3, // 3 tentatives
-        2000 // 2 secondes de délai initial
-      ).then((result) => {
-        if (!result.success) {
-          console.error('Initial sync failed after retries:', result.error);
-          setUseFirebase(false);
-          setError('Impossible de se connecter à Firebase après plusieurs tentatives - mode local activé');
-        }
-      }).catch((error) => {
+      // Add error handling for initial sync
+      syncWithFirebase().catch((error) => {
         console.error('Initial sync failed:', error);
         setUseFirebase(false);
         setError('Impossible de se connecter à Firebase - mode local activé');
