@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Crown, Shield, Users, Settings, AlertTriangle, MessageSquare, Ban } from 'lucide-react';
-import { useRoleSystem, type RolePermissions } from '@/hooks/useRoleSystem';
+import { useLocalRoleSystem, type RolePermissions } from '@/hooks/useLocalRoleSystem';
 import { useAuth } from '@/contexts/LocalAuthContext';
 import { useAnonymousUser } from '@/hooks/useAnonymousUser';
 
