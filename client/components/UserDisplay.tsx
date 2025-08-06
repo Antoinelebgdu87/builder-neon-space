@@ -1,5 +1,6 @@
 import React from 'react';
-import { User, Shield } from 'lucide-react';
+import { User, Shield, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useAnonymousUser } from '@/hooks/useAnonymousUser';
 import { useBanSystem } from '@/hooks/useBanSystem';
 import { useAuth } from '@/contexts/LocalAuthContext';
