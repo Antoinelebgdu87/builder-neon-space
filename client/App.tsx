@@ -79,12 +79,12 @@ function AppContent() {
   }
 
   return (
-    <>
+    <div style={{ pointerEvents: 'auto', position: 'relative', zIndex: 1 }}>
       <Header />
-      <UserAuthManager />
+      {/* <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <MaintenanceMode />
-      <ConnectivityStatus />
+      <ConnectivityStatus /> */}
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/scripts" element={<Scripts />} />
@@ -97,7 +97,7 @@ function AppContent() {
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </>
+    </div>
   );
 }
 
