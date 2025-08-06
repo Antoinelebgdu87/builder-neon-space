@@ -226,17 +226,18 @@ export function useAdvancedUserManagement() {
       console.log('Syncing with Firebase...');
       setError(null);
 
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Firebase timeout')), 10000)
+      // Sync accounts avec wrapper sécurisé
+      const accountsResult = await safeFirebaseRead(
+        () => getDocs(collection(db, 'userAccounts')),
+        'sync-accounts'
       );
 
-      // Sync accounts
-      const accountsSnapshot = await Promise.race([
-        getDocs(collection(db, 'userAccounts')),
-        timeoutPromise
-      ]) as any;
+      if (!accountsResult.success) {
+        throw new Error(accountsResult.error || 'Erreur lors de la synchronisation des comptes');
+      }
 
       const firebaseAccounts: UserAccount[] = [];
+      const accountsSnapshot = accountsResult.data as any;
       accountsSnapshot.forEach((doc: any) => {
         const data = doc.data();
         // Ensure profile object and statistics exist for backward compatibility
@@ -249,16 +250,21 @@ export function useAdvancedUserManagement() {
         firebaseAccounts.push({ id: doc.id, ...data } as UserAccount);
       });
 
-      // Sync sessions
-      const sessionsSnapshot = await Promise.race([
-        getDocs(collection(db, 'onlineSessions')),
-        timeoutPromise
-      ]) as any;
+      // Sync sessions avec wrapper sécurisé
+      const sessionsResult = await safeFirebaseRead(
+        () => getDocs(collection(db, 'onlineSessions')),
+        'sync-sessions'
+      );
 
       const firebaseSessions: OnlineSession[] = [];
-      sessionsSnapshot.forEach((doc: any) => {
-        firebaseSessions.push({ ...doc.data() } as OnlineSession);
-      });
+      if (sessionsResult.success) {
+        const sessionsSnapshot = sessionsResult.data as any;
+        sessionsSnapshot.forEach((doc: any) => {
+          firebaseSessions.push({ ...doc.data() } as OnlineSession);
+        });
+      } else {
+        console.warn('Sessions sync failed:', sessionsResult.error);
+      }
 
       setAccounts(firebaseAccounts);
       setOnlineSessions(firebaseSessions);
@@ -266,7 +272,7 @@ export function useAdvancedUserManagement() {
 
     } catch (error: any) {
       console.error('Error syncing with Firebase:', error);
-      setError('Erreur de synchronisation avec Firebase');
+      setError(error.message || 'Erreur de synchronisation avec Firebase');
       setUseFirebase(false);
     }
   };
