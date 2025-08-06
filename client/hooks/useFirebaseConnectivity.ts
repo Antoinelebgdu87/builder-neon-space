@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export function useFirebaseConnectivity() {
   const [isOnline, setIsOnline] = useState(false);
@@ -9,38 +9,38 @@ export function useFirebaseConnectivity() {
 
   useEffect(() => {
     let mounted = true;
-    
+
     const checkConnectivity = async () => {
       try {
         // Try to read a simple document to test connectivity
-        const testDoc = doc(db, 'connectivity', 'test');
-        
+        const testDoc = doc(db, "connectivity", "test");
+
         // Set a timeout for the request
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Connection timeout')), 5000)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Connection timeout")), 5000),
         );
-        
-        await Promise.race([
-          getDoc(testDoc),
-          timeoutPromise
-        ]);
-        
+
+        await Promise.race([getDoc(testDoc), timeoutPromise]);
+
         if (mounted) {
-          console.log('Firebase connectivity: ONLINE');
+          console.log("Firebase connectivity: ONLINE");
           setIsOnline(true);
           setError(null);
         }
       } catch (err: any) {
         if (mounted) {
-          console.log('Firebase connectivity: OFFLINE -', err.message);
+          console.log("Firebase connectivity: OFFLINE -", err.message);
           setIsOnline(false);
-          
-          if (err.message.includes('Failed to fetch') || err.message.includes('timeout')) {
-            setError('Pas de connexion internet ou Firebase inaccessible');
-          } else if (err.code === 'permission-denied') {
-            setError('Permissions Firebase insuffisantes');
+
+          if (
+            err.message.includes("Failed to fetch") ||
+            err.message.includes("timeout")
+          ) {
+            setError("Pas de connexion internet ou Firebase inaccessible");
+          } else if (err.code === "permission-denied") {
+            setError("Permissions Firebase insuffisantes");
           } else {
-            setError('Firebase indisponible');
+            setError("Firebase indisponible");
           }
         }
       } finally {
@@ -76,6 +76,6 @@ export function useFirebaseConnectivity() {
     isOnline,
     hasChecked,
     error,
-    retry
+    retry,
   };
 }

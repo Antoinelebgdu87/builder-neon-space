@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { ArrowLeft, MessageSquare, Trash2, User, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useHybridForum, type ForumPost, type ForumComment } from "@/hooks/useHybridForum";
+import {
+  useHybridForum,
+  type ForumPost,
+  type ForumComment,
+} from "@/hooks/useHybridForum";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { UserDisplayName } from "@/components/UserDisplayName";
@@ -17,21 +26,27 @@ interface ForumPostDetailProps {
   onClose: () => void;
 }
 
-const VIEWED_POSTS_KEY = 'sysbreak_viewed_posts';
+const VIEWED_POSTS_KEY = "sysbreak_viewed_posts";
 
-export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: ForumPostDetailProps) {
+export default function ForumPostDetail({
+  post: initialPost,
+  isOpen,
+  onClose,
+}: ForumPostDetailProps) {
   const { posts, incrementViews, addComment, deleteComment } = useHybridForum();
   const { user: adminUser, isAuthenticated } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [optimisticComments, setOptimisticComments] = useState<ForumComment[]>([]);
+  const [optimisticComments, setOptimisticComments] = useState<ForumComment[]>(
+    [],
+  );
 
   // Get current user (admin or anonymous)
   const currentUser = isAuthenticated ? adminUser : anonymousUser;
 
   // Get live post data from the forum hook
-  const post = posts.find(p => p.id === initialPost.id) || initialPost;
+  const post = posts.find((p) => p.id === initialPost.id) || initialPost;
 
   // Combine real comments with optimistic comments for instant display
   const allComments = [...(post.comments || []), ...optimisticComments];
@@ -39,7 +54,9 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
   // Check if user has already viewed this post
   const hasAlreadyViewed = (postId: string): boolean => {
     try {
-      const viewedPosts = JSON.parse(localStorage.getItem(VIEWED_POSTS_KEY) || '[]');
+      const viewedPosts = JSON.parse(
+        localStorage.getItem(VIEWED_POSTS_KEY) || "[]",
+      );
       return viewedPosts.includes(postId);
     } catch {
       return false;
@@ -49,13 +66,15 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
   // Mark post as viewed
   const markAsViewed = (postId: string) => {
     try {
-      const viewedPosts = JSON.parse(localStorage.getItem(VIEWED_POSTS_KEY) || '[]');
+      const viewedPosts = JSON.parse(
+        localStorage.getItem(VIEWED_POSTS_KEY) || "[]",
+      );
       if (!viewedPosts.includes(postId)) {
         viewedPosts.push(postId);
         localStorage.setItem(VIEWED_POSTS_KEY, JSON.stringify(viewedPosts));
       }
     } catch (error) {
-      console.error('Error marking post as viewed:', error);
+      console.error("Error marking post as viewed:", error);
     }
   };
 
@@ -76,13 +95,13 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
       postId: post.id,
       content: commentContent.trim(),
       author: currentUser.username,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     setIsSubmitting(true);
 
     // Add optimistic comment immediately for instant display
-    setOptimisticComments(prev => [...prev, optimisticComment]);
+    setOptimisticComments((prev) => [...prev, optimisticComment]);
     const originalContent = commentContent;
     setCommentContent(""); // Clear input immediately
 
@@ -91,13 +110,16 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
 
       // Remove optimistic comment after successful addition (real comment will replace it)
       setTimeout(() => {
-        setOptimisticComments(prev => prev.filter(c => c.id !== optimisticComment.id));
+        setOptimisticComments((prev) =>
+          prev.filter((c) => c.id !== optimisticComment.id),
+        );
       }, 1000);
-
     } catch (error) {
-      console.error('Error adding comment:', error);
+      console.error("Error adding comment:", error);
       // Remove optimistic comment and restore input on error
-      setOptimisticComments(prev => prev.filter(c => c.id !== optimisticComment.id));
+      setOptimisticComments((prev) =>
+        prev.filter((c) => c.id !== optimisticComment.id),
+      );
       setCommentContent(originalContent);
     } finally {
       setIsSubmitting(false);
@@ -108,29 +130,29 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
     if (!post.id) return;
 
     // Check if it's an optimistic comment
-    if (commentId.startsWith('temp_')) {
-      setOptimisticComments(prev => prev.filter(c => c.id !== commentId));
+    if (commentId.startsWith("temp_")) {
+      setOptimisticComments((prev) => prev.filter((c) => c.id !== commentId));
       return;
     }
 
     try {
       await deleteComment(post.id, commentId);
     } catch (error) {
-      console.error('Error deleting comment:', error);
+      console.error("Error deleting comment:", error);
     }
   };
 
   const formatDate = (dateInput: any) => {
-    if (!dateInput) return '';
-    
+    if (!dateInput) return "";
+
     // Handle different date formats (Firebase timestamp vs ISO string)
     const date = dateInput?.toDate ? dateInput.toDate() : new Date(dateInput);
-    return date.toLocaleString('fr-FR', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -142,7 +164,9 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
             <Button variant="ghost" size="icon" onClick={onClose}>
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <DialogTitle className="text-xl font-bold">{post.title}</DialogTitle>
+            <DialogTitle className="text-xl font-bold">
+              {post.title}
+            </DialogTitle>
           </div>
         </DialogHeader>
 
@@ -175,7 +199,9 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                   <div className="flex items-center space-x-2">
                     <Badge variant="secondary">{post.category}</Badge>
                     {post.isSticky && <Badge variant="default">Épinglé</Badge>}
-                    {post.isLocked && <Badge variant="destructive">Verrouillé</Badge>}
+                    {post.isLocked && (
+                      <Badge variant="destructive">Verrouillé</Badge>
+                    )}
                   </div>
                 </div>
               </CardHeader>
@@ -228,26 +254,30 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                               <span className="text-xs text-muted-foreground">
                                 {formatDate(comment.createdAt)}
                               </span>
-                              {comment.id.startsWith('temp_') && (
+                              {comment.id.startsWith("temp_") && (
                                 <span className="text-xs text-blue-400 bg-blue-500/10 px-1 rounded">
                                   En cours...
                                 </span>
                               )}
                             </div>
-                            <p className="mt-2 text-sm whitespace-pre-wrap">{comment.content}</p>
+                            <p className="mt-2 text-sm whitespace-pre-wrap">
+                              {comment.content}
+                            </p>
                           </div>
                         </div>
                         {/* Admin can delete any comment, user can delete own comments */}
-                        {currentUser && (currentUser.username === 'Admin' || currentUser.username === comment.author) && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:text-destructive/80 w-8 h-8"
-                            onClick={() => handleDeleteComment(comment.id)}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        )}
+                        {currentUser &&
+                          (currentUser.username === "Admin" ||
+                            currentUser.username === comment.author) && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive/80 w-8 h-8"
+                              onClick={() => handleDeleteComment(comment.id)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          )}
                       </div>
                     </CardContent>
                   </Card>
@@ -273,7 +303,9 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
             >
               <Card className="glass border-border/50">
                 <CardHeader>
-                  <CardTitle className="text-lg">Ajouter un commentaire</CardTitle>
+                  <CardTitle className="text-lg">
+                    Ajouter un commentaire
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Textarea
@@ -285,9 +317,14 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                   />
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                      Commentaire en tant que <span className="font-medium">{currentUser?.username}</span>
+                      Commentaire en tant que{" "}
+                      <span className="font-medium">
+                        {currentUser?.username}
+                      </span>
                       {!isAuthenticated && (
-                        <span className="ml-1 text-xs text-blue-400">(Anonyme)</span>
+                        <span className="ml-1 text-xs text-blue-400">
+                          (Anonyme)
+                        </span>
                       )}
                     </div>
                     <Button
@@ -295,7 +332,7 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                       disabled={!commentContent.trim() || isSubmitting}
                       className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/80 hover:to-purple-500/80"
                     >
-                      {isSubmitting ? 'Publication...' : 'Publier'}
+                      {isSubmitting ? "Publication..." : "Publier"}
                     </Button>
                   </div>
                 </CardContent>
@@ -311,7 +348,10 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
 
           {post.isLocked && currentUser && (
             <div className="text-center py-4 text-muted-foreground">
-              <p>Ce post est verrouillé. Aucun nouveau commentaire ne peut être ajouté.</p>
+              <p>
+                Ce post est verrouillé. Aucun nouveau commentaire ne peut être
+                ajouté.
+              </p>
             </div>
           )}
         </div>

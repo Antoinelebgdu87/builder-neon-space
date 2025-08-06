@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
-import { BanNotificationModal } from './BanNotificationModal';
-import { useAnonymousUser } from '@/hooks/useAnonymousUser';
-import { useBanSystem } from '@/hooks/useBanSystem';
-import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
+import React, { useEffect, useState } from "react";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { BanNotificationModal } from "./BanNotificationModal";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { useBanSystem } from "@/hooks/useBanSystem";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
 
 interface BanProtectionProps {
   children: React.ReactNode;
 }
 
 export function BanProtection({ children }: BanProtectionProps) {
-  const { user: authUser, getCurrentBanStatus, forceLogout } = useFirebaseAuth();
+  const {
+    user: authUser,
+    getCurrentBanStatus,
+    forceLogout,
+  } = useFirebaseAuth();
   const { user: anonUser } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
-  const { getUserByUsername, isOnline: firebaseOnline } = useAdvancedUserManagement();
+  const { getUserByUsername, isOnline: firebaseOnline } =
+    useAdvancedUserManagement();
   const [showBanModal, setShowBanModal] = useState(false);
   const [banInfo, setBanInfo] = useState<any>(null);
 
@@ -40,31 +45,34 @@ export function BanProtection({ children }: BanProtectionProps) {
           const firebaseUser = getUserByUsername(anonUser.username);
           if (firebaseUser && firebaseUser.isBanned) {
             // Check if temporary ban has expired
-            if (firebaseUser.banType === 'temporary' && firebaseUser.banExpiry) {
+            if (
+              firebaseUser.banType === "temporary" &&
+              firebaseUser.banExpiry
+            ) {
               const now = new Date();
               const expiry = new Date(firebaseUser.banExpiry);
 
               if (now <= expiry) {
                 // Ban is still active
                 const banData = {
-                  reason: firebaseUser.banReason || 'Raison non spécifiée',
+                  reason: firebaseUser.banReason || "Raison non spécifiée",
                   banType: firebaseUser.banType,
                   expiryDate: firebaseUser.banExpiry,
                   bannedAt: firebaseUser.bannedAt,
-                  bannedBy: firebaseUser.bannedBy || 'Admin'
+                  bannedBy: firebaseUser.bannedBy || "Admin",
                 };
                 setBanInfo(banData);
                 setShowBanModal(true);
                 return;
               }
-            } else if (firebaseUser.banType === 'permanent') {
+            } else if (firebaseUser.banType === "permanent") {
               // Permanent ban
               const banData = {
-                reason: firebaseUser.banReason || 'Raison non spécifiée',
+                reason: firebaseUser.banReason || "Raison non spécifiée",
                 banType: firebaseUser.banType,
                 expiryDate: firebaseUser.banExpiry,
                 bannedAt: firebaseUser.bannedAt,
-                bannedBy: firebaseUser.bannedBy || 'Admin'
+                bannedBy: firebaseUser.bannedBy || "Admin",
               };
               setBanInfo(banData);
               setShowBanModal(true);
@@ -80,14 +88,14 @@ export function BanProtection({ children }: BanProtectionProps) {
               banType: banCheck.banRecord.banType,
               expiryDate: banCheck.banRecord.expiryDate,
               bannedAt: banCheck.banRecord.bannedAt,
-              bannedBy: banCheck.banRecord.bannedBy
+              bannedBy: banCheck.banRecord.bannedBy,
             };
             setBanInfo(banData);
             setShowBanModal(true);
           }
         }
       } catch (error) {
-        console.error('Error checking ban status:', error);
+        console.error("Error checking ban status:", error);
       }
     };
 
@@ -102,13 +110,13 @@ export function BanProtection({ children }: BanProtectionProps) {
       checkBanStatus();
     };
 
-    window.addEventListener('banStatusChanged', handleBanUpdate);
-    window.addEventListener('userBanned', handleBanUpdate);
+    window.addEventListener("banStatusChanged", handleBanUpdate);
+    window.addEventListener("userBanned", handleBanUpdate);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('banStatusChanged', handleBanUpdate);
-      window.removeEventListener('userBanned', handleBanUpdate);
+      window.removeEventListener("banStatusChanged", handleBanUpdate);
+      window.removeEventListener("userBanned", handleBanUpdate);
     };
   }, [authUser, anonUser, getCurrentBanStatus, isUsernameBanned, forceLogout]);
 

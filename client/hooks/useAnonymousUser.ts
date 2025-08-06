@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export interface AnonymousUser {
   id: string;
@@ -12,11 +12,11 @@ export interface AnonymousUser {
   isLoggedIn?: boolean;
 }
 
-const STORAGE_KEY = 'sysbreak_anonymous_user';
+const STORAGE_KEY = "sysbreak_anonymous_user";
 
 // Generate random username
 const generateRandomUsername = (): string => {
-  const prefixes = ['Anonyme', 'Utilisateur', 'Visiteur', 'Guest'];
+  const prefixes = ["Anonyme", "Utilisateur", "Visiteur", "Guest"];
   const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
   const randomNumber = Math.floor(Math.random() * 9999) + 1;
   return `${randomPrefix}${randomNumber}`;
@@ -34,16 +34,16 @@ export function useAnonymousUser() {
   useEffect(() => {
     // Try to load existing user from localStorage
     const savedUser = localStorage.getItem(STORAGE_KEY);
-    
+
     if (savedUser) {
       try {
         const parsedUser: AnonymousUser = JSON.parse(savedUser);
-        
+
         // Check if ban has expired
         if (parsedUser.isBanned && parsedUser.banExpiry) {
           const now = new Date();
           const expiryDate = new Date(parsedUser.banExpiry);
-          
+
           if (now > expiryDate) {
             // Ban has expired, unban the user
             parsedUser.isBanned = false;
@@ -52,16 +52,16 @@ export function useAnonymousUser() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedUser));
           }
         }
-        
+
         setUser(parsedUser);
       } catch (error) {
-        console.error('Error parsing saved user:', error);
+        console.error("Error parsing saved user:", error);
         createNewUser();
       }
     } else {
       createNewUser();
     }
-    
+
     setLoading(false);
   }, []);
 
@@ -70,16 +70,16 @@ export function useAnonymousUser() {
       id: generateUserId(),
       username: generateRandomUsername(),
       isBanned: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
-    
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
     setUser(newUser);
   };
 
   const updateUser = (updates: Partial<AnonymousUser>) => {
     if (!user) return;
-    
+
     const updatedUser = { ...user, ...updates };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
     setUser(updatedUser);
@@ -93,7 +93,7 @@ export function useAnonymousUser() {
         const parsedUser: AnonymousUser = JSON.parse(savedUser);
         setUser(parsedUser);
       } catch (error) {
-        console.error('Error refreshing user status:', error);
+        console.error("Error refreshing user status:", error);
       }
     }
   };
@@ -119,7 +119,7 @@ export function useAnonymousUser() {
         hasPassword: true,
         isLoggedIn: true,
         isBanned: false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(existingUser));
       setUser(existingUser);
@@ -142,6 +142,6 @@ export function useAnonymousUser() {
     createNewUser,
     setPasswordCreated,
     loginUser,
-    logoutUser
+    logoutUser,
   };
 }

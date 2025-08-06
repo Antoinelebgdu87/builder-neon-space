@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Crown, Shield, Users, UserCheck, UserX, Search } from 'lucide-react';
-import { useLocalRoleSystem, type Role } from '@/hooks/useLocalRoleSystem';
-import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
-import { useAuth } from '@/contexts/LocalAuthContext';
-import { CustomRoleCreator } from '@/components/CustomRoleCreator';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Crown, Shield, Users, UserCheck, UserX, Search } from "lucide-react";
+import { useLocalRoleSystem, type Role } from "@/hooks/useLocalRoleSystem";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
+import { useAuth } from "@/contexts/LocalAuthContext";
+import { CustomRoleCreator } from "@/components/CustomRoleCreator";
+import { motion } from "framer-motion";
 
 export function RoleManagement() {
   const {
@@ -24,37 +36,42 @@ export function RoleManagement() {
     getRoleDisplayName,
     getRoleColor,
     assignRole,
-    revokeRole
+    revokeRole,
   } = useLocalRoleSystem();
   const { accounts } = useAdvancedUserManagement();
   const { user: adminUser } = useAuth();
-  
-  const [searchTerm, setSearchTerm] = useState('');
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
-  const [selectedRole, setSelectedRole] = useState<Role>('admin');
+  const [selectedRole, setSelectedRole] = useState<Role>("admin");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filtrer les utilisateurs
-  const filteredUsers = accounts.filter(user =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = accounts.filter(
+    (user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Obtenir la couleur du badge selon le rôle
   const getRoleBadgeColor = (role: Role) => {
     const color = getRoleColor(role);
-    const opacity = '20';
-    const border = '30';
+    const opacity = "20";
+    const border = "30";
     return `text-[${color}] border-[${color}${border}]`;
   };
 
   // Obtenir l'icône du rôle
   const getRoleIcon = (role: Role) => {
     switch (role) {
-      case 'fondateur': return Crown;
-      case 'admin': case 'moderateur': return Shield;
-      default: return Users;
+      case "fondateur":
+        return Crown;
+      case "admin":
+      case "moderateur":
+        return Shield;
+      default:
+        return Users;
     }
   };
 
@@ -69,12 +86,12 @@ export function RoleManagement() {
         selectedUser.username,
         selectedRole,
         adminUser.id,
-        adminUser.username
+        adminUser.username,
       );
       setIsAssignDialogOpen(false);
       setSelectedUser(null);
     } catch (error) {
-      console.error('Erreur lors de l\'assignation du rôle:', error);
+      console.error("Erreur lors de l'assignation du rôle:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -87,12 +104,14 @@ export function RoleManagement() {
     try {
       await revokeRole(user.id, adminUser.id, adminUser.username);
     } catch (error) {
-      console.error('Erreur lors de la révocation du rôle:', error);
+      console.error("Erreur lors de la révocation du rôle:", error);
     }
   };
 
   // Vérifier les permissions de l'admin actuel
-  const currentUserPermissions = adminUser ? getUserPermissions(adminUser.id) : null;
+  const currentUserPermissions = adminUser
+    ? getUserPermissions(adminUser.id)
+    : null;
 
   if (!currentUserPermissions?.canAssignRoles) {
     return (
@@ -119,7 +138,7 @@ export function RoleManagement() {
             Assignez et gérez les rôles des utilisateurs
           </p>
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -137,10 +156,13 @@ export function RoleManagement() {
       <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-          <span className="text-sm text-blue-400 font-medium">Mode Local Actif</span>
+          <span className="text-sm text-blue-400 font-medium">
+            Mode Local Actif
+          </span>
         </div>
         <p className="text-xs text-blue-300 mt-1">
-          Les rôles sont gérés localement. Les changements seront synchronisés avec Firebase lorsque la connexion sera rétablie.
+          Les rôles sont gérés localement. Les changements seront synchronisés
+          avec Firebase lorsque la connexion sera rétablie.
         </p>
       </div>
 
@@ -158,7 +180,7 @@ export function RoleManagement() {
         {filteredUsers.map((user) => {
           const userRole = getUserRole(user.id);
           const RoleIcon = getRoleIcon(userRole);
-          
+
           return (
             <motion.div
               key={user.id}
@@ -171,30 +193,35 @@ export function RoleManagement() {
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-semibold">
                     {user.username[0].toUpperCase()}
                   </div>
-                  
+
                   <div>
                     <div className="flex items-center space-x-2">
                       <span className="font-medium">{user.username}</span>
                       {user.email && (
-                        <span className="text-sm text-muted-foreground">({user.email})</span>
+                        <span className="text-sm text-muted-foreground">
+                          ({user.email})
+                        </span>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center space-x-2 mt-1">
                       <Badge
                         variant="outline"
                         className="text-xs flex items-center space-x-1"
                         style={{
                           color: getRoleColor(userRole),
-                          borderColor: getRoleColor(userRole) + '50'
+                          borderColor: getRoleColor(userRole) + "50",
                         }}
                       >
                         <RoleIcon className="w-3 h-3" />
                         <span>{getRoleDisplayName(userRole)}</span>
                       </Badge>
-                      
+
                       {user.isOnline && (
-                        <Badge variant="secondary" className="text-xs bg-green-500/20 text-green-400">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs bg-green-500/20 text-green-400"
+                        >
                           En ligne
                         </Badge>
                       )}
@@ -203,7 +230,7 @@ export function RoleManagement() {
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {userRole !== 'fondateur' && userRole !== 'user' && (
+                  {userRole !== "fondateur" && userRole !== "user" && (
                     <Button
                       onClick={() => handleRevokeRole(user)}
                       variant="outline"
@@ -214,8 +241,8 @@ export function RoleManagement() {
                       Révoquer
                     </Button>
                   )}
-                  
-                  {userRole === 'user' && (
+
+                  {userRole === "user" && (
                     <Button
                       onClick={() => {
                         setSelectedUser(user);
@@ -242,7 +269,7 @@ export function RoleManagement() {
           <DialogHeader>
             <DialogTitle>Assigner un rôle</DialogTitle>
           </DialogHeader>
-          
+
           {selectedUser && (
             <div className="space-y-4">
               <div>
@@ -250,14 +277,19 @@ export function RoleManagement() {
                 <div className="mt-1 p-3 bg-muted/30 rounded-lg">
                   <span className="font-medium">{selectedUser.username}</span>
                   {selectedUser.email && (
-                    <span className="text-sm text-muted-foreground ml-2">({selectedUser.email})</span>
+                    <span className="text-sm text-muted-foreground ml-2">
+                      ({selectedUser.email})
+                    </span>
                   )}
                 </div>
               </div>
 
               <div>
                 <Label htmlFor="role">Rôle à assigner</Label>
-                <Select value={selectedRole} onValueChange={(value: Role) => setSelectedRole(value)}>
+                <Select
+                  value={selectedRole}
+                  onValueChange={(value: Role) => setSelectedRole(value)}
+                >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Sélectionner un rôle" />
                   </SelectTrigger>
@@ -296,11 +328,8 @@ export function RoleManagement() {
                 >
                   Annuler
                 </Button>
-                <Button
-                  onClick={handleAssignRole}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Attribution...' : 'Assigner le rôle'}
+                <Button onClick={handleAssignRole} disabled={isSubmitting}>
+                  {isSubmitting ? "Attribution..." : "Assigner le rôle"}
                 </Button>
               </div>
             </div>

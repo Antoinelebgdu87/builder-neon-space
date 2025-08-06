@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Search, 
-  AlertTriangle, 
-  CheckCircle, 
-  Ban, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Search,
+  AlertTriangle,
+  CheckCircle,
+  Ban,
   RefreshCw,
   User,
-  Database
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useInstantFirebaseBan } from '@/hooks/useInstantFirebaseBan';
-import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
-import { useBanTrigger } from '@/hooks/useBanTrigger';
-import { cn } from '@/lib/utils';
+  Database,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useInstantFirebaseBan } from "@/hooks/useInstantFirebaseBan";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
+import { useBanTrigger } from "@/hooks/useBanTrigger";
+import { cn } from "@/lib/utils";
 
 interface BanTestSystemProps {
   className?: string;
@@ -26,16 +26,21 @@ interface BanTestSystemProps {
 export function BanTestSystem({ className }: BanTestSystemProps) {
   const { checkUserBanStatus, isOnline } = useInstantFirebaseBan();
   const { accounts, getUserByUsername } = useAdvancedUserManagement();
-  const { triggerBanCheck, triggerTestBanModal, forceLogoutBannedUser, isTriggering } = useBanTrigger();
-  
-  const [testUsername, setTestUsername] = useState('');
+  const {
+    triggerBanCheck,
+    triggerTestBanModal,
+    forceLogoutBannedUser,
+    isTriggering,
+  } = useBanTrigger();
+
+  const [testUsername, setTestUsername] = useState("");
   const [testResult, setTestResult] = useState<any>(null);
   const [isChecking, setIsChecking] = useState(false);
 
   // Test si un utilisateur est banni
   const handleTestBan = async () => {
     if (!testUsername.trim()) {
-      alert('Veuillez entrer un nom d\'utilisateur');
+      alert("Veuillez entrer un nom d'utilisateur");
       return;
     }
 
@@ -45,24 +50,24 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
     try {
       // Rechercher l'utilisateur dans la liste locale
       const localUser = getUserByUsername(testUsername);
-      console.log('Utilisateur local trouvé:', localUser);
+      console.log("Utilisateur local trouvé:", localUser);
 
       if (!localUser) {
         setTestResult({
-          status: 'error',
+          status: "error",
           message: `Utilisateur "${testUsername}" introuvable dans la liste locale`,
           localUser: null,
-          firebaseBan: null
+          firebaseBan: null,
         });
         return;
       }
 
       // Vérifier le statut de ban sur Firebase
       const firebaseBanStatus = await checkUserBanStatus(localUser.id);
-      console.log('Statut ban Firebase:', firebaseBanStatus);
+      console.log("Statut ban Firebase:", firebaseBanStatus);
 
       setTestResult({
-        status: 'success',
+        status: "success",
         message: `Test terminé pour ${testUsername}`,
         localUser: {
           id: localUser.id,
@@ -70,18 +75,17 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
           email: localUser.email,
           isBanned: localUser.isBanned,
           banReason: localUser.banReason,
-          isOnline: localUser.isOnline
+          isOnline: localUser.isOnline,
         },
-        firebaseBan: firebaseBanStatus
+        firebaseBan: firebaseBanStatus,
       });
-
     } catch (error: any) {
-      console.error('Erreur lors du test:', error);
+      console.error("Erreur lors du test:", error);
       setTestResult({
-        status: 'error',
+        status: "error",
         message: `Erreur: ${error.message}`,
         localUser: null,
-        firebaseBan: null
+        firebaseBan: null,
       });
     } finally {
       setIsChecking(false);
@@ -91,21 +95,21 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
   // Auto-test des utilisateurs connus
   const handleAutoTest = async () => {
     setIsChecking(true);
-    
+
     try {
       const testUsers = accounts.slice(0, 3); // Tester les 3 premiers utilisateurs
-      console.log('Test automatique de', testUsers.length, 'utilisateurs');
+      console.log("Test automatique de", testUsers.length, "utilisateurs");
 
       for (const user of testUsers) {
         const banStatus = await checkUserBanStatus(user.id);
         console.log(`${user.username}:`, {
           localBanned: user.isBanned,
           firebaseBanned: banStatus.isBanned,
-          banReason: banStatus.banReason
+          banReason: banStatus.banReason,
         });
       }
 
-      alert('Tests automatiques terminés, vérifiez la console');
+      alert("Tests automatiques terminés, vérifiez la console");
     } catch (error: any) {
       alert(`Erreur lors des tests: ${error.message}`);
     } finally {
@@ -120,8 +124,11 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
           <CardTitle className="flex items-center space-x-2">
             <AlertTriangle className="w-6 h-6 text-orange-400" />
             <span>Test du Système de Ban</span>
-            <Badge variant={isOnline ? "default" : "secondary"} className="ml-auto">
-              {isOnline ? 'Firebase OK' : 'Hors ligne'}
+            <Badge
+              variant={isOnline ? "default" : "secondary"}
+              className="ml-auto"
+            >
+              {isOnline ? "Firebase OK" : "Hors ligne"}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -129,7 +136,7 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
           {/* Test individuel */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Test Individuel</h3>
-            
+
             <div className="flex space-x-2">
               <div className="flex-1">
                 <Label htmlFor="testUsername">Nom d'utilisateur à tester</Label>
@@ -138,7 +145,7 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                   value={testUsername}
                   onChange={(e) => setTestUsername(e.target.value)}
                   placeholder="Ex: Guest243, Guest7862..."
-                  onKeyPress={(e) => e.key === 'Enter' && handleTestBan()}
+                  onKeyPress={(e) => e.key === "Enter" && handleTestBan()}
                 />
               </div>
               <div className="flex items-end space-x-2">
@@ -147,7 +154,11 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                   disabled={isChecking || !isOnline}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  {isChecking ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  {isChecking ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Search className="w-4 h-4" />
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -168,15 +179,17 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
               className="space-y-4"
             >
               <h3 className="text-lg font-semibold">Résultats du Test</h3>
-              
-              <div className={cn(
-                "p-4 rounded-lg border",
-                testResult.status === 'error' 
-                  ? "bg-red-500/10 border-red-500/20 text-red-400"
-                  : "bg-blue-500/10 border-blue-500/20 text-blue-400"
-              )}>
+
+              <div
+                className={cn(
+                  "p-4 rounded-lg border",
+                  testResult.status === "error"
+                    ? "bg-red-500/10 border-red-500/20 text-red-400"
+                    : "bg-blue-500/10 border-blue-500/20 text-blue-400",
+                )}
+              >
                 <div className="flex items-center space-x-2 mb-2">
-                  {testResult.status === 'error' ? (
+                  {testResult.status === "error" ? (
                     <AlertTriangle className="w-5 h-5" />
                   ) : (
                     <CheckCircle className="w-5 h-5" />
@@ -193,19 +206,37 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                     <span>Données Locales</span>
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div><strong>ID:</strong> {testResult.localUser.id}</div>
-                    <div><strong>Username:</strong> {testResult.localUser.username}</div>
-                    <div><strong>Email:</strong> {testResult.localUser.email || 'Aucun'}</div>
-                    <div><strong>En ligne:</strong> {testResult.localUser.isOnline ? 'Oui' : 'Non'}</div>
+                    <div>
+                      <strong>ID:</strong> {testResult.localUser.id}
+                    </div>
+                    <div>
+                      <strong>Username:</strong> {testResult.localUser.username}
+                    </div>
+                    <div>
+                      <strong>Email:</strong>{" "}
+                      {testResult.localUser.email || "Aucun"}
+                    </div>
+                    <div>
+                      <strong>En ligne:</strong>{" "}
+                      {testResult.localUser.isOnline ? "Oui" : "Non"}
+                    </div>
                     <div className="col-span-2">
-                      <strong>Statut Ban Local:</strong> 
-                      <Badge variant={testResult.localUser.isBanned ? "destructive" : "default"} className="ml-2">
-                        {testResult.localUser.isBanned ? 'Banni' : 'Actif'}
+                      <strong>Statut Ban Local:</strong>
+                      <Badge
+                        variant={
+                          testResult.localUser.isBanned
+                            ? "destructive"
+                            : "default"
+                        }
+                        className="ml-2"
+                      >
+                        {testResult.localUser.isBanned ? "Banni" : "Actif"}
                       </Badge>
                     </div>
                     {testResult.localUser.banReason && (
                       <div className="col-span-2">
-                        <strong>Raison:</strong> {testResult.localUser.banReason}
+                        <strong>Raison:</strong>{" "}
+                        {testResult.localUser.banReason}
                       </div>
                     )}
                   </div>
@@ -221,21 +252,42 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="col-span-2">
-                      <strong>Statut Ban Firebase:</strong> 
-                      <Badge variant={testResult.firebaseBan.isBanned ? "destructive" : "default"} className="ml-2">
-                        {testResult.firebaseBan.isBanned ? 'Banni' : 'Actif'}
+                      <strong>Statut Ban Firebase:</strong>
+                      <Badge
+                        variant={
+                          testResult.firebaseBan.isBanned
+                            ? "destructive"
+                            : "default"
+                        }
+                        className="ml-2"
+                      >
+                        {testResult.firebaseBan.isBanned ? "Banni" : "Actif"}
                       </Badge>
                     </div>
                     {testResult.firebaseBan.isBanned && (
                       <>
                         <div className="col-span-2">
-                          <strong>Raison:</strong> {testResult.firebaseBan.banReason || 'Aucune'}
+                          <strong>Raison:</strong>{" "}
+                          {testResult.firebaseBan.banReason || "Aucune"}
                         </div>
-                        <div><strong>Type:</strong> {testResult.firebaseBan.banType || 'N/A'}</div>
-                        <div><strong>Banni le:</strong> {testResult.firebaseBan.bannedAt ? new Date(testResult.firebaseBan.bannedAt).toLocaleString('fr-FR') : 'N/A'}</div>
+                        <div>
+                          <strong>Type:</strong>{" "}
+                          {testResult.firebaseBan.banType || "N/A"}
+                        </div>
+                        <div>
+                          <strong>Banni le:</strong>{" "}
+                          {testResult.firebaseBan.bannedAt
+                            ? new Date(
+                                testResult.firebaseBan.bannedAt,
+                              ).toLocaleString("fr-FR")
+                            : "N/A"}
+                        </div>
                         {testResult.firebaseBan.banExpiry && (
                           <div className="col-span-2">
-                            <strong>Expire le:</strong> {new Date(testResult.firebaseBan.banExpiry).toLocaleString('fr-FR')}
+                            <strong>Expire le:</strong>{" "}
+                            {new Date(
+                              testResult.firebaseBan.banExpiry,
+                            ).toLocaleString("fr-FR")}
                           </div>
                         )}
                       </>
@@ -252,18 +304,27 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                     <>
                       <div>✅ Utilisateur trouvé dans la base locale</div>
                       <div>✅ Vérification Firebase réussie</div>
-                      {testResult.localUser.isBanned !== testResult.firebaseBan.isBanned && (
-                        <div className="text-orange-400">⚠️ Incohérence entre local et Firebase</div>
+                      {testResult.localUser.isBanned !==
+                        testResult.firebaseBan.isBanned && (
+                        <div className="text-orange-400">
+                          ⚠️ Incohérence entre local et Firebase
+                        </div>
                       )}
                       {testResult.firebaseBan.isBanned && (
-                        <div className="text-red-400">🚫 L'utilisateur devrait voir un modal de ban</div>
+                        <div className="text-red-400">
+                          🚫 L'utilisateur devrait voir un modal de ban
+                        </div>
                       )}
                       {!testResult.firebaseBan.isBanned && (
-                        <div className="text-green-400">✓ Utilisateur actif, aucun ban détecté</div>
+                        <div className="text-green-400">
+                          ✓ Utilisateur actif, aucun ban détecté
+                        </div>
                       )}
                     </>
                   ) : (
-                    <div className="text-red-400">❌ Problème de recherche ou connectivité</div>
+                    <div className="text-red-400">
+                      ❌ Problème de recherche ou connectivité
+                    </div>
                   )}
                 </div>
               </div>
@@ -273,13 +334,18 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
           {/* Tests Avancés */}
           {testResult?.localUser && (
             <div className="space-y-4 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-              <h4 className="font-semibold">🧪 Tests Avancés pour {testResult.localUser.username}</h4>
+              <h4 className="font-semibold">
+                🧪 Tests Avancés pour {testResult.localUser.username}
+              </h4>
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={async () => {
-                    const result = await triggerBanCheck(testResult.localUser.id, testResult.localUser.username);
+                    const result = await triggerBanCheck(
+                      testResult.localUser.id,
+                      testResult.localUser.username,
+                    );
                     alert(result.message);
                   }}
                   disabled={isTriggering || !isOnline}
@@ -292,7 +358,9 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    const result = triggerTestBanModal(testResult.localUser.username);
+                    const result = triggerTestBanModal(
+                      testResult.localUser.username,
+                    );
                     alert(result.message);
                   }}
                   className="text-blue-400 border-blue-400/30"
@@ -308,7 +376,7 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
                       const result = forceLogoutBannedUser(
                         testResult.localUser.id,
                         testResult.localUser.username,
-                        testResult.firebaseBan.banReason || 'Ban détecté'
+                        testResult.firebaseBan.banReason || "Ban détecté",
                       );
                       alert(result.message);
                       setTimeout(() => window.location.reload(), 2000);
@@ -328,8 +396,10 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
             <div className="flex flex-wrap gap-2">
               <Button
                 onClick={() => {
-                  const result = triggerTestBanModal('Test User');
-                  alert('Modal de test déclenché! Vérifiez si le modal apparaît.');
+                  const result = triggerTestBanModal("Test User");
+                  alert(
+                    "Modal de test déclenché! Vérifiez si le modal apparaît.",
+                  );
                 }}
                 className="bg-blue-600 hover:bg-blue-700"
               >
@@ -337,14 +407,21 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
               </Button>
 
               {/* Test spécial pour Guest7862 qui est banni */}
-              {accounts.find(u => u.username === 'Guest7862' && u.isBanned) && (
+              {accounts.find(
+                (u) => u.username === "Guest7862" && u.isBanned,
+              ) && (
                 <Button
                   onClick={async () => {
-                    const user = accounts.find(u => u.username === 'Guest7862');
+                    const user = accounts.find(
+                      (u) => u.username === "Guest7862",
+                    );
                     if (user) {
-                      console.log('🎯 Test spécial Guest7862 banni');
-                      const result = await triggerBanCheck(user.id, user.username);
-                      console.log('Résultat:', result);
+                      console.log("🎯 Test spécial Guest7862 banni");
+                      const result = await triggerBanCheck(
+                        user.id,
+                        user.username,
+                      );
+                      console.log("Résultat:", result);
                       alert(`Test Guest7862: ${result.message}`);
                     }
                   }}
@@ -358,15 +435,23 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
               <Button
                 variant="outline"
                 onClick={() => {
-                  console.log('🔍 Debug Info:');
-                  console.log('Firebase online:', isOnline);
-                  console.log('localStorage auth:', localStorage.getItem('firebase_auth_user'));
-                  console.log('Comptes avec ban:', accounts.filter(u => u.isBanned).map(u => ({
-                    username: u.username,
-                    banReason: u.banReason,
-                    id: u.id
-                  })));
-                  alert('Debug info affiché dans la console');
+                  console.log("🔍 Debug Info:");
+                  console.log("Firebase online:", isOnline);
+                  console.log(
+                    "localStorage auth:",
+                    localStorage.getItem("firebase_auth_user"),
+                  );
+                  console.log(
+                    "Comptes avec ban:",
+                    accounts
+                      .filter((u) => u.isBanned)
+                      .map((u) => ({
+                        username: u.username,
+                        banReason: u.banReason,
+                        id: u.id,
+                      })),
+                  );
+                  alert("Debug info affiché dans la console");
                 }}
               >
                 📊 Debug Console
@@ -376,7 +461,9 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
 
           {/* Liste des utilisateurs récents */}
           <div className="space-y-2">
-            <h4 className="font-medium">Utilisateurs Récents ({accounts.length})</h4>
+            <h4 className="font-medium">
+              Utilisateurs Récents ({accounts.length})
+            </h4>
             <div className="grid grid-cols-3 gap-2">
               {accounts.slice(0, 6).map((user) => (
                 <Button

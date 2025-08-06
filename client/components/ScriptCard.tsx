@@ -24,7 +24,7 @@ export default function ScriptCard({
   language,
   isVerified = false,
   isPopular = false,
-  gradient = "from-blue-500 to-purple-500"
+  gradient = "from-blue-500 to-purple-500",
 }: ScriptCardProps) {
   return (
     <Card className="group glass hover:bg-white/10 transition-all duration-300 glow-hover border-border/50 overflow-hidden">
@@ -32,13 +32,16 @@ export default function ScriptCard({
         {/* Header with Icon and Badges */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} p-1 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden`}>
-              <img 
-                src={imageUrl} 
+            <div
+              className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} p-1 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden`}
+            >
+              <img
+                src={imageUrl}
                 alt={name}
                 className="w-full h-full object-cover rounded-lg"
                 onError={(e) => {
-                  e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzFGMkEzNyIvPgo8cGF0aCBkPSJNMjAgMTBMMjUgMTVIMjJWMjVIMThWMTVIMTVMMjAgMTBaIiBmaWxsPSIjMDA5NEZGIi8+CjwvcGc+";
+                  e.currentTarget.src =
+                    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzFGMkEzNyIvPgo8cGF0aCBkPSJNMjAgMTBMMjUgMTVIMjJWMjVIMThWMTVIMTVMMjAgMTBaIiBmaWxsPSIjMDA5NEZGIi8+CjwvcGc+";
                 }}
               />
             </div>
@@ -54,13 +57,19 @@ export default function ScriptCard({
                   {category}
                 </Badge>
                 {isVerified && (
-                  <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-500/20 text-green-400 border-green-500/30"
+                  >
                     <Shield className="w-3 h-3 mr-1" />
                     Vérifié
                   </Badge>
                 )}
                 {isPopular && (
-                  <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                  <Badge
+                    variant="secondary"
+                    className="bg-orange-500/20 text-orange-400 border-orange-500/30"
+                  >
                     Populaire
                   </Badge>
                 )}
@@ -88,10 +97,17 @@ export default function ScriptCard({
           </div>
 
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" className="hover:bg-primary/20 hover:text-primary">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hover:bg-primary/20 hover:text-primary"
+            >
               <Eye className="w-4 h-4" />
             </Button>
-            <Button size="sm" className="bg-gradient-primary hover:opacity-90 text-white font-medium glow-hover">
+            <Button
+              size="sm"
+              className="bg-gradient-primary hover:opacity-90 text-white font-medium glow-hover"
+            >
               <Download className="w-4 h-4 mr-1" />
               Download
             </Button>

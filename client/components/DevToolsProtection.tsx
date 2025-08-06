@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export function DevToolsProtection() {
   useEffect(() => {
@@ -11,52 +11,55 @@ export function DevToolsProtection() {
     // Désactiver les raccourcis clavier de développeur
     const disableDevKeys = (e: KeyboardEvent) => {
       // F12
-      if (e.key === 'F12') {
+      if (e.key === "F12") {
         e.preventDefault();
         return false;
       }
-      
+
       // Ctrl+Shift+I (Outils de développeur)
-      if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+      if (e.ctrlKey && e.shiftKey && e.key === "I") {
         e.preventDefault();
         return false;
       }
-      
+
       // Ctrl+Shift+J (Console)
-      if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+      if (e.ctrlKey && e.shiftKey && e.key === "J") {
         e.preventDefault();
         return false;
       }
-      
+
       // Ctrl+U (Source de la page)
-      if (e.ctrlKey && e.key === 'u') {
+      if (e.ctrlKey && e.key === "u") {
         e.preventDefault();
         return false;
       }
-      
+
       // Ctrl+Shift+C (Inspecteur d'éléments)
-      if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      if (e.ctrlKey && e.shiftKey && e.key === "C") {
         e.preventDefault();
         return false;
       }
 
       // Préserver Ctrl+C et Ctrl+V pour copier-coller
-      if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'a')) {
+      if (
+        e.ctrlKey &&
+        (e.key === "c" || e.key === "v" || e.key === "x" || e.key === "a")
+      ) {
         return true; // Permettre ces raccourcis
       }
     };
 
     // Désactiver la sélection de texte sur certains éléments
     const disableTextSelection = () => {
-      document.body.style.userSelect = 'none';
-      document.body.style.webkitUserSelect = 'none';
-      document.body.style.mozUserSelect = 'none';
-      document.body.style.msUserSelect = 'none';
+      document.body.style.userSelect = "none";
+      document.body.style.webkitUserSelect = "none";
+      document.body.style.mozUserSelect = "none";
+      document.body.style.msUserSelect = "none";
     };
 
     // Réactiver la sélection pour les inputs et textareas
     const enableTextSelectionForInputs = () => {
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.innerHTML = `
         input, textarea, [contenteditable="true"] {
           -webkit-user-select: text !important;
@@ -71,13 +74,15 @@ export function DevToolsProtection() {
     // Détecter l'ouverture des outils de développeur
     let devtools = {
       open: false,
-      orientation: null
+      orientation: null,
     };
 
     const threshold = 160;
     setInterval(() => {
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
+      if (
+        window.outerHeight - window.innerHeight > threshold ||
+        window.outerWidth - window.innerWidth > threshold
+      ) {
         if (!devtools.open) {
           devtools.open = true;
           console.clear();
@@ -103,7 +108,7 @@ export function DevToolsProtection() {
     const consoleInterval = setInterval(clearConsole, 1000);
 
     // CSS pour désactiver la sélection et le clic droit visuellement
-    const protectionStyle = document.createElement('style');
+    const protectionStyle = document.createElement("style");
     protectionStyle.innerHTML = `
       * {
         -webkit-touch-callout: none !important;
@@ -133,25 +138,25 @@ export function DevToolsProtection() {
     document.head.appendChild(protectionStyle);
 
     // Ajouter les event listeners
-    document.addEventListener('contextmenu', disableRightClick);
-    document.addEventListener('keydown', disableDevKeys);
-    
+    document.addEventListener("contextmenu", disableRightClick);
+    document.addEventListener("keydown", disableDevKeys);
+
     // Désactiver le drag and drop
-    document.addEventListener('dragstart', (e) => e.preventDefault());
-    
+    document.addEventListener("dragstart", (e) => e.preventDefault());
+
     // Protéger contre l'impression
-    window.addEventListener('beforeprint', (e) => {
+    window.addEventListener("beforeprint", (e) => {
       e.preventDefault();
       return false;
     });
 
     return () => {
       // Nettoyage
-      document.removeEventListener('contextmenu', disableRightClick);
-      document.removeEventListener('keydown', disableDevKeys);
+      document.removeEventListener("contextmenu", disableRightClick);
+      document.removeEventListener("keydown", disableDevKeys);
       clearInterval(consoleInterval);
       console.error = originalError;
-      
+
       if (protectionStyle.parentNode) {
         protectionStyle.parentNode.removeChild(protectionStyle);
       }

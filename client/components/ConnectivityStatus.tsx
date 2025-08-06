@@ -1,8 +1,8 @@
-import React from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
-import { useFirebaseConnectivity } from '@/hooks/useFirebaseConnectivity';
+import React from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Wifi, WifiOff, RefreshCw } from "lucide-react";
+import { useFirebaseConnectivity } from "@/hooks/useFirebaseConnectivity";
 
 export function ConnectivityStatus() {
   const { isOnline, hasChecked, error, retry } = useFirebaseConnectivity();
@@ -20,8 +20,10 @@ export function ConnectivityStatus() {
         <AlertDescription className="flex items-center justify-between">
           <div>
             <div className="font-medium">Mode Hors Ligne</div>
-            <div className="text-sm">{error || 'Firebase inaccessible'}</div>
-            <div className="text-xs mt-1">Les données sont sauvegardées localement</div>
+            <div className="text-sm">{error || "Firebase inaccessible"}</div>
+            <div className="text-xs mt-1">
+              Les données sont sauvegardées localement
+            </div>
           </div>
           <Button
             onClick={retry}

@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { 
-  UserX, 
-  UserCheck, 
-  RefreshCw, 
-  Loader2, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  UserX,
+  UserCheck,
+  RefreshCw,
+  Loader2,
   AlertTriangle,
   Users,
   Settings,
@@ -18,17 +34,19 @@ import {
   CheckCircle,
   XCircle,
   Wrench,
-  Database
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useFirebaseUserActivation } from '@/hooks/useFirebaseUserActivation';
-import { cn } from '@/lib/utils';
+  Database,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useFirebaseUserActivation } from "@/hooks/useFirebaseUserActivation";
+import { cn } from "@/lib/utils";
 
 interface FirebaseUserActivationProps {
   className?: string;
 }
 
-export function FirebaseUserActivation({ className }: FirebaseUserActivationProps) {
+export function FirebaseUserActivation({
+  className,
+}: FirebaseUserActivationProps) {
   const {
     inactiveUsers,
     loading,
@@ -39,7 +57,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
     permanentlyDeleteUser,
     restoreUser,
     autoRepairAllUsers,
-    hasInactiveUsers
+    hasInactiveUsers,
   } = useFirebaseUserActivation();
 
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -48,22 +66,22 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [activateFormData, setActivateFormData] = useState({
-    username: '',
-    displayName: ''
+    username: "",
+    displayName: "",
   });
 
   const [restoreFormData, setRestoreFormData] = useState({
-    username: '',
-    email: '',
-    displayName: ''
+    username: "",
+    email: "",
+    displayName: "",
   });
 
   // Ouvrir le dialog d'activation
   const openActivateDialog = (user: any) => {
     setSelectedUser(user);
     setActivateFormData({
-      username: user.username === 'Username manquant' ? '' : user.username,
-      displayName: user.displayName || ''
+      username: user.username === "Username manquant" ? "" : user.username,
+      displayName: user.displayName || "",
     });
     setIsActivateDialogOpen(true);
   };
@@ -72,9 +90,9 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
   const openRestoreDialog = (user: any) => {
     setSelectedUser(user);
     setRestoreFormData({
-      username: '',
-      email: user.email || '',
-      displayName: ''
+      username: "",
+      email: user.email || "",
+      displayName: "",
     });
     setIsRestoreDialogOpen(true);
   };
@@ -82,7 +100,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
   // Activer un utilisateur
   const handleActivateUser = async () => {
     if (!selectedUser || !activateFormData.username.trim()) {
-      alert('Veuillez spécifier un nom d\'utilisateur');
+      alert("Veuillez spécifier un nom d'utilisateur");
       return;
     }
 
@@ -91,13 +109,13 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
       await activateUser(
         selectedUser.id,
         activateFormData.username,
-        activateFormData.displayName
+        activateFormData.displayName,
       );
 
-      setActivateFormData({ username: '', displayName: '' });
+      setActivateFormData({ username: "", displayName: "" });
       setSelectedUser(null);
       setIsActivateDialogOpen(false);
-      alert('Utilisateur activé avec succès!');
+      alert("Utilisateur activé avec succès!");
     } catch (error: any) {
       alert(`Erreur lors de l'activation: ${error.message}`);
     } finally {
@@ -108,7 +126,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
   // Restaurer un utilisateur
   const handleRestoreUser = async () => {
     if (!selectedUser || !restoreFormData.username.trim()) {
-      alert('Veuillez spécifier un nom d\'utilisateur');
+      alert("Veuillez spécifier un nom d'utilisateur");
       return;
     }
 
@@ -118,13 +136,13 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
         selectedUser.id,
         restoreFormData.username,
         restoreFormData.email,
-        restoreFormData.displayName
+        restoreFormData.displayName,
       );
 
-      setRestoreFormData({ username: '', email: '', displayName: '' });
+      setRestoreFormData({ username: "", email: "", displayName: "" });
       setSelectedUser(null);
       setIsRestoreDialogOpen(false);
-      alert('Utilisateur restauré avec succès!');
+      alert("Utilisateur restauré avec succès!");
     } catch (error: any) {
       alert(`Erreur lors de la restauration: ${error.message}`);
     } finally {
@@ -137,7 +155,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
     setIsSubmitting(true);
     try {
       await permanentlyDeleteUser(user.id);
-      alert('Utilisateur supprimé définitivement');
+      alert("Utilisateur supprimé définitivement");
     } catch (error: any) {
       alert(`Erreur lors de la suppression: ${error.message}`);
     } finally {
@@ -150,7 +168,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
     setIsSubmitting(true);
     try {
       await autoRepairAllUsers();
-      alert('Réparation automatique terminée!');
+      alert("Réparation automatique terminée!");
     } catch (error: any) {
       alert(`Erreur lors de la réparation: ${error.message}`);
     } finally {
@@ -195,8 +213,11 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
           <CardTitle className="flex items-center space-x-2">
             <Settings className="w-6 h-6 text-blue-400" />
             <span>Activation des Comptes Firebase</span>
-            <Badge variant={isOnline ? "default" : "secondary"} className="ml-auto">
-              {isOnline ? 'Connecté' : 'Hors ligne'}
+            <Badge
+              variant={isOnline ? "default" : "secondary"}
+              className="ml-auto"
+            >
+              {isOnline ? "Connecté" : "Hors ligne"}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -222,7 +243,9 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 disabled={loading}
                 className="flex items-center space-x-2"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
                 <span>Actualiser</span>
               </Button>
 
@@ -246,7 +269,9 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <UserX className="w-5 h-5" />
-            <span>Comptes Nécessitant une Activation ({inactiveUsers.length})</span>
+            <span>
+              Comptes Nécessitant une Activation ({inactiveUsers.length})
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -258,7 +283,9 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
           ) : inactiveUsers.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <CheckCircle className="w-12 h-12 mx-auto mb-2 text-green-400" />
-              <h3 className="text-lg font-semibold mb-2 text-green-400">Tous les comptes sont actifs</h3>
+              <h3 className="text-lg font-semibold mb-2 text-green-400">
+                Tous les comptes sont actifs
+              </h3>
               <p>Aucun compte ne nécessite d'activation ou de réparation.</p>
             </div>
           ) : (
@@ -281,8 +308,10 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                       {/* Info utilisateur */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-lg">{user.username}</h3>
-                          
+                          <h3 className="font-semibold text-lg">
+                            {user.username}
+                          </h3>
+
                           {user.isDeleted && (
                             <Badge variant="destructive">
                               <Trash2 className="w-3 h-3 mr-1" />
@@ -291,7 +320,10 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                           )}
 
                           {!user.isActive && (
-                            <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                            <Badge
+                              variant="secondary"
+                              className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+                            >
                               <XCircle className="w-3 h-3 mr-1" />
                               Inactif
                             </Badge>
@@ -299,7 +331,9 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                         </div>
 
                         {user.email && (
-                          <p className="text-sm text-muted-foreground mb-1">{user.email}</p>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {user.email}
+                          </p>
                         )}
 
                         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
@@ -313,7 +347,8 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                         <div className="mt-2 p-2 bg-orange-500/10 border border-orange-500/20 rounded text-sm">
                           <strong>Problèmes détectés:</strong>
                           <ul className="list-disc list-inside mt-1 text-xs">
-                            {(!user.username || user.username === 'Username manquant') && (
+                            {(!user.username ||
+                              user.username === "Username manquant") && (
                               <li>Nom d'utilisateur manquant ou invalide</li>
                             )}
                             {!user.displayName && (
@@ -322,9 +357,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                             {user.isDeleted && (
                               <li>Compte marqué comme supprimé</li>
                             )}
-                            {!user.isActive && (
-                              <li>Compte désactivé</li>
-                            )}
+                            {!user.isActive && <li>Compte désactivé</li>}
                           </ul>
                         </div>
                       </div>
@@ -365,10 +398,13 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Supprimer définitivement</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Supprimer définitivement
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous sûr de vouloir supprimer définitivement le compte "{user.username}" ?
-                              Cette action est irréversible.
+                              Êtes-vous sûr de vouloir supprimer définitivement
+                              le compte "{user.username}" ? Cette action est
+                              irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -392,7 +428,10 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
       </Card>
 
       {/* Dialog d'activation */}
-      <Dialog open={isActivateDialogOpen} onOpenChange={setIsActivateDialogOpen}>
+      <Dialog
+        open={isActivateDialogOpen}
+        onOpenChange={setIsActivateDialogOpen}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-2 text-green-400">
@@ -407,7 +446,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                   <strong>ID:</strong> {selectedUser.id}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {selectedUser.email || 'Aucun email'}
+                  {selectedUser.email || "Aucun email"}
                 </p>
               </div>
             )}
@@ -417,7 +456,12 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
               <Input
                 id="activateUsername"
                 value={activateFormData.username}
-                onChange={(e) => setActivateFormData(prev => ({ ...prev, username: e.target.value }))}
+                onChange={(e) =>
+                  setActivateFormData((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }))
+                }
                 placeholder="nom_utilisateur"
               />
             </div>
@@ -427,7 +471,12 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
               <Input
                 id="activateDisplayName"
                 value={activateFormData.displayName}
-                onChange={(e) => setActivateFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                onChange={(e) =>
+                  setActivateFormData((prev) => ({
+                    ...prev,
+                    displayName: e.target.value,
+                  }))
+                }
                 placeholder="Nom d'affichage"
               />
             </div>
@@ -438,7 +487,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 onClick={() => {
                   setIsActivateDialogOpen(false);
                   setSelectedUser(null);
-                  setActivateFormData({ username: '', displayName: '' });
+                  setActivateFormData({ username: "", displayName: "" });
                 }}
                 disabled={isSubmitting}
               >
@@ -454,7 +503,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 ) : (
                   <UserCheck className="w-4 h-4 mr-2" />
                 )}
-                {isSubmitting ? 'Activation...' : 'Activer'}
+                {isSubmitting ? "Activation..." : "Activer"}
               </Button>
             </div>
           </div>
@@ -487,7 +536,12 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
               <Input
                 id="restoreUsername"
                 value={restoreFormData.username}
-                onChange={(e) => setRestoreFormData(prev => ({ ...prev, username: e.target.value }))}
+                onChange={(e) =>
+                  setRestoreFormData((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }))
+                }
                 placeholder="nom_utilisateur"
               />
             </div>
@@ -498,7 +552,12 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 id="restoreEmail"
                 type="email"
                 value={restoreFormData.email}
-                onChange={(e) => setRestoreFormData(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setRestoreFormData((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
+                }
                 placeholder="email@exemple.com"
               />
             </div>
@@ -508,7 +567,12 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
               <Input
                 id="restoreDisplayName"
                 value={restoreFormData.displayName}
-                onChange={(e) => setRestoreFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                onChange={(e) =>
+                  setRestoreFormData((prev) => ({
+                    ...prev,
+                    displayName: e.target.value,
+                  }))
+                }
                 placeholder="Nom d'affichage"
               />
             </div>
@@ -519,7 +583,11 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 onClick={() => {
                   setIsRestoreDialogOpen(false);
                   setSelectedUser(null);
-                  setRestoreFormData({ username: '', email: '', displayName: '' });
+                  setRestoreFormData({
+                    username: "",
+                    email: "",
+                    displayName: "",
+                  });
                 }}
                 disabled={isSubmitting}
               >
@@ -535,7 +603,7 @@ export function FirebaseUserActivation({ className }: FirebaseUserActivationProp
                 ) : (
                   <RefreshCw className="w-4 h-4 mr-2" />
                 )}
-                {isSubmitting ? 'Restauration...' : 'Restaurer'}
+                {isSubmitting ? "Restauration..." : "Restaurer"}
               </Button>
             </div>
           </div>

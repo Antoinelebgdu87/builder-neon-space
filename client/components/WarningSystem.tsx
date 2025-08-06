@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { 
-  AlertTriangle, 
-  Info, 
-  AlertCircle, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertTriangle,
+  Info,
+  AlertCircle,
   XCircle,
   Users,
   Plus,
@@ -18,12 +24,12 @@ import {
   Search,
   Filter,
   RefreshCw,
-  Loader2
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useWarningSystem } from '@/hooks/useWarningSystem';
-import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
-import { cn } from '@/lib/utils';
+  Loader2,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useWarningSystem } from "@/hooks/useWarningSystem";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
+import { cn } from "@/lib/utils";
 
 interface WarningSystemProps {
   className?: string;
@@ -38,7 +44,7 @@ export function WarningSystem({ className }: WarningSystemProps) {
     createWarning,
     createPresetWarning,
     removeWarning,
-    getActiveWarningsCount
+    getActiveWarningsCount,
   } = useWarningSystem();
 
   const { accounts } = useAdvancedUserManagement();
@@ -46,15 +52,17 @@ export function WarningSystem({ className }: WarningSystemProps) {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [severityFilter, setSeverityFilter] = useState<'all' | 'low' | 'medium' | 'high' | 'critical'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [severityFilter, setSeverityFilter] = useState<
+    "all" | "low" | "medium" | "high" | "critical"
+  >("all");
 
   const [warningForm, setWarningForm] = useState({
-    title: '',
-    message: '',
-    severity: 'medium' as 'low' | 'medium' | 'high' | 'critical',
+    title: "",
+    message: "",
+    severity: "medium" as "low" | "medium" | "high" | "critical",
     hours: 48,
-    canDismiss: true
+    canDismiss: true,
   });
 
   // Ouvrir le dialog de création
@@ -65,8 +73,12 @@ export function WarningSystem({ className }: WarningSystemProps) {
 
   // Créer un warning personnalisé
   const handleCreateWarning = async () => {
-    if (!selectedUser || !warningForm.title.trim() || !warningForm.message.trim()) {
-      alert('Veuillez remplir tous les champs requis');
+    if (
+      !selectedUser ||
+      !warningForm.title.trim() ||
+      !warningForm.message.trim()
+    ) {
+      alert("Veuillez remplir tous les champs requis");
       return;
     }
 
@@ -79,19 +91,19 @@ export function WarningSystem({ className }: WarningSystemProps) {
         warningForm.message,
         warningForm.severity,
         warningForm.hours,
-        warningForm.canDismiss
+        warningForm.canDismiss,
       );
 
       setWarningForm({
-        title: '',
-        message: '',
-        severity: 'medium',
+        title: "",
+        message: "",
+        severity: "medium",
         hours: 48,
-        canDismiss: true
+        canDismiss: true,
       });
       setSelectedUser(null);
       setIsCreateDialogOpen(false);
-      alert('Avertissement envoyé avec succès !');
+      alert("Avertissement envoyé avec succès !");
     } catch (error: any) {
       alert(`Erreur: ${error.message}`);
     } finally {
@@ -100,7 +112,10 @@ export function WarningSystem({ className }: WarningSystemProps) {
   };
 
   // Créer un warning prédéfini
-  const handlePresetWarning = async (user: any, preset: 'behavior' | 'spam' | 'content' | 'rules' | 'final') => {
+  const handlePresetWarning = async (
+    user: any,
+    preset: "behavior" | "spam" | "content" | "rules" | "final",
+  ) => {
     setIsSubmitting(true);
     try {
       await createPresetWarning(user.id, user.username, preset);
@@ -116,40 +131,48 @@ export function WarningSystem({ className }: WarningSystemProps) {
   const handleRemoveWarning = async (warningId: string) => {
     try {
       await removeWarning(warningId);
-      alert('Avertissement supprimé');
+      alert("Avertissement supprimé");
     } catch (error: any) {
       alert(`Erreur: ${error.message}`);
     }
   };
 
   // Filtrer les utilisateurs
-  const filteredUsers = accounts?.filter(user => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
-  }) || [];
+  const filteredUsers =
+    accounts?.filter((user) => {
+      const matchesSearch =
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesSearch;
+    }) || [];
 
   // Filtrer les warnings
-  const filteredWarnings = warnings.filter(warning => {
-    const matchesSeverity = severityFilter === 'all' || warning.severity === severityFilter;
+  const filteredWarnings = warnings.filter((warning) => {
+    const matchesSeverity =
+      severityFilter === "all" || warning.severity === severityFilter;
     return matchesSeverity;
   });
 
   // Statistiques
   const stats = {
     total: warnings.length,
-    active: warnings.filter(w => w.isActive).length,
-    acknowledged: warnings.filter(w => w.isAcknowledged).length,
-    critical: warnings.filter(w => w.severity === 'critical').length
+    active: warnings.filter((w) => w.isActive).length,
+    acknowledged: warnings.filter((w) => w.isAcknowledged).length,
+    critical: warnings.filter((w) => w.severity === "critical").length,
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'text-blue-400 bg-blue-500/20 border-blue-500/30';
-      case 'medium': return 'text-yellow-400 bg-yellow-500/20 border-yellow-500/30';
-      case 'high': return 'text-orange-400 bg-orange-500/20 border-orange-500/30';
-      case 'critical': return 'text-red-400 bg-red-500/20 border-red-500/30';
-      default: return 'text-blue-400 bg-blue-500/20 border-blue-500/30';
+      case "low":
+        return "text-blue-400 bg-blue-500/20 border-blue-500/30";
+      case "medium":
+        return "text-yellow-400 bg-yellow-500/20 border-yellow-500/30";
+      case "high":
+        return "text-orange-400 bg-orange-500/20 border-orange-500/30";
+      case "critical":
+        return "text-red-400 bg-red-500/20 border-red-500/30";
+      default:
+        return "text-blue-400 bg-blue-500/20 border-blue-500/30";
     }
   };
 
@@ -185,15 +208,21 @@ export function WarningSystem({ className }: WarningSystemProps) {
             <div className="flex items-center space-x-2 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
               <MessageSquare className="w-5 h-5 text-blue-400" />
               <div>
-                <div className="text-2xl font-bold text-blue-400">{stats.total}</div>
-                <div className="text-xs text-muted-foreground">Total warnings</div>
+                <div className="text-2xl font-bold text-blue-400">
+                  {stats.total}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Total warnings
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 p-3 bg-orange-500/10 rounded-lg border border-orange-500/20">
               <AlertCircle className="w-5 h-5 text-orange-400" />
               <div>
-                <div className="text-2xl font-bold text-orange-400">{stats.active}</div>
+                <div className="text-2xl font-bold text-orange-400">
+                  {stats.active}
+                </div>
                 <div className="text-xs text-muted-foreground">Actifs</div>
               </div>
             </div>
@@ -201,15 +230,21 @@ export function WarningSystem({ className }: WarningSystemProps) {
             <div className="flex items-center space-x-2 p-3 bg-green-500/10 rounded-lg border border-green-500/20">
               <Info className="w-5 h-5 text-green-400" />
               <div>
-                <div className="text-2xl font-bold text-green-400">{stats.acknowledged}</div>
-                <div className="text-xs text-muted-foreground">Accusés réception</div>
+                <div className="text-2xl font-bold text-green-400">
+                  {stats.acknowledged}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Accusés réception
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
               <XCircle className="w-5 h-5 text-red-400" />
               <div>
-                <div className="text-2xl font-bold text-red-400">{stats.critical}</div>
+                <div className="text-2xl font-bold text-red-400">
+                  {stats.critical}
+                </div>
                 <div className="text-xs text-muted-foreground">Critiques</div>
               </div>
             </div>
@@ -240,17 +275,30 @@ export function WarningSystem({ className }: WarningSystemProps) {
           {/* Liste utilisateurs */}
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {filteredUsers.slice(0, 10).map((user) => (
-              <div key={user.id} className="flex items-center justify-between p-3 border border-border/30 rounded-lg">
+              <div
+                key={user.id}
+                className="flex items-center justify-between p-3 border border-border/30 rounded-lg"
+              >
                 <div className="flex items-center space-x-3">
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm",
-                    user.isBanned ? "bg-red-500" : user.isOnline ? "bg-green-500" : "bg-gray-500"
-                  )}>
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm",
+                      user.isBanned
+                        ? "bg-red-500"
+                        : user.isOnline
+                          ? "bg-green-500"
+                          : "bg-gray-500",
+                    )}
+                  >
                     {user.username[0].toUpperCase()}
                   </div>
                   <div>
                     <span className="font-medium">{user.username}</span>
-                    {user.isBanned && <Badge variant="destructive" className="ml-2">Banni</Badge>}
+                    {user.isBanned && (
+                      <Badge variant="destructive" className="ml-2">
+                        Banni
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
@@ -259,17 +307,17 @@ export function WarningSystem({ className }: WarningSystemProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handlePresetWarning(user, 'behavior')}
+                    onClick={() => handlePresetWarning(user, "behavior")}
                     disabled={isSubmitting}
                     className="text-yellow-400 border-yellow-400/30"
                   >
                     Comportement
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handlePresetWarning(user, 'final')}
+                    onClick={() => handlePresetWarning(user, "final")}
                     disabled={isSubmitting}
                     className="text-red-400 border-red-400/30"
                   >
@@ -331,24 +379,42 @@ export function WarningSystem({ className }: WarningSystemProps) {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <span className="font-semibold">{warning.username}</span>
-                        <Badge variant="outline" className={getSeverityColor(warning.severity)}>
+                        <span className="font-semibold">
+                          {warning.username}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={getSeverityColor(warning.severity)}
+                        >
                           {warning.severity.toUpperCase()}
                         </Badge>
                         {warning.isAcknowledged && (
-                          <Badge variant="default" className="bg-green-500/20 text-green-400">
+                          <Badge
+                            variant="default"
+                            className="bg-green-500/20 text-green-400"
+                          >
                             Lu
                           </Badge>
                         )}
                       </div>
-                      
+
                       <h4 className="font-medium mb-1">{warning.title}</h4>
-                      <p className="text-sm text-muted-foreground mb-2">{warning.message}</p>
-                      
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {warning.message}
+                      </p>
+
                       <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                        <span>Créé: {new Date(warning.createdAt).toLocaleString('fr-FR')}</span>
+                        <span>
+                          Créé:{" "}
+                          {new Date(warning.createdAt).toLocaleString("fr-FR")}
+                        </span>
                         {warning.expiresAt && (
-                          <span>Expire: {new Date(warning.expiresAt).toLocaleString('fr-FR')}</span>
+                          <span>
+                            Expire:{" "}
+                            {new Date(warning.expiresAt).toLocaleString(
+                              "fr-FR",
+                            )}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -392,7 +458,9 @@ export function WarningSystem({ className }: WarningSystemProps) {
               <Input
                 id="warningTitle"
                 value={warningForm.title}
-                onChange={(e) => setWarningForm(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setWarningForm((prev) => ({ ...prev, title: e.target.value }))
+                }
                 placeholder="Titre de l'avertissement"
               />
             </div>
@@ -402,7 +470,12 @@ export function WarningSystem({ className }: WarningSystemProps) {
               <Textarea
                 id="warningMessage"
                 value={warningForm.message}
-                onChange={(e) => setWarningForm(prev => ({ ...prev, message: e.target.value }))}
+                onChange={(e) =>
+                  setWarningForm((prev) => ({
+                    ...prev,
+                    message: e.target.value,
+                  }))
+                }
                 placeholder="Message détaillé de l'avertissement"
                 rows={3}
               />
@@ -411,7 +484,7 @@ export function WarningSystem({ className }: WarningSystemProps) {
             <div>
               <Label>Sévérité</Label>
               <div className="flex items-center space-x-4 mt-2">
-                {['low', 'medium', 'high', 'critical'].map((severity) => (
+                {["low", "medium", "high", "critical"].map((severity) => (
                   <div key={severity} className="flex items-center space-x-2">
                     <input
                       type="radio"
@@ -419,12 +492,21 @@ export function WarningSystem({ className }: WarningSystemProps) {
                       name="severity"
                       value={severity}
                       checked={warningForm.severity === severity}
-                      onChange={(e) => setWarningForm(prev => ({ ...prev, severity: e.target.value as any }))}
+                      onChange={(e) =>
+                        setWarningForm((prev) => ({
+                          ...prev,
+                          severity: e.target.value as any,
+                        }))
+                      }
                     />
                     <label htmlFor={severity} className="text-sm capitalize">
-                      {severity === 'low' ? 'Faible' : 
-                       severity === 'medium' ? 'Moyen' :
-                       severity === 'high' ? 'Élevé' : 'Critique'}
+                      {severity === "low"
+                        ? "Faible"
+                        : severity === "medium"
+                          ? "Moyen"
+                          : severity === "high"
+                            ? "Élevé"
+                            : "Critique"}
                     </label>
                   </div>
                 ))}
@@ -439,7 +521,12 @@ export function WarningSystem({ className }: WarningSystemProps) {
                 min="1"
                 max="720"
                 value={warningForm.hours}
-                onChange={(e) => setWarningForm(prev => ({ ...prev, hours: parseInt(e.target.value) || 48 }))}
+                onChange={(e) =>
+                  setWarningForm((prev) => ({
+                    ...prev,
+                    hours: parseInt(e.target.value) || 48,
+                  }))
+                }
               />
             </div>
 
@@ -456,7 +543,11 @@ export function WarningSystem({ className }: WarningSystemProps) {
               </Button>
               <Button
                 onClick={handleCreateWarning}
-                disabled={isSubmitting || !warningForm.title.trim() || !warningForm.message.trim()}
+                disabled={
+                  isSubmitting ||
+                  !warningForm.title.trim() ||
+                  !warningForm.message.trim()
+                }
                 className="bg-orange-600 hover:bg-orange-700"
               >
                 {isSubmitting ? (
@@ -464,7 +555,7 @@ export function WarningSystem({ className }: WarningSystemProps) {
                 ) : (
                   <AlertTriangle className="w-4 h-4 mr-2" />
                 )}
-                {isSubmitting ? 'Envoi...' : 'Envoyer Avertissement'}
+                {isSubmitting ? "Envoi..." : "Envoyer Avertissement"}
               </Button>
             </div>
           </div>

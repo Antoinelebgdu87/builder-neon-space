@@ -1,5 +1,5 @@
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
 
 let adminApp: any = null;
 let adminDb: any = null;
@@ -9,8 +9,8 @@ export function getAdminFirestore() {
 
   try {
     // Utiliser le fichier service account directement
-    const serviceAccount = require('./firebase-service-account.json');
-    
+    const serviceAccount = require("./firebase-service-account.json");
+
     // Initialize Firebase Admin if not already done
     if (getApps().length === 0) {
       adminApp = initializeApp({
@@ -22,10 +22,10 @@ export function getAdminFirestore() {
     }
 
     adminDb = getFirestore(adminApp);
-    console.log('🔥 Firebase Admin initialized with new keys');
+    console.log("🔥 Firebase Admin initialized with new keys");
     return adminDb;
   } catch (error) {
-    console.error('Failed to initialize Firebase Admin:', error);
+    console.error("Failed to initialize Firebase Admin:", error);
     return null;
   }
 }

@@ -10,9 +10,10 @@ export default function Index() {
   const { exploits, loading } = useExploits();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredExploits = exploits.filter(exploit =>
-    exploit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    exploit.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredExploits = exploits.filter(
+    (exploit) =>
+      exploit.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      exploit.description.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -23,16 +24,14 @@ export default function Index() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10"></div>
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
-        
+
         <div className="container mx-auto relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              SysBreak
-            </h1>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">SysBreak</h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Exploits professionnels et sécurisés. Administration contrôlée.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-8">
               <div className="relative">
@@ -43,10 +42,11 @@ export default function Index() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-4 text-lg glass border-border/50 focus:border-primary/50 focus:ring-primary/20"
                   style={{
-                    backgroundImage: "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
+                    backgroundImage:
+                      "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
-                    backgroundSize: "cover"
+                    backgroundSize: "cover",
                   }}
                 />
               </div>
@@ -55,7 +55,9 @@ export default function Index() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
               <div className="glass p-4 rounded-xl border-border/50">
-                <div className="text-2xl font-bold text-primary">{exploits.length}</div>
+                <div className="text-2xl font-bold text-primary">
+                  {exploits.length}
+                </div>
                 <div className="text-sm text-muted-foreground">Exploits</div>
               </div>
               <div className="glass p-4 rounded-xl border-border/50">
@@ -90,14 +92,18 @@ export default function Index() {
           {loading && (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Chargement des exploits...</span>
+              <span className="ml-2 text-muted-foreground">
+                Chargement des exploits...
+              </span>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && exploits.length === 0 && (
             <div className="text-center py-16">
-              <h3 className="text-2xl font-semibold mb-2">Aucun exploit disponible</h3>
+              <h3 className="text-2xl font-semibold mb-2">
+                Aucun exploit disponible
+              </h3>
               <p className="text-muted-foreground">
                 Les exploits seront ajoutés par l'administration.
               </p>
@@ -120,7 +126,7 @@ export default function Index() {
                   transition={{
                     duration: 0.5,
                     delay: index * 0.1,
-                    ease: "easeOut"
+                    ease: "easeOut",
                   }}
                 >
                   <ExploitCard {...exploit} />
@@ -149,15 +155,23 @@ export default function Index() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Sécurisé & Vérifié</h3>
-              <p className="text-muted-foreground">Tous les exploits sont testés et vérifiés.</p>
+              <p className="text-muted-foreground">
+                Tous les exploits sont testés et vérifiés.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Toujours à jour</h3>
-              <p className="text-muted-foreground">Mises à jour régulières garanties.</p>
+              <p className="text-muted-foreground">
+                Mises à jour régulières garanties.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
-              <h3 className="text-xl font-semibold mb-2">Administration Contrôlée</h3>
-              <p className="text-muted-foreground">Contenu géré par des professionnels.</p>
+              <h3 className="text-xl font-semibold mb-2">
+                Administration Contrôlée
+              </h3>
+              <p className="text-muted-foreground">
+                Contenu géré par des professionnels.
+              </p>
             </div>
           </div>
         </div>

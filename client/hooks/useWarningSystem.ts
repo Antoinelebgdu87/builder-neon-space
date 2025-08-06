@@ -1,7 +1,18 @@
-import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { useState, useEffect } from "react";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
 
 export interface WarningData {
   id: string;
@@ -9,7 +20,7 @@ export interface WarningData {
   username: string;
   title: string;
   message: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   isActive: boolean;
   isAcknowledged: boolean;
   createdAt: string;
@@ -30,7 +41,7 @@ export function useWarningSystem() {
     if (!isOnline) return;
 
     const unsubscribe = onSnapshot(
-      collection(db, 'userWarnings'),
+      collection(db, "userWarnings"),
       (snapshot) => {
         const warningsList: WarningData[] = [];
         snapshot.forEach((doc) => {
@@ -42,9 +53,9 @@ export function useWarningSystem() {
         setWarnings(warningsList);
       },
       (error) => {
-        console.error('Error listening to warnings:', error);
-        setError('Erreur de synchronisation des avertissements');
-      }
+        console.error("Error listening to warnings:", error);
+        setError("Erreur de synchronisation des avertissements");
+      },
     );
 
     return () => unsubscribe();
@@ -56,12 +67,12 @@ export function useWarningSystem() {
     username: string,
     title: string,
     message: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: "low" | "medium" | "high" | "critical",
     hours?: number, // Durée avant expiration
-    canDismiss: boolean = true
+    canDismiss: boolean = true,
   ): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise');
+      throw new Error("Connexion Firebase requise");
     }
 
     setLoading(true);
@@ -81,17 +92,21 @@ export function useWarningSystem() {
         isActive: true,
         isAcknowledged: false,
         createdAt: now,
-        createdBy: 'Admin',
+        createdBy: "Admin",
         canDismiss,
-        expiresAt: hours ? new Date(Date.now() + hours * 60 * 60 * 1000).toISOString() : undefined
+        expiresAt: hours
+          ? new Date(Date.now() + hours * 60 * 60 * 1000).toISOString()
+          : undefined,
       };
 
-      await setDoc(doc(db, 'userWarnings', warningId), warningData);
+      await setDoc(doc(db, "userWarnings", warningId), warningData);
 
       // Déclencher l'événement pour notification temps réel
-      window.dispatchEvent(new CustomEvent('warningCreated', {
-        detail: { warningId, userId, username, severity }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("warningCreated", {
+          detail: { warningId, userId, username, severity },
+        }),
+      );
 
       console.log(`Warning créé pour ${username}: ${title}`);
     } catch (error: any) {
@@ -105,23 +120,25 @@ export function useWarningSystem() {
   // Acquitter un avertissement
   const acknowledgeWarning = async (warningId: string): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise');
+      throw new Error("Connexion Firebase requise");
     }
 
     try {
-      await updateDoc(doc(db, 'userWarnings', warningId), {
+      await updateDoc(doc(db, "userWarnings", warningId), {
         isAcknowledged: true,
-        acknowledgedAt: new Date().toISOString()
+        acknowledgedAt: new Date().toISOString(),
       });
 
       // Déclencher l'événement
-      window.dispatchEvent(new CustomEvent('warningAcknowledged', {
-        detail: { warningId }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("warningAcknowledged", {
+          detail: { warningId },
+        }),
+      );
 
       console.log(`Warning ${warningId} acquitté`);
     } catch (error: any) {
-      console.error('Error acknowledging warning:', error);
+      console.error("Error acknowledging warning:", error);
       throw error;
     }
   };
@@ -129,31 +146,33 @@ export function useWarningSystem() {
   // Supprimer un avertissement
   const removeWarning = async (warningId: string): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise');
+      throw new Error("Connexion Firebase requise");
     }
 
     try {
-      await updateDoc(doc(db, 'userWarnings', warningId), {
-        isActive: false
+      await updateDoc(doc(db, "userWarnings", warningId), {
+        isActive: false,
       });
 
       console.log(`Warning ${warningId} supprimé`);
     } catch (error: any) {
-      console.error('Error removing warning:', error);
+      console.error("Error removing warning:", error);
       throw error;
     }
   };
 
   // Obtenir les warnings d'un utilisateur (par username ou userId)
-  const getUserWarnings = async (userIdentifier: string): Promise<WarningData[]> => {
+  const getUserWarnings = async (
+    userIdentifier: string,
+  ): Promise<WarningData[]> => {
     if (!isOnline) return [];
 
     try {
       // Essayer d'abord par username, puis par userId
       let warningsQuery = query(
-        collection(db, 'userWarnings'),
-        where('username', '==', userIdentifier),
-        where('isActive', '==', true)
+        collection(db, "userWarnings"),
+        where("username", "==", userIdentifier),
+        where("isActive", "==", true),
       );
 
       let snapshot = await getDocs(warningsQuery);
@@ -161,31 +180,31 @@ export function useWarningSystem() {
       // Si aucun résultat par username, essayer par userId
       if (snapshot.empty) {
         warningsQuery = query(
-          collection(db, 'userWarnings'),
-          where('userId', '==', userIdentifier),
-          where('isActive', '==', true)
+          collection(db, "userWarnings"),
+          where("userId", "==", userIdentifier),
+          where("isActive", "==", true),
         );
         snapshot = await getDocs(warningsQuery);
       }
-      
+
       const userWarnings: WarningData[] = [];
 
       snapshot.forEach((doc) => {
         const data = doc.data();
-        
+
         // Vérifier si le warning a expiré
         if (data.expiresAt && new Date() > new Date(data.expiresAt)) {
           // Marquer comme inactif automatiquement
           updateDoc(doc.ref, { isActive: false });
           return;
         }
-        
+
         userWarnings.push({ id: doc.id, ...data } as WarningData);
       });
 
       return userWarnings;
     } catch (error: any) {
-      console.error('Error getting user warnings:', error);
+      console.error("Error getting user warnings:", error);
       return [];
     }
   };
@@ -194,44 +213,49 @@ export function useWarningSystem() {
   const createPresetWarning = async (
     userId: string,
     username: string,
-    preset: 'behavior' | 'spam' | 'content' | 'rules' | 'final'
+    preset: "behavior" | "spam" | "content" | "rules" | "final",
   ): Promise<void> => {
     const presets = {
       behavior: {
-        title: 'Avertissement - Comportement',
-        message: 'Votre comportement ne respecte pas les règles de la communauté. Veuillez adopter une attitude plus respectueuse.',
-        severity: 'medium' as const,
+        title: "Avertissement - Comportement",
+        message:
+          "Votre comportement ne respecte pas les règles de la communauté. Veuillez adopter une attitude plus respectueuse.",
+        severity: "medium" as const,
         hours: 48,
-        canDismiss: true
+        canDismiss: true,
       },
       spam: {
-        title: 'Avertissement - Spam',
-        message: 'Vous avez été signalé pour spam. Évitez les messages répétitifs ou non pertinents.',
-        severity: 'low' as const,
+        title: "Avertissement - Spam",
+        message:
+          "Vous avez été signalé pour spam. Évitez les messages répétitifs ou non pertinents.",
+        severity: "low" as const,
         hours: 24,
-        canDismiss: true
+        canDismiss: true,
       },
       content: {
-        title: 'Avertissement - Contenu Inapproprié',
-        message: 'Le contenu que vous avez partagé ne respecte pas nos conditions d\'utilisation.',
-        severity: 'high' as const,
+        title: "Avertissement - Contenu Inapproprié",
+        message:
+          "Le contenu que vous avez partagé ne respecte pas nos conditions d'utilisation.",
+        severity: "high" as const,
         hours: 72,
-        canDismiss: true
+        canDismiss: true,
       },
       rules: {
-        title: 'Rappel des Règles',
-        message: 'Ceci est un rappel des règles de la communauté. Merci de les respecter pour maintenir un environnement sain.',
-        severity: 'low' as const,
+        title: "Rappel des Règles",
+        message:
+          "Ceci est un rappel des règles de la communauté. Merci de les respecter pour maintenir un environnement sain.",
+        severity: "low" as const,
         hours: 24,
-        canDismiss: true
+        canDismiss: true,
       },
       final: {
-        title: 'AVERTISSEMENT FINAL',
-        message: 'Ceci est votre dernier avertissement. Le prochain incident entraînera un bannissement définitif.',
-        severity: 'critical' as const,
+        title: "AVERTISSEMENT FINAL",
+        message:
+          "Ceci est votre dernier avertissement. Le prochain incident entraînera un bannissement définitif.",
+        severity: "critical" as const,
         hours: 168, // 1 semaine
-        canDismiss: false
-      }
+        canDismiss: false,
+      },
     };
 
     const preset_data = presets[preset];
@@ -242,7 +266,7 @@ export function useWarningSystem() {
       preset_data.message,
       preset_data.severity,
       preset_data.hours,
-      preset_data.canDismiss
+      preset_data.canDismiss,
     );
   };
 
@@ -261,10 +285,13 @@ export function useWarningSystem() {
     createPresetWarning,
 
     // Utilities
-    getActiveWarningsCount: () => warnings.filter(w => w.isActive && !w.isAcknowledged).length,
-    getWarningsBySeverity: (severity: string) => warnings.filter(w => w.severity === severity),
-    hasUnacknowledgedWarnings: (userId: string) => warnings.some(w => 
-      w.userId === userId && w.isActive && !w.isAcknowledged
-    )
+    getActiveWarningsCount: () =>
+      warnings.filter((w) => w.isActive && !w.isAcknowledged).length,
+    getWarningsBySeverity: (severity: string) =>
+      warnings.filter((w) => w.severity === severity),
+    hasUnacknowledgedWarnings: (userId: string) =>
+      warnings.some(
+        (w) => w.userId === userId && w.isActive && !w.isAcknowledged,
+      ),
   };
 }

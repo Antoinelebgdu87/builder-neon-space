@@ -1,5 +1,5 @@
 // Wrapper Firebase sécurisé qui gère automatiquement les erreurs "Failed to fetch"
-import { 
+import {
   collection as originalCollection,
   doc as originalDoc,
   onSnapshot as originalOnSnapshot,
@@ -13,26 +13,26 @@ import {
   where as originalWhere,
   serverTimestamp as originalServerTimestamp,
   writeBatch as originalWriteBatch,
-  Timestamp as originalTimestamp
-} from 'firebase/firestore';
-import { db as originalDb } from '@/lib/firebase';
-import { FirebaseErrorHandler } from '@/utils/firebaseErrorHandler';
+  Timestamp as originalTimestamp,
+} from "firebase/firestore";
+import { db as originalDb } from "@/lib/firebase";
+import { FirebaseErrorHandler } from "@/utils/firebaseErrorHandler";
 
 // Mock responses pour quand Firebase est bloqué
 const createMockSnapshot = (data: any[] = []) => ({
   docs: data.map((item, index) => ({
     id: `mock_${index}`,
     data: () => item,
-    exists: () => true
+    exists: () => true,
   })),
   empty: data.length === 0,
-  size: data.length
+  size: data.length,
 });
 
 const createMockDoc = (data: any = null) => ({
   exists: () => !!data,
   data: () => data,
-  id: 'mock_doc'
+  id: "mock_doc",
 });
 
 // Wrappers sécurisés
@@ -40,10 +40,10 @@ export const db = originalDb;
 
 export async function getDocs(query: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Retour mock pour getDocs');
+    console.log("🚫 Firebase bloqué - Retour mock pour getDocs");
     return createMockSnapshot([]);
   }
-  
+
   try {
     return await originalGetDocs(query);
   } catch (error) {
@@ -57,10 +57,10 @@ export async function getDocs(query: any) {
 
 export async function getDoc(docRef: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Retour mock pour getDoc');
+    console.log("🚫 Firebase bloqué - Retour mock pour getDoc");
     return createMockDoc();
   }
-  
+
   try {
     return await originalGetDoc(docRef);
   } catch (error) {
@@ -74,10 +74,10 @@ export async function getDoc(docRef: any) {
 
 export async function setDoc(docRef: any, data: any, options?: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Ignoré setDoc');
+    console.log("🚫 Firebase bloqué - Ignoré setDoc");
     return Promise.resolve();
   }
-  
+
   try {
     return await originalSetDoc(docRef, data, options);
   } catch (error) {
@@ -91,10 +91,10 @@ export async function setDoc(docRef: any, data: any, options?: any) {
 
 export async function addDoc(collectionRef: any, data: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Retour mock pour addDoc');
+    console.log("🚫 Firebase bloqué - Retour mock pour addDoc");
     return { id: `local_${Date.now()}` };
   }
-  
+
   try {
     return await originalAddDoc(collectionRef, data);
   } catch (error) {
@@ -108,10 +108,10 @@ export async function addDoc(collectionRef: any, data: any) {
 
 export async function updateDoc(docRef: any, data: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Ignoré updateDoc');
+    console.log("🚫 Firebase bloqué - Ignoré updateDoc");
     return Promise.resolve();
   }
-  
+
   try {
     return await originalUpdateDoc(docRef, data);
   } catch (error) {
@@ -125,10 +125,10 @@ export async function updateDoc(docRef: any, data: any) {
 
 export async function deleteDoc(docRef: any) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Ignoré deleteDoc');
+    console.log("🚫 Firebase bloqué - Ignoré deleteDoc");
     return Promise.resolve();
   }
-  
+
   try {
     return await originalDeleteDoc(docRef);
   } catch (error) {
@@ -141,27 +141,27 @@ export async function deleteDoc(docRef: any) {
 }
 
 export function onSnapshot(
-  query: any, 
-  onNext: (snapshot: any) => void, 
-  onError?: (error: any) => void
+  query: any,
+  onNext: (snapshot: any) => void,
+  onError?: (error: any) => void,
 ) {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Mock onSnapshot');
+    console.log("🚫 Firebase bloqué - Mock onSnapshot");
     // Retourner une fonction vide pour unsubscribe
     setTimeout(() => onNext(createMockSnapshot([])), 100);
     return () => {};
   }
-  
+
   const wrappedOnError = (error: any) => {
     const shouldFallback = FirebaseErrorHandler.handleError(error);
     if (shouldFallback) {
-      console.log('🔄 Basculement vers mock snapshot après erreur');
+      console.log("🔄 Basculement vers mock snapshot après erreur");
       onNext(createMockSnapshot([]));
     } else if (onError) {
       onError(error);
     }
   };
-  
+
   try {
     return originalOnSnapshot(query, onNext, wrappedOnError);
   } catch (error) {
@@ -173,17 +173,17 @@ export function onSnapshot(
 
 export function writeBatch() {
   if (FirebaseErrorHandler.isBlocked()) {
-    console.log('🚫 Firebase bloqué - Mock writeBatch');
+    console.log("🚫 Firebase bloqué - Mock writeBatch");
     return {
       set: () => {},
       update: () => {},
       delete: () => {},
-      commit: () => Promise.resolve()
+      commit: () => Promise.resolve(),
     };
   }
-  
+
   const originalBatch = originalWriteBatch(db);
-  
+
   return {
     ...originalBatch,
     commit: async () => {
@@ -196,7 +196,7 @@ export function writeBatch() {
         }
         throw error;
       }
-    }
+    },
   };
 }
 

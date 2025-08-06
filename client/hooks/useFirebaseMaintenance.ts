@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useState, useEffect } from "react";
+import { doc, onSnapshot, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 interface MaintenanceState {
   isActive: boolean;
@@ -14,14 +14,14 @@ export function useFirebaseMaintenance() {
     isActive: false,
     message: "Site en maintenance. Nous reviendrons bientôt!",
     enabledAt: null,
-    enabledBy: null
+    enabledBy: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      doc(db, 'settings', 'maintenance'),
+      doc(db, "settings", "maintenance"),
       (docSnapshot) => {
         try {
           if (docSnapshot.exists()) {
@@ -33,26 +33,26 @@ export function useFirebaseMaintenance() {
               isActive: false,
               message: "Site en maintenance. Nous reviendrons bientôt!",
               enabledAt: null,
-              enabledBy: null
+              enabledBy: null,
             };
             setMaintenanceState(defaultState);
-            
+
             // Create the document with default values
-            setDoc(doc(db, 'settings', 'maintenance'), defaultState);
+            setDoc(doc(db, "settings", "maintenance"), defaultState);
           }
           setError(null);
         } catch (err) {
-          console.error('Error fetching maintenance state:', err);
-          setError('Erreur lors du chargement de l\'état de maintenance');
+          console.error("Error fetching maintenance state:", err);
+          setError("Erreur lors du chargement de l'état de maintenance");
         } finally {
           setLoading(false);
         }
       },
       (err) => {
-        console.error('Firestore error:', err);
-        setError('Erreur de connexion Firebase');
+        console.error("Firestore error:", err);
+        setError("Erreur de connexion Firebase");
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
@@ -64,13 +64,13 @@ export function useFirebaseMaintenance() {
         isActive: true,
         message: message || "Site en maintenance. Nous reviendrons bientôt!",
         enabledAt: serverTimestamp(),
-        enabledBy: enabledBy || 'Admin'
+        enabledBy: enabledBy || "Admin",
       };
-      
-      await setDoc(doc(db, 'settings', 'maintenance'), newState);
+
+      await setDoc(doc(db, "settings", "maintenance"), newState);
     } catch (error) {
-      console.error('Error enabling maintenance:', error);
-      throw new Error('Erreur lors de l\'activation de la maintenance');
+      console.error("Error enabling maintenance:", error);
+      throw new Error("Erreur lors de l'activation de la maintenance");
     }
   };
 
@@ -80,13 +80,13 @@ export function useFirebaseMaintenance() {
         isActive: false,
         message: maintenanceState.message,
         enabledAt: null,
-        enabledBy: null
+        enabledBy: null,
       };
-      
-      await setDoc(doc(db, 'settings', 'maintenance'), newState);
+
+      await setDoc(doc(db, "settings", "maintenance"), newState);
     } catch (error) {
-      console.error('Error disabling maintenance:', error);
-      throw new Error('Erreur lors de la désactivation de la maintenance');
+      console.error("Error disabling maintenance:", error);
+      throw new Error("Erreur lors de la désactivation de la maintenance");
     }
   };
 
@@ -94,13 +94,13 @@ export function useFirebaseMaintenance() {
     try {
       const updatedState: MaintenanceState = {
         ...maintenanceState,
-        message
+        message,
       };
-      
-      await setDoc(doc(db, 'settings', 'maintenance'), updatedState);
+
+      await setDoc(doc(db, "settings", "maintenance"), updatedState);
     } catch (error) {
-      console.error('Error updating maintenance message:', error);
-      throw new Error('Erreur lors de la mise à jour du message');
+      console.error("Error updating maintenance message:", error);
+      throw new Error("Erreur lors de la mise à jour du message");
     }
   };
 
@@ -111,6 +111,6 @@ export function useFirebaseMaintenance() {
     enableMaintenance,
     disableMaintenance,
     updateMaintenanceMessage,
-    isMaintenanceActive: maintenanceState.isActive
+    isMaintenanceActive: maintenanceState.isActive,
   };
 }

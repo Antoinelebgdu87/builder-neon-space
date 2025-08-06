@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAnonymousUser } from './useAnonymousUser';
-import { useAdvancedUserManagement } from './useAdvancedUserManagement';
+import { useState, useEffect } from "react";
+import { useAnonymousUser } from "./useAnonymousUser";
+import { useAdvancedUserManagement } from "./useAdvancedUserManagement";
 // import { useFirebaseDisplayNameSync } from './useFirebaseDisplayNameSync'; // Temporairement désactivé
 
 interface GlobalDisplayNameState {
@@ -14,14 +14,14 @@ export function useGlobalDisplayName() {
   const { getUserById } = useAdvancedUserManagement();
   // const { pushToFirebase } = useFirebaseDisplayNameSync(); // Temporairement désactivé
   const [displayState, setDisplayState] = useState<GlobalDisplayNameState>({
-    displayName: '',
-    username: '',
-    isLoading: true
+    displayName: "",
+    username: "",
+    isLoading: true,
   });
 
   // Mock pushToFirebase pour éviter erreurs
   const pushToFirebase = async (displayName: string) => {
-    console.log('🚫 [MODE LOCAL] Push Firebase désactivé:', displayName);
+    console.log("🚫 [MODE LOCAL] Push Firebase désactivé:", displayName);
     return true;
   };
 
@@ -32,26 +32,32 @@ export function useGlobalDisplayName() {
 
       if (anonymousUser && anonymousUser.id === userId) {
         // Mettre à jour l'état global seulement
-        setDisplayState(prev => ({
+        setDisplayState((prev) => ({
           ...prev,
-          displayName: newDisplayName
+          displayName: newDisplayName,
         }));
 
-        console.log('📢 Nom d\'affichage mis à jour:', newDisplayName);
+        console.log("📢 Nom d'affichage mis à jour:", newDisplayName);
       }
     };
 
-    window.addEventListener('displayNameChanged', handleDisplayNameChange as EventListener);
+    window.addEventListener(
+      "displayNameChanged",
+      handleDisplayNameChange as EventListener,
+    );
 
     return () => {
-      window.removeEventListener('displayNameChanged', handleDisplayNameChange as EventListener);
+      window.removeEventListener(
+        "displayNameChanged",
+        handleDisplayNameChange as EventListener,
+      );
     };
   }, [anonymousUser?.id]); // Dépendances minimales
 
   // Initialiser le nom d'affichage
   useEffect(() => {
     if (anonymousUser) {
-      let currentDisplayName = '';
+      let currentDisplayName = "";
 
       // 1. Vérifier d'abord le nom d'affichage local de l'utilisateur
       if (anonymousUser.displayName) {
@@ -63,9 +69,9 @@ export function useGlobalDisplayName() {
         if (localData) {
           try {
             const parsedData = JSON.parse(localData);
-            currentDisplayName = parsedData.displayName || '';
+            currentDisplayName = parsedData.displayName || "";
           } catch (err) {
-            console.error('Erreur parsing nom local:', err);
+            console.error("Erreur parsing nom local:", err);
           }
         }
       }
@@ -73,23 +79,23 @@ export function useGlobalDisplayName() {
       setDisplayState({
         displayName: currentDisplayName,
         username: anonymousUser.username,
-        isLoading: false
+        isLoading: false,
       });
     } else {
       setDisplayState({
-        displayName: '',
-        username: '',
-        isLoading: false
+        displayName: "",
+        username: "",
+        isLoading: false,
       });
     }
   }, [anonymousUser?.id, anonymousUser?.username, anonymousUser?.displayName]); // Dépendances spécifiques
 
   // Fonction pour obtenir le nom à afficher (nom d'affichage ou username)
   const getEffectiveDisplayName = (): string => {
-    if (displayState.displayName && displayState.displayName.trim() !== '') {
+    if (displayState.displayName && displayState.displayName.trim() !== "") {
       return displayState.displayName;
     }
-    return displayState.username || 'Utilisateur';
+    return displayState.username || "Utilisateur";
   };
 
   // Fonction pour forcer la synchronisation (simplifiée)
@@ -98,23 +104,23 @@ export function useGlobalDisplayName() {
       // Relire depuis localStorage
       const localKey = `displayName_${anonymousUser.id}`;
       const localData = localStorage.getItem(localKey);
-      let effectiveName = '';
+      let effectiveName = "";
 
       if (localData) {
         try {
           const parsedData = JSON.parse(localData);
-          effectiveName = parsedData.displayName || '';
+          effectiveName = parsedData.displayName || "";
         } catch (err) {
-          console.error('Erreur parsing nom local:', err);
+          console.error("Erreur parsing nom local:", err);
         }
       }
 
-      setDisplayState(prev => ({
+      setDisplayState((prev) => ({
         ...prev,
-        displayName: effectiveName
+        displayName: effectiveName,
       }));
 
-      console.log('🔄 Synchronisation forcée:', effectiveName);
+      console.log("🔄 Synchronisation forcée:", effectiveName);
     }
   };
 
@@ -123,7 +129,7 @@ export function useGlobalDisplayName() {
     username: displayState.username,
     effectiveDisplayName: getEffectiveDisplayName(),
     isLoading: displayState.isLoading,
-    forceSync
+    forceSync,
   };
 }
 

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Database, 
-  AlertTriangle, 
-  CheckCircle, 
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Database,
+  AlertTriangle,
+  CheckCircle,
   XCircle,
   RefreshCw,
   Wifi,
@@ -14,12 +14,12 @@ import {
   Activity,
   Clock,
   Globe,
-  Loader2
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useFirebaseErrorHandler } from '@/hooks/useFirebaseErrorHandler';
-import { useFirebaseConnectivity } from '@/hooks/useFirebaseConnectivity';
-import { cn } from '@/lib/utils';
+  Loader2,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useFirebaseErrorHandler } from "@/hooks/useFirebaseErrorHandler";
+import { useFirebaseConnectivity } from "@/hooks/useFirebaseConnectivity";
+import { cn } from "@/lib/utils";
 
 interface FirebaseDebugPanelProps {
   className?: string;
@@ -37,11 +37,11 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
     forceOfflineMode,
     isConnected,
     isFailed,
-    isChecking
+    isChecking,
   } = useFirebaseErrorHandler();
 
   const { isOnline: connectivityOnline } = useFirebaseConnectivity();
-  
+
   const [isRunningAdvanced, setIsRunningAdvanced] = useState(false);
   const [configInfo, setConfigInfo] = useState<any>(null);
 
@@ -59,15 +59,17 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
   const handleGetConfig = () => {
     const info = getConfigInfo();
     setConfigInfo(info);
-    console.log('📊 Configuration Firebase:', info);
+    console.log("📊 Configuration Firebase:", info);
   };
 
   // Statut global
   const getGlobalStatus = () => {
-    if (isChecking) return { color: 'yellow', icon: Loader2, label: 'Vérification...' };
-    if (isConnected) return { color: 'green', icon: CheckCircle, label: 'Connecté' };
-    if (isFailed) return { color: 'red', icon: XCircle, label: 'Échec' };
-    return { color: 'gray', icon: WifiOff, label: 'Hors ligne' };
+    if (isChecking)
+      return { color: "yellow", icon: Loader2, label: "Vérification..." };
+    if (isConnected)
+      return { color: "green", icon: CheckCircle, label: "Connecté" };
+    if (isFailed) return { color: "red", icon: XCircle, label: "Échec" };
+    return { color: "gray", icon: WifiOff, label: "Hors ligne" };
   };
 
   const status = getGlobalStatus();
@@ -80,8 +82,18 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
           <CardTitle className="flex items-center space-x-2">
             <Database className="w-6 h-6 text-blue-400" />
             <span>Debug Firebase</span>
-            <Badge variant={status.color === 'green' ? 'default' : status.color === 'red' ? 'destructive' : 'secondary'}>
-              <status.icon className={cn("w-3 h-3 mr-1", isChecking && "animate-spin")} />
+            <Badge
+              variant={
+                status.color === "green"
+                  ? "default"
+                  : status.color === "red"
+                    ? "destructive"
+                    : "secondary"
+              }
+            >
+              <status.icon
+                className={cn("w-3 h-3 mr-1", isChecking && "animate-spin")}
+              />
               {status.label}
             </Badge>
           </CardTitle>
@@ -96,7 +108,9 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
               size="sm"
               className="text-blue-400 border-blue-400/30"
             >
-              <RefreshCw className={cn("w-4 h-4 mr-2", isChecking && "animate-spin")} />
+              <RefreshCw
+                className={cn("w-4 h-4 mr-2", isChecking && "animate-spin")}
+              />
               Test Connexion
             </Button>
 
@@ -118,7 +132,12 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
               size="sm"
               className="text-orange-400 border-orange-400/30"
             >
-              <Settings className={cn("w-4 h-4 mr-2", isRunningAdvanced && "animate-spin")} />
+              <Settings
+                className={cn(
+                  "w-4 h-4 mr-2",
+                  isRunningAdvanced && "animate-spin",
+                )}
+              />
               Diagnostic Avancé
             </Button>
 
@@ -145,10 +164,14 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
 
           {/* Statuts détaillés */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className={cn(
-              "p-3 rounded-lg border",
-              isConnected ? "bg-green-500/10 border-green-500/30" : "bg-red-500/10 border-red-500/30"
-            )}>
+            <div
+              className={cn(
+                "p-3 rounded-lg border",
+                isConnected
+                  ? "bg-green-500/10 border-green-500/30"
+                  : "bg-red-500/10 border-red-500/30",
+              )}
+            >
               <div className="flex items-center space-x-2">
                 <Database className="w-4 h-4" />
                 <span className="text-sm font-medium">Firebase</span>
@@ -158,16 +181,20 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
               </div>
             </div>
 
-            <div className={cn(
-              "p-3 rounded-lg border",
-              connectivityOnline ? "bg-green-500/10 border-green-500/30" : "bg-red-500/10 border-red-500/30"
-            )}>
+            <div
+              className={cn(
+                "p-3 rounded-lg border",
+                connectivityOnline
+                  ? "bg-green-500/10 border-green-500/30"
+                  : "bg-red-500/10 border-red-500/30",
+              )}
+            >
               <div className="flex items-center space-x-2">
                 <Globe className="w-4 h-4" />
                 <span className="text-sm font-medium">Réseau</span>
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                {connectivityOnline ? 'En ligne' : 'Hors ligne'}
+                {connectivityOnline ? "En ligne" : "Hors ligne"}
               </div>
             </div>
 
@@ -177,7 +204,9 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
                 <span className="text-sm font-medium">Dernière vérif</span>
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                {diagnostics?.timestamp ? new Date(diagnostics.timestamp).toLocaleTimeString('fr-FR') : 'Jamais'}
+                {diagnostics?.timestamp
+                  ? new Date(diagnostics.timestamp).toLocaleTimeString("fr-FR")
+                  : "Jamais"}
               </div>
             </div>
           </div>
@@ -204,10 +233,11 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
                   <div className="p-3 bg-red-500/10 border border-red-500/20 rounded text-sm font-mono">
                     {lastError}
                   </div>
-                  
+
                   {diagnostics?.solution && (
                     <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded text-sm">
-                      <strong>💡 Solution suggérée:</strong> {diagnostics.solution}
+                      <strong>💡 Solution suggérée:</strong>{" "}
+                      {diagnostics.solution}
                     </div>
                   )}
                 </div>
@@ -232,10 +262,23 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
               <div className="p-4 bg-gray-500/10 border border-gray-500/20 rounded">
                 <h4 className="font-semibold mb-2">État Principal</h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div><strong>Statut:</strong> {diagnostics.status}</div>
-                  <div><strong>Type d'erreur:</strong> {diagnostics.errorType || 'N/A'}</div>
-                  <div><strong>Code d'erreur:</strong> {diagnostics.errorCode || 'N/A'}</div>
-                  <div><strong>Temps de réponse:</strong> {diagnostics.responseTime ? `${diagnostics.responseTime}ms` : 'N/A'}</div>
+                  <div>
+                    <strong>Statut:</strong> {diagnostics.status}
+                  </div>
+                  <div>
+                    <strong>Type d'erreur:</strong>{" "}
+                    {diagnostics.errorType || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Code d'erreur:</strong>{" "}
+                    {diagnostics.errorCode || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Temps de réponse:</strong>{" "}
+                    {diagnostics.responseTime
+                      ? `${diagnostics.responseTime}ms`
+                      : "N/A"}
+                  </div>
                 </div>
               </div>
 
@@ -244,14 +287,19 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
                 <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded">
                   <h4 className="font-semibold mb-2">Tests Réseau</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    {Object.entries(diagnostics.advanced).map(([key, value]) => (
-                      <div key={key} className="flex items-center space-x-2">
-                        <span className="capitalize">{key}:</span>
-                        <Badge variant={value === 'ok' ? 'default' : 'destructive'} className="text-xs">
-                          {value as string}
-                        </Badge>
-                      </div>
-                    ))}
+                    {Object.entries(diagnostics.advanced).map(
+                      ([key, value]) => (
+                        <div key={key} className="flex items-center space-x-2">
+                          <span className="capitalize">{key}:</span>
+                          <Badge
+                            variant={value === "ok" ? "default" : "destructive"}
+                            className="text-xs"
+                          >
+                            {value as string}
+                          </Badge>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -301,17 +349,26 @@ export function FirebaseDebugPanel({ className }: FirebaseDebugPanelProps) {
           <div className="space-y-3 text-sm">
             <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded">
               <strong>1. Failed to fetch</strong>
-              <p>Problème de réseau ou de configuration Firebase. Vérifiez votre connexion Internet et les règles Firestore.</p>
+              <p>
+                Problème de réseau ou de configuration Firebase. Vérifiez votre
+                connexion Internet et les règles Firestore.
+              </p>
             </div>
-            
+
             <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
               <strong>2. Permission denied</strong>
-              <p>Règles Firestore trop restrictives. Vérifiez les règles dans la console Firebase.</p>
+              <p>
+                Règles Firestore trop restrictives. Vérifiez les règles dans la
+                console Firebase.
+              </p>
             </div>
-            
+
             <div className="p-3 bg-green-500/10 border border-green-500/20 rounded">
               <strong>3. Solution rapide</strong>
-              <p>1) Cliquez "Test Connexion" 2) Si échec, "Diagnostic Avancé" 3) Vérifiez "Info Config"</p>
+              <p>
+                1) Cliquez "Test Connexion" 2) Si échec, "Diagnostic Avancé" 3)
+                Vérifiez "Info Config"
+              </p>
             </div>
           </div>
         </CardContent>

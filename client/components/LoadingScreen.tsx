@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Code, Zap, Globe } from 'lucide-react';
+import React from "react";
+import { motion } from "framer-motion";
+import { Code, Zap, Globe } from "lucide-react";
 
 export function LoadingScreen() {
   return (
@@ -23,10 +23,10 @@ export function LoadingScreen() {
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ 
-            duration: 0.8, 
+          transition={{
+            duration: 0.8,
             ease: "easeOut",
-            delay: 0.2
+            delay: 0.2,
           }}
           className="mb-8"
         >
@@ -34,17 +34,17 @@ export function LoadingScreen() {
             <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
               <Code className="w-12 h-12 text-white" />
             </div>
-            
+
             {/* Pulse effect */}
             <motion.div
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5] 
+                opacity: [0.5, 0.8, 0.5],
               }}
-              transition={{ 
+              transition={{
                 duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
               className="absolute inset-0 w-24 h-24 mx-auto bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-2xl blur-md"
             />
@@ -80,41 +80,41 @@ export function LoadingScreen() {
         >
           <div className="flex items-center justify-center space-x-4 mb-4">
             <motion.div
-              animate={{ 
+              animate={{
                 rotate: 360,
-                scale: [1, 1.1, 1]
+                scale: [1, 1.1, 1],
               }}
-              transition={{ 
+              transition={{
                 rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-                scale: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+                scale: { duration: 1, repeat: Infinity, ease: "easeInOut" },
               }}
               className="text-blue-400"
             >
               <Zap className="w-6 h-6" />
             </motion.div>
-            
+
             <motion.div
-              animate={{ 
+              animate={{
                 rotate: -360,
-                scale: [1, 1.1, 1]
+                scale: [1, 1.1, 1],
               }}
-              transition={{ 
+              transition={{
                 rotate: { duration: 2.5, repeat: Infinity, ease: "linear" },
-                scale: { duration: 1.2, repeat: Infinity, ease: "easeInOut" }
+                scale: { duration: 1.2, repeat: Infinity, ease: "easeInOut" },
               }}
               className="text-purple-400"
             >
               <Globe className="w-6 h-6" />
             </motion.div>
-            
+
             <motion.div
-              animate={{ 
+              animate={{
                 rotate: 360,
-                scale: [1, 1.1, 1]
+                scale: [1, 1.1, 1],
               }}
-              transition={{ 
+              transition={{
                 rotate: { duration: 1.8, repeat: Infinity, ease: "linear" },
-                scale: { duration: 0.8, repeat: Infinity, ease: "easeInOut" }
+                scale: { duration: 0.8, repeat: Infinity, ease: "easeInOut" },
               }}
               className="text-pink-400"
             >
@@ -127,10 +127,10 @@ export function LoadingScreen() {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
-              transition={{ 
+              transition={{
                 duration: 2.5,
                 ease: "easeInOut",
-                delay: 1
+                delay: 1,
               }}
               className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"
             />
@@ -145,13 +145,13 @@ export function LoadingScreen() {
           className="text-gray-400"
         >
           <motion.p
-            animate={{ 
-              opacity: [0.5, 1, 0.5] 
+            animate={{
+              opacity: [0.5, 1, 0.5],
             }}
-            transition={{ 
+            transition={{
               duration: 1.5,
               repeat: Infinity,
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
           >
             Chargement de l&apos;interface...
@@ -163,21 +163,29 @@ export function LoadingScreen() {
       {Array.from({ length: 20 }).map((_, i) => (
         <motion.div
           key={i}
-          initial={{ 
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-            opacity: 0
+          initial={{
+            x:
+              Math.random() *
+              (typeof window !== "undefined" ? window.innerWidth : 1200),
+            y:
+              Math.random() *
+              (typeof window !== "undefined" ? window.innerHeight : 800),
+            opacity: 0,
           }}
-          animate={{ 
-            y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
+          animate={{
+            y: [
+              null,
+              Math.random() *
+                (typeof window !== "undefined" ? window.innerHeight : 800),
+            ],
             opacity: [0, 0.6, 0],
-            scale: [0, 1, 0]
+            scale: [0, 1, 0],
           }}
-          transition={{ 
+          transition={{
             duration: Math.random() * 3 + 2,
             repeat: Infinity,
             delay: Math.random() * 2,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
           className="absolute w-1 h-1 bg-blue-400 rounded-full"
         />

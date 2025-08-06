@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useAnonymousUser } from '@/hooks/useAnonymousUser';
-import { useUserAccounts } from '@/hooks/useUserAccounts';
-import PasswordSetupDialog from './PasswordSetupDialog';
-import UserLoginDialog from './UserLoginDialog';
+import React, { useState, useEffect } from "react";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { useUserAccounts } from "@/hooks/useUserAccounts";
+import PasswordSetupDialog from "./PasswordSetupDialog";
+import UserLoginDialog from "./UserLoginDialog";
 
 export default function UserAuthManager() {
-  const { user, setPasswordCreated, loginUser, logoutUser } = useAnonymousUser();
+  const { user, setPasswordCreated, loginUser, logoutUser } =
+    useAnonymousUser();
   const { createAccount, validateLogin, accountExists } = useUserAccounts();
   const [showPasswordSetup, setShowPasswordSetup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -25,7 +26,7 @@ export default function UserAuthManager() {
   }, [user]);
 
   const handleSetPassword = async (password: string) => {
-    if (!user) throw new Error('Aucun utilisateur trouvé');
+    if (!user) throw new Error("Aucun utilisateur trouvé");
 
     try {
       await createAccount(user.username, password);
@@ -38,9 +39,9 @@ export default function UserAuthManager() {
 
   const handleLogin = async (username: string, password: string) => {
     const isValid = await validateLogin(username, password);
-    
+
     if (!isValid) {
-      throw new Error('Nom d\'utilisateur ou mot de passe incorrect');
+      throw new Error("Nom d'utilisateur ou mot de passe incorrect");
     }
 
     loginUser(username);
@@ -65,8 +66,8 @@ export default function UserAuthManager() {
       handleLogout();
     };
 
-    window.addEventListener('userLogout', handleLogoutEvent);
-    return () => window.removeEventListener('userLogout', handleLogoutEvent);
+    window.addEventListener("userLogout", handleLogoutEvent);
+    return () => window.removeEventListener("userLogout", handleLogoutEvent);
   }, []);
 
   return (
@@ -78,7 +79,7 @@ export default function UserAuthManager() {
             username={user.username}
             onSetPassword={handleSetPassword}
           />
-          
+
           <UserLoginDialog
             isOpen={showLogin}
             onClose={() => setShowLogin(false)}

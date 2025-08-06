@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
   id: string;
@@ -19,17 +19,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
 
 const ADMIN_CREDENTIALS = {
   username: "Admin",
-  password: "Antoine80"
+  password: "Antoine80",
 };
 
-const LOCAL_STORAGE_AUTH_KEY = 'sysbreak_auth';
+const LOCAL_STORAGE_AUTH_KEY = "sysbreak_auth";
 
 export function LocalAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -43,7 +43,7 @@ export function LocalAuthProvider({ children }: { children: React.ReactNode }) {
         const userData = JSON.parse(storedAuth);
         setUser(userData);
       } catch (error) {
-        console.error('Error parsing stored auth:', error);
+        console.error("Error parsing stored auth:", error);
         localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
       }
     }
@@ -53,24 +53,27 @@ export function LocalAuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (username: string, password: string) => {
     try {
       setLoading(true);
-      
+
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      if (
+        username === ADMIN_CREDENTIALS.username &&
+        password === ADMIN_CREDENTIALS.password
+      ) {
         const userData: User = {
-          id: 'admin-1',
-          username: 'Admin',
-          role: 'administrator'
+          id: "admin-1",
+          username: "Admin",
+          role: "administrator",
         };
-        
+
         setUser(userData);
         localStorage.setItem(LOCAL_STORAGE_AUTH_KEY, JSON.stringify(userData));
       } else {
-        throw new Error('Identifiants incorrects');
+        throw new Error("Identifiants incorrects");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -82,7 +85,7 @@ export function LocalAuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
       throw error;
     }
   };
@@ -92,12 +95,8 @@ export function LocalAuthProvider({ children }: { children: React.ReactNode }) {
     login,
     logout,
     loading,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

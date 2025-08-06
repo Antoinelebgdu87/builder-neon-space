@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
+import { useState, useEffect } from "react";
+import { doc, onSnapshot, setDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
 
 interface MaintenanceState {
   isActive: boolean;
@@ -10,18 +10,20 @@ interface MaintenanceState {
   enabledBy?: string;
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_maintenance_hybrid';
+const LOCAL_STORAGE_KEY = "sysbreak_maintenance_hybrid";
 
 export function useHybridMaintenance() {
   const [maintenanceState, setMaintenanceState] = useState<MaintenanceState>({
     isActive: false,
     message: "Site en maintenance. Nous reviendrons bientôt!",
     enabledAt: null,
-    enabledBy: null
+    enabledBy: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(shouldUseFirebaseOnly() ? true : true);
+  const [useFirebase, setUseFirebase] = useState(
+    shouldUseFirebaseOnly() ? true : true,
+  );
 
   const loadFromLocalStorage = () => {
     try {
@@ -31,7 +33,7 @@ export function useHybridMaintenance() {
         setMaintenanceState(parsedState);
       }
     } catch (err) {
-      console.error('Error loading maintenance from localStorage:', err);
+      console.error("Error loading maintenance from localStorage:", err);
     }
   };
 
@@ -39,20 +41,22 @@ export function useHybridMaintenance() {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newState));
       setMaintenanceState(newState);
-      
+
       // Dispatch custom event for real-time updates
-      window.dispatchEvent(new CustomEvent('maintenanceStateChange', { 
-        detail: newState 
-      }));
+      window.dispatchEvent(
+        new CustomEvent("maintenanceStateChange", {
+          detail: newState,
+        }),
+      );
     } catch (err) {
-      console.error('Error saving maintenance to localStorage:', err);
+      console.error("Error saving maintenance to localStorage:", err);
     }
   };
 
   useEffect(() => {
     if (useFirebase) {
       const unsubscribe = onSnapshot(
-        doc(db, 'settings', 'maintenance'),
+        doc(db, "settings", "maintenance"),
         (docSnapshot) => {
           try {
             if (docSnapshot.exists()) {
@@ -64,7 +68,7 @@ export function useHybridMaintenance() {
                 isActive: false,
                 message: "Site en maintenance. Nous reviendrons bientôt!",
                 enabledAt: null,
-                enabledBy: null
+                enabledBy: null,
               };
               setMaintenanceState(defaultState);
               saveToLocalStorage(defaultState);
@@ -72,23 +76,25 @@ export function useHybridMaintenance() {
             setError(null);
             setLoading(false);
           } catch (err) {
-            console.error('Error processing Firebase maintenance data:', err);
+            console.error("Error processing Firebase maintenance data:", err);
             loadFromLocalStorage();
             setUseFirebase(false);
             setLoading(false);
           }
         },
         (err) => {
-          console.error('Firebase maintenance permission error:', err);
+          console.error("Firebase maintenance permission error:", err);
           loadFromLocalStorage();
           setUseFirebase(false);
-          if (err.code === 'permission-denied') {
-            setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+          if (err.code === "permission-denied") {
+            setError(
+              "⚠️ Firebase: Permissions insuffisantes - Mode local activé",
+            );
           } else {
-            setError('Mode hors ligne - Firebase inaccessible');
+            setError("Mode hors ligne - Firebase inaccessible");
           }
           setLoading(false);
-        }
+        },
       );
 
       return () => unsubscribe();
@@ -103,18 +109,21 @@ export function useHybridMaintenance() {
       isActive: true,
       message: message || "Site en maintenance. Nous reviendrons bientôt!",
       enabledAt: new Date().toISOString(),
-      enabledBy: enabledBy || 'Admin'
+      enabledBy: enabledBy || "Admin",
     };
 
     if (useFirebase) {
       try {
-        await setDoc(doc(db, 'settings', 'maintenance'), {
+        await setDoc(doc(db, "settings", "maintenance"), {
           ...newState,
-          enabledAt: serverTimestamp()
+          enabledAt: serverTimestamp(),
         });
         return;
       } catch (error) {
-        console.error('Firebase maintenance error, falling back to localStorage:', error);
+        console.error(
+          "Firebase maintenance error, falling back to localStorage:",
+          error,
+        );
         setUseFirebase(false);
       }
     }
@@ -127,15 +136,18 @@ export function useHybridMaintenance() {
       isActive: false,
       message: maintenanceState.message,
       enabledAt: null,
-      enabledBy: null
+      enabledBy: null,
     };
 
     if (useFirebase) {
       try {
-        await setDoc(doc(db, 'settings', 'maintenance'), newState);
+        await setDoc(doc(db, "settings", "maintenance"), newState);
         return;
       } catch (error) {
-        console.error('Firebase maintenance error, falling back to localStorage:', error);
+        console.error(
+          "Firebase maintenance error, falling back to localStorage:",
+          error,
+        );
         setUseFirebase(false);
       }
     }
@@ -146,15 +158,18 @@ export function useHybridMaintenance() {
   const updateMaintenanceMessage = async (message: string) => {
     const updatedState: MaintenanceState = {
       ...maintenanceState,
-      message
+      message,
     };
 
     if (useFirebase) {
       try {
-        await setDoc(doc(db, 'settings', 'maintenance'), updatedState);
+        await setDoc(doc(db, "settings", "maintenance"), updatedState);
         return;
       } catch (error) {
-        console.error('Firebase maintenance error, falling back to localStorage:', error);
+        console.error(
+          "Firebase maintenance error, falling back to localStorage:",
+          error,
+        );
         setUseFirebase(false);
       }
     }
@@ -165,11 +180,13 @@ export function useHybridMaintenance() {
   return {
     maintenanceState,
     loading,
-    error: error || (useFirebase ? null : 'Mode local - Données sauvegardées localement'),
+    error:
+      error ||
+      (useFirebase ? null : "Mode local - Données sauvegardées localement"),
     enableMaintenance,
     disableMaintenance,
     updateMaintenanceMessage,
     isMaintenanceActive: maintenanceState.isActive,
-    isOnline: useFirebase
+    isOnline: useFirebase,
   };
 }

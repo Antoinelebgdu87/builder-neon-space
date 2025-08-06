@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const MAINTENANCE_STORAGE_KEY = 'sysbreak_maintenance';
+const MAINTENANCE_STORAGE_KEY = "sysbreak_maintenance";
 
 interface MaintenanceState {
   isActive: boolean;
@@ -14,7 +14,7 @@ export function useMaintenanceMode() {
     isActive: false,
     message: "Site en maintenance. Nous reviendrons bientôt!",
     enabledAt: undefined,
-    enabledBy: undefined
+    enabledBy: undefined,
   });
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +26,7 @@ export function useMaintenanceMode() {
         setMaintenanceState(parsedState);
       }
     } catch (error) {
-      console.error('Error loading maintenance state:', error);
+      console.error("Error loading maintenance state:", error);
     } finally {
       setLoading(false);
     }
@@ -36,13 +36,15 @@ export function useMaintenanceMode() {
     try {
       localStorage.setItem(MAINTENANCE_STORAGE_KEY, JSON.stringify(newState));
       setMaintenanceState(newState);
-      
+
       // Dispatch custom event for real-time updates
-      window.dispatchEvent(new CustomEvent('maintenanceStateChange', { 
-        detail: newState 
-      }));
+      window.dispatchEvent(
+        new CustomEvent("maintenanceStateChange", {
+          detail: newState,
+        }),
+      );
     } catch (error) {
-      console.error('Error saving maintenance state:', error);
+      console.error("Error saving maintenance state:", error);
       throw error;
     }
   };
@@ -52,9 +54,9 @@ export function useMaintenanceMode() {
       isActive: true,
       message: message || "Site en maintenance. Nous reviendrons bientôt!",
       enabledAt: new Date().toISOString(),
-      enabledBy: enabledBy || 'Admin'
+      enabledBy: enabledBy || "Admin",
     };
-    
+
     saveMaintenanceState(newState);
   };
 
@@ -63,18 +65,18 @@ export function useMaintenanceMode() {
       isActive: false,
       message: "Site en maintenance. Nous reviendrons bientôt!",
       enabledAt: undefined,
-      enabledBy: undefined
+      enabledBy: undefined,
     };
-    
+
     saveMaintenanceState(newState);
   };
 
   const updateMaintenanceMessage = async (message: string) => {
     const newState: MaintenanceState = {
       ...maintenanceState,
-      message
+      message,
     };
-    
+
     saveMaintenanceState(newState);
   };
 
@@ -86,10 +88,16 @@ export function useMaintenanceMode() {
       setMaintenanceState(event.detail);
     };
 
-    window.addEventListener('maintenanceStateChange', handleMaintenanceChange as EventListener);
-    
+    window.addEventListener(
+      "maintenanceStateChange",
+      handleMaintenanceChange as EventListener,
+    );
+
     return () => {
-      window.removeEventListener('maintenanceStateChange', handleMaintenanceChange as EventListener);
+      window.removeEventListener(
+        "maintenanceStateChange",
+        handleMaintenanceChange as EventListener,
+      );
     };
   }, []);
 
@@ -99,6 +107,6 @@ export function useMaintenanceMode() {
     enableMaintenance,
     disableMaintenance,
     updateMaintenanceMessage,
-    isMaintenanceActive: maintenanceState.isActive
+    isMaintenanceActive: maintenanceState.isActive,
   };
 }

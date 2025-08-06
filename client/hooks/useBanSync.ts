@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useAdvancedUserManagement } from './useAdvancedUserManagement';
-import { useBanSystem } from './useBanSystem';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { useEffect } from "react";
+import { useAdvancedUserManagement } from "./useAdvancedUserManagement";
+import { useBanSystem } from "./useBanSystem";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
 
 /**
  * Hook qui synchronise les systèmes de ban entre:
@@ -20,13 +20,15 @@ export function useBanSync() {
 
     const syncBanStatuses = () => {
       // Créer un événement de synchronisation
-      window.dispatchEvent(new CustomEvent('banSyncRequested', {
-        detail: {
-          userAccounts: accounts,
-          banRecords: bans,
-          timestamp: new Date().toISOString()
-        }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("banSyncRequested", {
+          detail: {
+            userAccounts: accounts,
+            banRecords: bans,
+            timestamp: new Date().toISOString(),
+          },
+        }),
+      );
     };
 
     // Synchroniser toutes les 30 secondes pour éviter le spam
@@ -41,22 +43,22 @@ export function useBanSync() {
   // Écouter les événements de ban et forcer la synchronisation
   useEffect(() => {
     const handleBanEvents = () => {
-      console.log('Ban event detected, forcing sync...');
-      
+      console.log("Ban event detected, forcing sync...");
+
       // Forcer une synchronisation immédiate
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('forceBanSync'));
+        window.dispatchEvent(new CustomEvent("forceBanSync"));
       }, 100);
     };
 
-    window.addEventListener('userBanned', handleBanEvents);
-    window.addEventListener('userUnbanned', handleBanEvents);
-    window.addEventListener('banStatusChanged', handleBanEvents);
+    window.addEventListener("userBanned", handleBanEvents);
+    window.addEventListener("userUnbanned", handleBanEvents);
+    window.addEventListener("banStatusChanged", handleBanEvents);
 
     return () => {
-      window.removeEventListener('userBanned', handleBanEvents);
-      window.removeEventListener('userUnbanned', handleBanEvents);
-      window.removeEventListener('banStatusChanged', handleBanEvents);
+      window.removeEventListener("userBanned", handleBanEvents);
+      window.removeEventListener("userUnbanned", handleBanEvents);
+      window.removeEventListener("banStatusChanged", handleBanEvents);
     };
   }, []);
 
@@ -65,6 +67,6 @@ export function useBanSync() {
     isUserMgmtOnline: userMgmtOnline,
     isBanSystemOnline: banSystemOnline,
     accountsCount: accounts.length,
-    bansCount: bans.length
+    bansCount: bans.length,
   };
 }

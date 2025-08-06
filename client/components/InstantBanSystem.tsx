@@ -1,18 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { 
-  Ban, 
-  CheckCircle, 
-  Shield, 
-  Clock, 
-  Loader2, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Ban,
+  CheckCircle,
+  Shield,
+  Clock,
+  Loader2,
   AlertTriangle,
   Users,
   Zap,
@@ -20,12 +36,15 @@ import {
   Trash2,
   Search,
   Filter,
-  RefreshCw
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useInstantFirebaseBan } from '@/hooks/useInstantFirebaseBan';
-import { useAdvancedUserManagement, type UserAccount } from '@/hooks/useAdvancedUserManagement';
-import { cn } from '@/lib/utils';
+  RefreshCw,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInstantFirebaseBan } from "@/hooks/useInstantFirebaseBan";
+import {
+  useAdvancedUserManagement,
+  type UserAccount,
+} from "@/hooks/useAdvancedUserManagement";
+import { cn } from "@/lib/utils";
 
 interface InstantBanSystemProps {
   className?: string;
@@ -40,57 +59,71 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
     error: banError,
     isOnline,
     checkUserBanStatus,
-    forceUserLogout
+    forceUserLogout,
   } = useInstantFirebaseBan();
 
   const {
     accounts,
     loading: usersLoading,
     error: usersError,
-    refresh: refreshUsers
+    refresh: refreshUsers,
   } = useAdvancedUserManagement();
 
   const [selectedUser, setSelectedUser] = useState<UserAccount | null>(null);
   const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'banned' | 'active'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "banned" | "active">(
+    "all",
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [banFormData, setBanFormData] = useState({
-    reason: '',
-    banType: 'temporary' as 'temporary' | 'permanent',
-    hours: 24
+    reason: "",
+    banType: "temporary" as "temporary" | "permanent",
+    hours: 24,
   });
 
   // Real-time event listeners for instant UI updates
   useEffect(() => {
     const handleUserBanned = (event: CustomEvent) => {
-      console.log('User banned instantly:', event.detail);
+      console.log("User banned instantly:", event.detail);
       refreshUsers();
     };
 
     const handleUserUnbanned = (event: CustomEvent) => {
-      console.log('User unbanned instantly:', event.detail);
+      console.log("User unbanned instantly:", event.detail);
       refreshUsers();
     };
 
-    window.addEventListener('userBannedInstant', handleUserBanned as EventListener);
-    window.addEventListener('userUnbannedInstant', handleUserUnbanned as EventListener);
+    window.addEventListener(
+      "userBannedInstant",
+      handleUserBanned as EventListener,
+    );
+    window.addEventListener(
+      "userUnbannedInstant",
+      handleUserUnbanned as EventListener,
+    );
 
     return () => {
-      window.removeEventListener('userBannedInstant', handleUserBanned as EventListener);
-      window.removeEventListener('userUnbannedInstant', handleUserUnbanned as EventListener);
+      window.removeEventListener(
+        "userBannedInstant",
+        handleUserBanned as EventListener,
+      );
+      window.removeEventListener(
+        "userUnbannedInstant",
+        handleUserUnbanned as EventListener,
+      );
     };
   }, [refreshUsers]);
 
   // Handle instant ban
   const handleInstantBan = async () => {
     if (!selectedUser || !banFormData.reason.trim()) {
-      alert('Veuillez sélectionner un utilisateur et spécifier une raison');
+      alert("Veuillez sélectionner un utilisateur et spécifier une raison");
       return;
     }
 
     if (!isOnline) {
-      alert('Connexion Firebase requise pour bannir un utilisateur');
+      alert("Connexion Firebase requise pour bannir un utilisateur");
       return;
     }
 
@@ -108,16 +141,15 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
         selectedUser.email,
         banFormData.reason,
         banFormData.banType,
-        banFormData.banType === 'temporary' ? banFormData.hours : undefined
+        banFormData.banType === "temporary" ? banFormData.hours : undefined,
       );
 
       // Reset form and close dialog
-      setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+      setBanFormData({ reason: "", banType: "temporary", hours: 24 });
       setSelectedUser(null);
       setIsBanDialogOpen(false);
-      
+
       alert(`Utilisateur ${selectedUser.username} banni instantanément!`);
-      
     } catch (error: any) {
       alert(`Erreur lors du bannissement: ${error.message}`);
     } finally {
@@ -128,7 +160,7 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
   // Handle instant unban
   const handleInstantUnban = async (user: UserAccount) => {
     if (!isOnline) {
-      alert('Connexion Firebase requise pour débannir un utilisateur');
+      alert("Connexion Firebase requise pour débannir un utilisateur");
       return;
     }
 
@@ -161,33 +193,38 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
     if (days > 0) return `il y a ${days}j`;
     if (hours > 0) return `il y a ${hours}h`;
     if (minutes > 0) return `il y a ${minutes}m`;
-    return 'À l\'instant';
+    return "À l'instant";
   };
 
   // Filter users
-  const filteredUsers = accounts?.filter(user => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers =
+    accounts?.filter((user) => {
+      const matchesSearch =
+        user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' ||
-                         (statusFilter === 'banned' && user.isBanned) ||
-                         (statusFilter === 'active' && !user.isBanned);
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "banned" && user.isBanned) ||
+        (statusFilter === "active" && !user.isBanned);
 
-    return matchesSearch && matchesStatus;
-  }) || [];
+      return matchesSearch && matchesStatus;
+    }) || [];
 
   const stats = {
     total: accounts?.length || 0,
-    banned: accounts?.filter(u => u.isBanned).length || 0,
-    active: accounts?.filter(u => !u.isBanned).length || 0,
-    online: accounts?.filter(u => u.isOnline && !u.isBanned).length || 0
+    banned: accounts?.filter((u) => u.isBanned).length || 0,
+    active: accounts?.filter((u) => !u.isBanned).length || 0,
+    online: accounts?.filter((u) => u.isOnline && !u.isBanned).length || 0,
   };
 
   if (usersLoading) {
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground">Chargement du système de ban...</span>
+        <span className="ml-2 text-muted-foreground">
+          Chargement du système de ban...
+        </span>
       </div>
     );
   }
@@ -215,8 +252,11 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
           <CardTitle className="flex items-center space-x-2">
             <Zap className="w-6 h-6 text-orange-400" />
             <span>Système de Ban Instantané Firebase</span>
-            <Badge variant={isOnline ? "default" : "secondary"} className="ml-auto">
-              {isOnline ? 'Firebase Connecté' : 'Hors ligne'}
+            <Badge
+              variant={isOnline ? "default" : "secondary"}
+              className="ml-auto"
+            >
+              {isOnline ? "Firebase Connecté" : "Hors ligne"}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -225,32 +265,48 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
             <div className="flex items-center space-x-2 p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
               <Users className="w-5 h-5 text-blue-400" />
               <div>
-                <div className="text-2xl font-bold text-blue-400">{stats.total}</div>
-                <div className="text-xs text-muted-foreground">Total utilisateurs</div>
+                <div className="text-2xl font-bold text-blue-400">
+                  {stats.total}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Total utilisateurs
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 p-3 bg-red-500/10 rounded-lg border border-red-500/20">
               <Ban className="w-5 h-5 text-red-400" />
               <div>
-                <div className="text-2xl font-bold text-red-400">{stats.banned}</div>
-                <div className="text-xs text-muted-foreground">Utilisateurs bannis</div>
+                <div className="text-2xl font-bold text-red-400">
+                  {stats.banned}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Utilisateurs bannis
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 p-3 bg-green-500/10 rounded-lg border border-green-500/20">
               <CheckCircle className="w-5 h-5 text-green-400" />
               <div>
-                <div className="text-2xl font-bold text-green-400">{stats.active}</div>
-                <div className="text-xs text-muted-foreground">Utilisateurs actifs</div>
+                <div className="text-2xl font-bold text-green-400">
+                  {stats.active}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Utilisateurs actifs
+                </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
               <Activity className="w-5 h-5 text-purple-400" />
               <div>
-                <div className="text-2xl font-bold text-purple-400">{stats.online}</div>
-                <div className="text-xs text-muted-foreground">En ligne maintenant</div>
+                <div className="text-2xl font-bold text-purple-400">
+                  {stats.online}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  En ligne maintenant
+                </div>
               </div>
             </div>
           </div>
@@ -328,40 +384,53 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   className={cn(
                     "border rounded-lg p-4",
-                    user.isBanned 
-                      ? "border-red-500/30 bg-red-500/5" 
-                      : "border-border/30"
+                    user.isBanned
+                      ? "border-red-500/30 bg-red-500/5"
+                      : "border-border/30",
                   )}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-4 flex-1">
                       {/* Avatar */}
-                      <div className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
-                        user.isBanned 
-                          ? "bg-red-500" 
-                          : user.isOnline 
-                            ? "bg-green-500" 
-                            : "bg-gray-500"
-                      )}>
-                        {user.profile?.displayName?.[0] || user.username[0].toUpperCase()}
+                      <div
+                        className={cn(
+                          "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
+                          user.isBanned
+                            ? "bg-red-500"
+                            : user.isOnline
+                              ? "bg-green-500"
+                              : "bg-gray-500",
+                        )}
+                      >
+                        {user.profile?.displayName?.[0] ||
+                          user.username[0].toUpperCase()}
                       </div>
 
                       {/* User Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-lg">{user.profile?.displayName || user.username}</h3>
-                          <Badge variant="outline" className="text-xs">@{user.username}</Badge>
-                          
+                          <h3 className="font-semibold text-lg">
+                            {user.profile?.displayName || user.username}
+                          </h3>
+                          <Badge variant="outline" className="text-xs">
+                            @{user.username}
+                          </Badge>
+
                           {user.isOnline && !user.isBanned && (
-                            <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">
+                            <Badge
+                              variant="default"
+                              className="bg-green-500/20 text-green-400 border-green-500/30"
+                            >
                               <div className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse" />
                               En ligne
                             </Badge>
                           )}
 
                           {user.isAdmin && (
-                            <Badge variant="secondary" className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                            <Badge
+                              variant="secondary"
+                              className="bg-purple-500/20 text-purple-400 border-purple-500/30"
+                            >
                               <Shield className="w-3 h-3 mr-1" />
                               Admin
                             </Badge>
@@ -376,7 +445,9 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                         </div>
 
                         {user.email && (
-                          <p className="text-sm text-muted-foreground mb-1">{user.email}</p>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {user.email}
+                          </p>
                         )}
 
                         <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
@@ -389,11 +460,15 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                         {user.isBanned && user.banReason && (
                           <div className="mt-2 p-2 bg-red-500/10 border border-red-500/20 rounded text-sm">
                             <strong>Raison du ban:</strong> {user.banReason}
-                            {user.banType === 'temporary' && user.banExpiresAt && (
-                              <div className="text-xs mt-1">
-                                <strong>Expire le:</strong> {new Date(user.banExpiresAt).toLocaleString('fr-FR')}
-                              </div>
-                            )}
+                            {user.banType === "temporary" &&
+                              user.banExpiresAt && (
+                                <div className="text-xs mt-1">
+                                  <strong>Expire le:</strong>{" "}
+                                  {new Date(user.banExpiresAt).toLocaleString(
+                                    "fr-FR",
+                                  )}
+                                </div>
+                              )}
                           </div>
                         )}
                       </div>
@@ -451,10 +526,13 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                   <strong>Utilisateur:</strong> {selectedUser.username}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {selectedUser.email || 'Aucun email'}
+                  {selectedUser.email || "Aucun email"}
                 </p>
                 {selectedUser.isOnline && (
-                  <Badge variant="default" className="mt-1 bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                  <Badge
+                    variant="default"
+                    className="mt-1 bg-green-500/20 text-green-400 border-green-500/30 text-xs"
+                  >
                     En ligne - sera déconnecté instantanément
                   </Badge>
                 )}
@@ -466,7 +544,12 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
               <Textarea
                 id="banReason"
                 value={banFormData.reason}
-                onChange={(e) => setBanFormData(prev => ({ ...prev, reason: e.target.value }))}
+                onChange={(e) =>
+                  setBanFormData((prev) => ({
+                    ...prev,
+                    reason: e.target.value,
+                  }))
+                }
                 placeholder="Violation des conditions d'utilisation..."
                 rows={3}
               />
@@ -481,10 +564,17 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                     id="banTemporary"
                     name="banType"
                     value="temporary"
-                    checked={banFormData.banType === 'temporary'}
-                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                    checked={banFormData.banType === "temporary"}
+                    onChange={(e) =>
+                      setBanFormData((prev) => ({
+                        ...prev,
+                        banType: e.target.value as "temporary" | "permanent",
+                      }))
+                    }
                   />
-                  <label htmlFor="banTemporary" className="text-sm">Temporaire</label>
+                  <label htmlFor="banTemporary" className="text-sm">
+                    Temporaire
+                  </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input
@@ -492,15 +582,22 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                     id="banPermanent"
                     name="banType"
                     value="permanent"
-                    checked={banFormData.banType === 'permanent'}
-                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                    checked={banFormData.banType === "permanent"}
+                    onChange={(e) =>
+                      setBanFormData((prev) => ({
+                        ...prev,
+                        banType: e.target.value as "temporary" | "permanent",
+                      }))
+                    }
                   />
-                  <label htmlFor="banPermanent" className="text-sm">Permanent</label>
+                  <label htmlFor="banPermanent" className="text-sm">
+                    Permanent
+                  </label>
                 </div>
               </div>
             </div>
 
-            {banFormData.banType === 'temporary' && (
+            {banFormData.banType === "temporary" && (
               <div>
                 <Label htmlFor="banHours">Durée (heures)</Label>
                 <Input
@@ -509,7 +606,12 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                   min="1"
                   max="8760"
                   value={banFormData.hours}
-                  onChange={(e) => setBanFormData(prev => ({ ...prev, hours: parseInt(e.target.value) || 24 }))}
+                  onChange={(e) =>
+                    setBanFormData((prev) => ({
+                      ...prev,
+                      hours: parseInt(e.target.value) || 24,
+                    }))
+                  }
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Maximum: 8760 heures (1 an)
@@ -520,10 +622,13 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
             <div className="bg-orange-500/10 border border-orange-500/20 rounded p-3">
               <div className="flex items-center space-x-2">
                 <Zap className="w-4 h-4 text-orange-400" />
-                <span className="text-sm font-medium text-orange-400">Ban Instantané</span>
+                <span className="text-sm font-medium text-orange-400">
+                  Ban Instantané
+                </span>
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                L'utilisateur sera banni immédiatement et déconnecté automatiquement s'il est en ligne.
+                L'utilisateur sera banni immédiatement et déconnecté
+                automatiquement s'il est en ligne.
               </p>
             </div>
 
@@ -533,7 +638,11 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                 onClick={() => {
                   setIsBanDialogOpen(false);
                   setSelectedUser(null);
-                  setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+                  setBanFormData({
+                    reason: "",
+                    banType: "temporary",
+                    hours: 24,
+                  });
                 }}
                 disabled={isSubmitting}
               >
@@ -541,7 +650,9 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
               </Button>
               <Button
                 onClick={handleInstantBan}
-                disabled={isSubmitting || !banFormData.reason.trim() || !isOnline}
+                disabled={
+                  isSubmitting || !banFormData.reason.trim() || !isOnline
+                }
                 className="bg-red-600 hover:bg-red-700"
               >
                 {isSubmitting ? (
@@ -549,7 +660,7 @@ export function InstantBanSystem({ className }: InstantBanSystemProps) {
                 ) : (
                   <Zap className="w-4 h-4 mr-2" />
                 )}
-                {isSubmitting ? 'Bannissement...' : 'Bannir Instantanément'}
+                {isSubmitting ? "Bannissement..." : "Bannir Instantanément"}
               </Button>
             </div>
           </div>

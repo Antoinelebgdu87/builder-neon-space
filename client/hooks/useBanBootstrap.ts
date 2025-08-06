@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { useEffect, useState } from "react";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
 
 /**
  * Hook qui force la synchronisation des bans au démarrage de l'application
@@ -17,10 +17,10 @@ export function useBanBootstrap() {
 
     const bootstrapBans = async () => {
       try {
-        console.log('Bootstrapping ban system from Firebase...');
+        console.log("Bootstrapping ban system from Firebase...");
 
         // Get all user accounts and check for bans
-        const usersSnapshot = await getDocs(collection(db, 'userAccounts'));
+        const usersSnapshot = await getDocs(collection(db, "userAccounts"));
         let bannedCount = 0;
         const bannedUsers: string[] = [];
 
@@ -29,14 +29,16 @@ export function useBanBootstrap() {
           if (userData.isBanned) {
             bannedCount++;
             bannedUsers.push(userData.username || doc.id);
-            
+
             // Check if temporary ban has expired
-            if (userData.banType === 'temporary' && userData.banExpiry) {
+            if (userData.banType === "temporary" && userData.banExpiry) {
               const now = new Date();
               const expiry = new Date(userData.banExpiry);
-              
+
               if (now > expiry) {
-                console.log(`Temporary ban expired for user: ${userData.username}`);
+                console.log(
+                  `Temporary ban expired for user: ${userData.username}`,
+                );
                 // Could automatically unban here, but keeping it conservative
               }
             }
@@ -46,22 +48,25 @@ export function useBanBootstrap() {
         setBanCount(bannedCount);
         setIsBootstraped(true);
 
-        console.log(`Ban bootstrap complete: ${bannedCount} banned users found`);
+        console.log(
+          `Ban bootstrap complete: ${bannedCount} banned users found`,
+        );
         if (bannedUsers.length > 0) {
-          console.log('Banned users:', bannedUsers);
+          console.log("Banned users:", bannedUsers);
         }
 
         // Dispatch event to notify other components
-        window.dispatchEvent(new CustomEvent('banBootstrapComplete', {
-          detail: {
-            bannedCount,
-            bannedUsers,
-            timestamp: new Date().toISOString()
-          }
-        }));
-
+        window.dispatchEvent(
+          new CustomEvent("banBootstrapComplete", {
+            detail: {
+              bannedCount,
+              bannedUsers,
+              timestamp: new Date().toISOString(),
+            },
+          }),
+        );
       } catch (error) {
-        console.error('Error bootstrapping bans:', error);
+        console.error("Error bootstrapping bans:", error);
         setIsBootstraped(true); // Mark as done even if failed to prevent retries
       }
     };
@@ -81,6 +86,6 @@ export function useBanBootstrap() {
     isBootstraped,
     banCount,
     isOnline: firebaseOnline,
-    triggerBootstrap
+    triggerBootstrap,
   };
 }

@@ -3,18 +3,22 @@
 ## Collections nécessaires pour le système de ban instantané :
 
 ### 1. userAccounts (modifiée)
+
 - Ajout des champs de ban pour synchronisation
 - Règles de lecture/écriture pour les admins
 
 ### 2. bannedUsers (nouvelle)
+
 - Collection spécialisée pour les utilisateurs bannis
 - Optimisée pour les requêtes rapides
 
 ### 3. banLogs (nouvelle)
+
 - Historique et audit trail des bans
 - Pour tracking et transparence
 
 ### 4. onlineSessions (modifiée)
+
 - Gestion des sessions pour déconnexions forcées
 
 ## Règles Firestore recommandées :
@@ -23,14 +27,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // Collection des comptes utilisateurs - avec support ban
     match /userAccounts/{userId} {
       allow read: if true; // Lecture publique pour vérifier le statut
-      allow write: if request.auth != null && 
-        (request.auth.uid == userId || 
+      allow write: if request.auth != null &&
+        (request.auth.uid == userId ||
          get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true);
-      
+
       // Règles spéciales pour les champs de ban - admin seulement
       allow update: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true &&
@@ -44,59 +48,59 @@ service cloud.firestore {
           'banId' in request.resource.data
         );
     }
-    
+
     // Collection des utilisateurs bannis - optimisée pour les requêtes
     match /bannedUsers/{banId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
-      allow delete: if request.auth != null && 
+      allow delete: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
     // Collection des logs de ban - audit trail
     match /banLogs/{logId} {
-      allow read: if request.auth != null && 
+      allow read: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
     // Sessions en ligne - pour déconnexions forcées
     match /onlineSessions/{sessionId} {
       allow read: if request.auth != null;
       allow write: if request.auth != null;
-      allow delete: if request.auth != null && 
-        (request.auth.uid == sessionId || 
+      allow delete: if request.auth != null &&
+        (request.auth.uid == sessionId ||
          get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true);
     }
-    
+
     // Autres collections existantes...
     match /exploits/{exploitId} {
       allow read: if true;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
     match /scripts/{scriptId} {
       allow read: if true;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
     match /forum/{postId} {
       allow read: if true;
       allow write: if request.auth != null;
-      allow update: if request.auth != null && 
-        (request.auth.uid == resource.data.authorId || 
+      allow update: if request.auth != null &&
+        (request.auth.uid == resource.data.authorId ||
          get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true);
-      allow delete: if request.auth != null && 
+      allow delete: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
-    
+
     match /maintenance/{docId} {
       allow read: if true;
-      allow write: if request.auth != null && 
+      allow write: if request.auth != null &&
         get(/databases/$(database)/documents/userAccounts/$(request.auth.uid)).data.isAdmin == true;
     }
   }
@@ -106,6 +110,7 @@ service cloud.firestore {
 ## Structure des documents :
 
 ### userAccounts/{userId}
+
 ```javascript
 {
   id: string,
@@ -137,6 +142,7 @@ service cloud.firestore {
 ```
 
 ### bannedUsers/{banId}
+
 ```javascript
 {
   banId: string,
@@ -153,6 +159,7 @@ service cloud.firestore {
 ```
 
 ### banLogs/{logId}
+
 ```javascript
 {
   action: 'ban' | 'unban' | 'mass_ban',
@@ -168,6 +175,7 @@ service cloud.firestore {
 ```
 
 ### onlineSessions/{userId}
+
 ```javascript
 {
   userId: string,
@@ -199,6 +207,7 @@ service cloud.firestore {
 ## Test des règles :
 
 Utilisez l'onglet "Simulator" dans la console Firebase pour tester :
+
 - Lecture des utilisateurs bannis
 - Écriture de nouveaux bans (admin uniquement)
 - Mise à jour des statuts de ban

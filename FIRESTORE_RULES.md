@@ -1,7 +1,9 @@
 # 🔥 Configuration des Règles de Sécurité Firestore
 
 ## Problème Résolu
+
 L'application utilise maintenant un **système hybride** qui fonctionne avec ou sans Firebase configuré :
+
 - ✅ **Avec Firebase** : Données synchronisées en temps réel
 - ✅ **Sans Firebase** : Sauvegarde locale avec localStorage
 
@@ -10,6 +12,7 @@ L'application utilise maintenant un **système hybride** qui fonctionne avec ou 
 Si vous voulez utiliser Firebase complètement, ajoutez ces règles dans votre console Firebase :
 
 ### 1. Accéder aux Règles
+
 1. Allez sur https://console.firebase.google.com
 2. Sélectionnez votre projet `keysystem-d0b86`
 3. Dans le menu : **Firestore Database** > **Règles**
@@ -24,7 +27,7 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if true;
     }
-    
+
     // OR for production, use these rules:
     /*
     // Exploits collection
@@ -32,19 +35,19 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null;
     }
-    
-    // Scripts collection  
+
+    // Scripts collection
     match /scripts/{document} {
       allow read: if true;
       allow write: if request.auth != null;
     }
-    
+
     // Forum collection
     match /forum/{document} {
       allow read: if true;
       allow write: if true; // Allow anyone to post
     }
-    
+
     // Settings collection (maintenance, etc.)
     match /settings/{document} {
       allow read: if true;
@@ -113,12 +116,14 @@ L'application créera automatiquement ces collections :
 ```
 
 ## État Actuel
+
 ✅ **L'application fonctionne maintenant** même sans configuration Firebase
 ✅ **Sauvegarde automatique** en local si Firebase indisponible  
 ✅ **Interface identique** quel que soit le mode de fonctionnement
 ✅ **Messages informatifs** pour indiquer le mode actuel
 
 ## Indicateurs Visuels
+
 - 🟢 **Mode Firebase** : Données synchronisées en temps réel
 - 🟡 **Mode Local** : "Mode local - Données sauvegardées localement"
 - 🔴 **Erreur** : "Mode hors ligne - Firebase inaccessible"

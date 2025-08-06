@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-export type Role = 'fondateur' | 'admin' | 'moderateur' | 'user' | string; // Support des rôles personnalisés
+export type Role = "fondateur" | "admin" | "moderateur" | "user" | string; // Support des rôles personnalisés
 
 export interface RolePermissions {
   canManageMaintenance: boolean;
@@ -18,7 +18,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   admin: {
     canManageMaintenance: false,
@@ -26,7 +26,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   moderateur: {
     canManageMaintenance: false,
@@ -34,7 +34,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   user: {
     canManageMaintenance: false,
@@ -42,13 +42,13 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: false,
     canWarnUsers: false,
     canManageForum: false,
-    canAccessAdminPanel: false
-  }
+    canAccessAdminPanel: false,
+  },
 };
 
 // Stockage local simple des rôles
-const LOCAL_ROLES_KEY = 'sysbreak_local_roles';
-const CUSTOM_ROLES_KEY = 'sysbreak_custom_roles';
+const LOCAL_ROLES_KEY = "sysbreak_local_roles";
+const CUSTOM_ROLES_KEY = "sysbreak_custom_roles";
 
 interface LocalUserRole {
   userId: string;
@@ -86,7 +86,7 @@ export function useLocalRoleSystem() {
         setCustomRoles(JSON.parse(customStored));
       }
     } catch (err) {
-      console.error('Erreur lors du chargement des rôles locaux:', err);
+      console.error("Erreur lors du chargement des rôles locaux:", err);
     }
   }, []);
 
@@ -96,7 +96,7 @@ export function useLocalRoleSystem() {
       localStorage.setItem(LOCAL_ROLES_KEY, JSON.stringify(roles));
       setLocalRoles(roles);
     } catch (err) {
-      console.error('Erreur lors de la sauvegarde des rôles:', err);
+      console.error("Erreur lors de la sauvegarde des rôles:", err);
     }
   };
 
@@ -105,17 +105,20 @@ export function useLocalRoleSystem() {
       localStorage.setItem(CUSTOM_ROLES_KEY, JSON.stringify(roles));
       setCustomRoles(roles);
     } catch (err) {
-      console.error('Erreur lors de la sauvegarde des rôles personnalisés:', err);
+      console.error(
+        "Erreur lors de la sauvegarde des rôles personnalisés:",
+        err,
+      );
     }
   };
 
   // Obtenir le rôle d'un utilisateur
   const getUserRole = (userId: string): Role => {
     // Le fondateur est toujours l'admin officiel
-    if (userId === 'admin-1') return 'fondateur';
-    
-    const userRole = localRoles.find(role => role.userId === userId);
-    return userRole?.role || 'user';
+    if (userId === "admin-1") return "fondateur";
+
+    const userRole = localRoles.find((role) => role.userId === userId);
+    return userRole?.role || "user";
   };
 
   // Obtenir les permissions d'un utilisateur
@@ -128,7 +131,7 @@ export function useLocalRoleSystem() {
     }
 
     // Vérifier si c'est un rôle personnalisé
-    const customRole = customRoles.find(cr => cr.id === role);
+    const customRole = customRoles.find((cr) => cr.id === role);
     if (customRole) {
       return customRole.permissions;
     }
@@ -139,11 +142,11 @@ export function useLocalRoleSystem() {
 
   // Assigner un rôle (mode local)
   const assignRole = async (
-    targetUserId: string, 
-    targetUsername: string, 
-    role: Role, 
+    targetUserId: string,
+    targetUsername: string,
+    role: Role,
     assignerUserId: string,
-    assignerUsername: string
+    assignerUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -151,28 +154,31 @@ export function useLocalRoleSystem() {
 
       const assignerPermissions = getUserPermissions(assignerUserId);
       if (!assignerPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour assigner des rôles');
+        throw new Error(
+          "Vous n'avez pas les permissions pour assigner des rôles",
+        );
       }
 
-      if (role === 'fondateur') {
-        throw new Error('Le rôle fondateur ne peut pas être assigné');
+      if (role === "fondateur") {
+        throw new Error("Le rôle fondateur ne peut pas être assigné");
       }
 
       const newRole: LocalUserRole = {
         userId: targetUserId,
         role,
         assignedBy: assignerUsername,
-        assignedAt: new Date().toISOString()
+        assignedAt: new Date().toISOString(),
       };
 
       const updatedRoles = [
-        ...localRoles.filter(r => r.userId !== targetUserId),
-        newRole
+        ...localRoles.filter((r) => r.userId !== targetUserId),
+        newRole,
       ];
 
       saveRoles(updatedRoles);
-      console.log(`✅ [LOCAL] Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`);
-
+      console.log(
+        `✅ [LOCAL] Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -183,9 +189,9 @@ export function useLocalRoleSystem() {
 
   // Révoquer un rôle (mode local)
   const revokeRole = async (
-    targetUserId: string, 
+    targetUserId: string,
     revokerUserId: string,
-    revokerUsername: string
+    revokerUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -193,18 +199,21 @@ export function useLocalRoleSystem() {
 
       const revokerPermissions = getUserPermissions(revokerUserId);
       if (!revokerPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour révoquer des rôles');
+        throw new Error(
+          "Vous n'avez pas les permissions pour révoquer des rôles",
+        );
       }
 
-      if (targetUserId === 'admin-1') {
-        throw new Error('Le rôle fondateur ne peut pas être révoqué');
+      if (targetUserId === "admin-1") {
+        throw new Error("Le rôle fondateur ne peut pas être révoqué");
       }
 
-      const updatedRoles = localRoles.filter(r => r.userId !== targetUserId);
+      const updatedRoles = localRoles.filter((r) => r.userId !== targetUserId);
       saveRoles(updatedRoles);
-      
-      console.log(`✅ [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
 
+      console.log(
+        `✅ [LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -220,7 +229,7 @@ export function useLocalRoleSystem() {
     color: string,
     permissions: RolePermissions,
     creatorUserId: string,
-    creatorUsername: string
+    creatorUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -228,10 +237,10 @@ export function useLocalRoleSystem() {
 
       const creatorPermissions = getUserPermissions(creatorUserId);
       if (!creatorPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour créer des rôles');
+        throw new Error("Vous n'avez pas les permissions pour créer des rôles");
       }
 
-      const roleId = `custom_${name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
+      const roleId = `custom_${name.toLowerCase().replace(/\s+/g, "_")}_${Date.now()}`;
 
       const newRole: CustomRole = {
         id: roleId,
@@ -240,14 +249,15 @@ export function useLocalRoleSystem() {
         color,
         permissions,
         createdBy: creatorUsername,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       const updatedCustomRoles = [...customRoles, newRole];
       saveCustomRoles(updatedCustomRoles);
 
-      console.log(`✅ [LOCAL] Rôle personnalisé "${displayName}" créé par ${creatorUsername}`);
-
+      console.log(
+        `✅ [LOCAL] Rôle personnalisé "${displayName}" créé par ${creatorUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -260,7 +270,7 @@ export function useLocalRoleSystem() {
   const deleteCustomRole = async (
     roleId: string,
     deleterUserId: string,
-    deleterUsername: string
+    deleterUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -268,19 +278,22 @@ export function useLocalRoleSystem() {
 
       const deleterPermissions = getUserPermissions(deleterUserId);
       if (!deleterPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour supprimer des rôles');
+        throw new Error(
+          "Vous n'avez pas les permissions pour supprimer des rôles",
+        );
       }
 
       // Retirer le rôle de tous les utilisateurs qui l'ont
-      const updatedUserRoles = localRoles.filter(r => r.role !== roleId);
+      const updatedUserRoles = localRoles.filter((r) => r.role !== roleId);
       saveRoles(updatedUserRoles);
 
       // Supprimer le rôle personnalisé
-      const updatedCustomRoles = customRoles.filter(r => r.id !== roleId);
+      const updatedCustomRoles = customRoles.filter((r) => r.id !== roleId);
       saveCustomRoles(updatedCustomRoles);
 
-      console.log(`✅ [LOCAL] Rôle personnalisé supprimé par ${deleterUsername}`);
-
+      console.log(
+        `✅ [LOCAL] Rôle personnalisé supprimé par ${deleterUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -295,27 +308,30 @@ export function useLocalRoleSystem() {
       return role;
     }
 
-    const customRole = customRoles.find(cr => cr.id === role);
+    const customRole = customRoles.find((cr) => cr.id === role);
     return customRole?.displayName || role;
   };
 
   // Obtenir la couleur d'un rôle
   const getRoleColor = (role: Role): string => {
     switch (role) {
-      case 'fondateur': return '#F59E0B'; // amber
-      case 'admin': return '#8B5CF6'; // purple
-      case 'moderateur': return '#3B82F6'; // blue
+      case "fondateur":
+        return "#F59E0B"; // amber
+      case "admin":
+        return "#8B5CF6"; // purple
+      case "moderateur":
+        return "#3B82F6"; // blue
       default: {
-        const customRole = customRoles.find(cr => cr.id === role);
-        return customRole?.color || '#6B7280'; // gray
+        const customRole = customRoles.find((cr) => cr.id === role);
+        return customRole?.color || "#6B7280"; // gray
       }
     }
   };
 
   // Obtenir le nom pour les actions
   const getDisplayNameForActions = (userId: string): string => {
-    if (userId === 'admin-1') return 'Fondateur Antoine80';
-    return 'Admin';
+    if (userId === "admin-1") return "Fondateur Antoine80";
+    return "Admin";
   };
 
   return {
@@ -331,6 +347,6 @@ export function useLocalRoleSystem() {
     deleteCustomRole,
     getRoleDisplayName,
     getRoleColor,
-    getDisplayNameForActions
+    getDisplayNameForActions,
   };
 }

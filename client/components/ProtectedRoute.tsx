@@ -14,7 +14,9 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          <span className="text-muted-foreground">Vérification des permissions...</span>
+          <span className="text-muted-foreground">
+            Vérification des permissions...
+          </span>
         </div>
       </div>
     );

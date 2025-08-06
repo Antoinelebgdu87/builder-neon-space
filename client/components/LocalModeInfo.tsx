@@ -1,5 +1,5 @@
-import React from 'react';
-import { HardDrive, CheckCircle } from 'lucide-react';
+import React from "react";
+import { HardDrive, CheckCircle } from "lucide-react";
 
 export function LocalModeInfo() {
   return (

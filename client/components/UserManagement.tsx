@@ -1,27 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { 
-  Users, 
-  UserPlus, 
-  UserMinus, 
-  Shield, 
-  ShieldOff, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  EyeOff, 
-  Clock, 
-  Activity, 
-  Key, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Users,
+  UserPlus,
+  UserMinus,
+  Shield,
+  ShieldOff,
+  Edit,
+  Trash2,
+  Eye,
+  EyeOff,
+  Clock,
+  Activity,
+  Key,
   Settings,
   Search,
   Filter,
@@ -34,12 +50,15 @@ import {
   WifiOff,
   Loader2,
   Calendar,
-  TrendingUp
-} from 'lucide-react';
-import { useAdvancedUserManagement, type UserAccount } from '@/hooks/useAdvancedUserManagement';
-import { useOnlineStatusCleanup } from '@/hooks/useOnlineStatusCleanup';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
+  TrendingUp,
+} from "lucide-react";
+import {
+  useAdvancedUserManagement,
+  type UserAccount,
+} from "@/hooks/useAdvancedUserManagement";
+import { useOnlineStatusCleanup } from "@/hooks/useOnlineStatusCleanup";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface UserManagementProps {
   className?: string;
@@ -60,61 +79,75 @@ export function UserManagement({ className }: UserManagementProps) {
     getOfflineUsers,
     getAllUsersWithStatus,
     getUserStatistics,
-    refresh
+    refresh,
   } = useAdvancedUserManagement();
 
   const {
     isRunning: cleanupRunning,
     triggerManualCleanup,
-    getCleanupStats
+    getCleanupStats,
   } = useOnlineStatusCleanup();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'online' | 'offline' | 'banned'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "online" | "offline" | "banned"
+  >("all");
   const [selectedUser, setSelectedUser] = useState<UserAccount | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [cleanupStats, setCleanupStats] = useState({ totalSessions: 0, expiredSessions: 0, staleUsers: 0 });
+  const [cleanupStats, setCleanupStats] = useState({
+    totalSessions: 0,
+    expiredSessions: 0,
+    staleUsers: 0,
+  });
   const [isCleaningUp, setIsCleaningUp] = useState(false);
   const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
   const [banFormData, setBanFormData] = useState({
-    reason: '',
-    banType: 'temporary' as 'temporary' | 'permanent',
-    hours: 24
+    reason: "",
+    banType: "temporary" as "temporary" | "permanent",
+    hours: 24,
   });
   const [userToBan, setUserToBan] = useState<UserAccount | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states
   const [createForm, setCreateForm] = useState({
-    username: '',
-    email: '',
-    password: '',
-    isAdmin: false
+    username: "",
+    email: "",
+    password: "",
+    isAdmin: false,
   });
 
   const [editForm, setEditForm] = useState({
-    username: '',
-    email: '',
-    displayName: '',
-    bio: '',
+    username: "",
+    email: "",
+    displayName: "",
+    bio: "",
     isAdmin: false,
     isBanned: false,
-    banReason: ''
+    banReason: "",
   });
 
   const [passwordForm, setPasswordForm] = useState({
-    newPassword: '',
-    confirmPassword: ''
+    newPassword: "",
+    confirmPassword: "",
   });
 
   // Reset forms
   const resetForms = () => {
-    setCreateForm({ username: '', email: '', password: '', isAdmin: false });
-    setEditForm({ username: '', email: '', displayName: '', bio: '', isAdmin: false, isBanned: false, banReason: '' });
-    setPasswordForm({ newPassword: '', confirmPassword: '' });
+    setCreateForm({ username: "", email: "", password: "", isAdmin: false });
+    setEditForm({
+      username: "",
+      email: "",
+      displayName: "",
+      bio: "",
+      isAdmin: false,
+      isBanned: false,
+      banReason: "",
+    });
+    setPasswordForm({ newPassword: "", confirmPassword: "" });
     setSelectedUser(null);
   };
 
@@ -122,21 +155,25 @@ export function UserManagement({ className }: UserManagementProps) {
   const handleCreateUser = async () => {
     try {
       if (!createForm.username || !createForm.password) {
-        alert('Nom d\'utilisateur et mot de passe requis');
+        alert("Nom d'utilisateur et mot de passe requis");
         return;
       }
 
-      const newUser = await createAccount(createForm.username, createForm.password, createForm.email);
-      
+      const newUser = await createAccount(
+        createForm.username,
+        createForm.password,
+        createForm.email,
+      );
+
       if (createForm.isAdmin) {
         await updateUserProfile(newUser.id, { isAdmin: true });
       }
 
       resetForms();
       setIsCreateDialogOpen(false);
-      alert('Utilisateur créé avec succès');
+      alert("Utilisateur créé avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la création');
+      alert(error.message || "Erreur lors de la création");
     }
   };
 
@@ -150,10 +187,10 @@ export function UserManagement({ className }: UserManagementProps) {
         profile: {
           ...selectedUser.profile,
           displayName: editForm.displayName,
-          bio: editForm.bio
+          bio: editForm.bio,
         },
         isAdmin: editForm.isAdmin,
-        isBanned: editForm.isBanned
+        isBanned: editForm.isBanned,
       };
 
       // Only add banReason if the user is actually banned
@@ -165,9 +202,9 @@ export function UserManagement({ className }: UserManagementProps) {
 
       resetForms();
       setIsEditDialogOpen(false);
-      alert('Utilisateur modifié avec succès');
+      alert("Utilisateur modifié avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la modification');
+      alert(error.message || "Erreur lors de la modification");
     }
   };
 
@@ -177,22 +214,22 @@ export function UserManagement({ className }: UserManagementProps) {
 
     try {
       if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        alert('Les mots de passe ne correspondent pas');
+        alert("Les mots de passe ne correspondent pas");
         return;
       }
 
       if (passwordForm.newPassword.length < 6) {
-        alert('Le mot de passe doit contenir au moins 6 caractères');
+        alert("Le mot de passe doit contenir au moins 6 caractères");
         return;
       }
 
       await updateUserPassword(selectedUser.id, passwordForm.newPassword);
-      
+
       resetForms();
       setIsPasswordDialogOpen(false);
-      alert('Mot de passe modifié avec succès');
+      alert("Mot de passe modifié avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la modification du mot de passe');
+      alert(error.message || "Erreur lors de la modification du mot de passe");
     }
   };
 
@@ -200,16 +237,16 @@ export function UserManagement({ className }: UserManagementProps) {
   const handleDeleteUser = async (user: UserAccount) => {
     try {
       await deleteUser(user.id);
-      alert('Utilisateur supprimé avec succès');
+      alert("Utilisateur supprimé avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la suppression');
+      alert(error.message || "Erreur lors de la suppression");
     }
   };
 
   // Handle ban user - Simple and instant
   const handleBanUser = async () => {
     if (!userToBan || !banFormData.reason.trim()) {
-      alert('Veuillez sélectionner un utilisateur et spécifier une raison');
+      alert("Veuillez sélectionner un utilisateur et spécifier une raison");
       return;
     }
 
@@ -220,10 +257,10 @@ export function UserManagement({ className }: UserManagementProps) {
         banReason: banFormData.reason,
         banType: banFormData.banType,
         bannedAt: new Date().toISOString(),
-        bannedBy: 'Admin'
+        bannedBy: "Admin",
       };
 
-      if (banFormData.banType === 'temporary' && banFormData.hours) {
+      if (banFormData.banType === "temporary" && banFormData.hours) {
         const expiryDate = new Date();
         expiryDate.setHours(expiryDate.getHours() + banFormData.hours);
         banData.banExpiry = expiryDate.toISOString();
@@ -232,13 +269,13 @@ export function UserManagement({ className }: UserManagementProps) {
       // Update user directly - instant
       await updateUserProfile(userToBan.id, banData);
 
-      setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+      setBanFormData({ reason: "", banType: "temporary", hours: 24 });
       setUserToBan(null);
       setIsBanDialogOpen(false);
-      alert('Utilisateur banni avec succès');
+      alert("Utilisateur banni avec succès");
       refresh();
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du bannissement');
+      alert(error.message || "Erreur lors du bannissement");
     } finally {
       setIsSubmitting(false);
     }
@@ -253,12 +290,12 @@ export function UserManagement({ className }: UserManagementProps) {
         banType: undefined,
         banExpiry: undefined,
         bannedAt: undefined,
-        bannedBy: undefined
+        bannedBy: undefined,
       });
-      alert('Utilisateur débanni avec succès');
+      alert("Utilisateur débanni avec succès");
       refresh();
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du débannissement');
+      alert(error.message || "Erreur lors du débannissement");
     }
   };
 
@@ -273,12 +310,12 @@ export function UserManagement({ className }: UserManagementProps) {
     setSelectedUser(user);
     setEditForm({
       username: user.username,
-      email: user.email || '',
-      displayName: user.profile?.displayName || '',
-      bio: user.profile?.bio || '',
+      email: user.email || "",
+      displayName: user.profile?.displayName || "",
+      bio: user.profile?.bio || "",
       isAdmin: user.isAdmin,
       isBanned: user.isBanned,
-      banReason: user.banReason || ''
+      banReason: user.banReason || "",
     });
     setIsEditDialogOpen(true);
   };
@@ -311,7 +348,7 @@ export function UserManagement({ className }: UserManagementProps) {
     if (days > 0) return `il y a ${days}j`;
     if (hours > 0) return `il y a ${hours}h`;
     if (minutes > 0) return `il y a ${minutes}m`;
-    return 'À l\'instant';
+    return "À l'instant";
   };
 
   // Load cleanup stats
@@ -320,7 +357,7 @@ export function UserManagement({ className }: UserManagementProps) {
       const stats = await getCleanupStats();
       setCleanupStats(stats);
     } catch (error) {
-      console.error('Error loading cleanup stats:', error);
+      console.error("Error loading cleanup stats:", error);
     }
   };
 
@@ -329,11 +366,13 @@ export function UserManagement({ className }: UserManagementProps) {
     setIsCleaningUp(true);
     try {
       const result = await triggerManualCleanup();
-      alert(`Nettoyage effectué: ${result.expiredSessions} sessions expirées, ${result.offlineUsers} utilisateurs marqués hors ligne`);
+      alert(
+        `Nettoyage effectué: ${result.expiredSessions} sessions expirées, ${result.offlineUsers} utilisateurs marqués hors ligne`,
+      );
       await loadCleanupStats();
       refresh();
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du nettoyage');
+      alert(error.message || "Erreur lors du nettoyage");
     } finally {
       setIsCleaningUp(false);
     }
@@ -342,11 +381,11 @@ export function UserManagement({ className }: UserManagementProps) {
   // Export users data
   const exportUsersData = () => {
     const data = JSON.stringify(safeAllUsersWithStatus, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `users-export-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `users-export-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -358,17 +397,20 @@ export function UserManagement({ className }: UserManagementProps) {
     }
   }, [isOnline]);
 
-
   // Ensure accounts is always an array and handle loading state properly
   const safeAccounts = Array.isArray(accounts) ? accounts : [];
-  const safeOnlineSessions = Array.isArray(onlineSessions) ? onlineSessions : [];
+  const safeOnlineSessions = Array.isArray(onlineSessions)
+    ? onlineSessions
+    : [];
 
   // Early return if still loading or if accounts is not ready
   if (loading || accounts === undefined) {
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground">Chargement des utilisateurs...</span>
+        <span className="ml-2 text-muted-foreground">
+          Chargement des utilisateurs...
+        </span>
       </div>
     );
   }
@@ -376,11 +418,12 @@ export function UserManagement({ className }: UserManagementProps) {
   // Recalculate with safe data
   const safeStatistics = {
     total: safeAccounts.length,
-    online: safeAccounts.filter(acc => acc?.isOnline).length,
-    offline: safeAccounts.length - safeAccounts.filter(acc => acc?.isOnline).length,
-    banned: safeAccounts.filter(acc => acc?.isBanned).length,
-    admins: safeAccounts.filter(acc => acc?.isAdmin).length,
-    activeUsers: safeAccounts.filter(acc => {
+    online: safeAccounts.filter((acc) => acc?.isOnline).length,
+    offline:
+      safeAccounts.length - safeAccounts.filter((acc) => acc?.isOnline).length,
+    banned: safeAccounts.filter((acc) => acc?.isBanned).length,
+    admins: safeAccounts.filter((acc) => acc?.isAdmin).length,
+    activeUsers: safeAccounts.filter((acc) => {
       if (!acc?.lastActive) return false;
       try {
         const lastActive = new Date(acc.lastActive);
@@ -389,26 +432,32 @@ export function UserManagement({ className }: UserManagementProps) {
       } catch (error) {
         return false;
       }
-    }).length
+    }).length,
   };
 
-  const safeAllUsersWithStatus = safeAccounts.map(account => ({
+  const safeAllUsersWithStatus = safeAccounts.map((account) => ({
     ...account,
     profile: account?.profile || { displayName: account?.username },
     statistics: account?.statistics || { loginCount: 0, totalTimeOnline: 0 },
-    sessionInfo: safeOnlineSessions.find(session => session?.userId === account?.id)
+    sessionInfo: safeOnlineSessions.find(
+      (session) => session?.userId === account?.id,
+    ),
   }));
 
   // Filter users based on search and status
-  const filteredUsers = safeAllUsersWithStatus.filter(user => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.profile?.displayName?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers = safeAllUsersWithStatus.filter((user) => {
+    const matchesSearch =
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.profile?.displayName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' ||
-                         (statusFilter === 'online' && user.isOnline) ||
-                         (statusFilter === 'offline' && !user.isOnline) ||
-                         (statusFilter === 'banned' && user.isBanned);
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "online" && user.isOnline) ||
+      (statusFilter === "offline" && !user.isOnline) ||
+      (statusFilter === "banned" && user.isBanned);
 
     return matchesSearch && matchesStatus;
   });
@@ -436,7 +485,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-blue-400" />
               <div>
-                <div className="text-2xl font-bold text-blue-400">{safeStatistics.total}</div>
+                <div className="text-2xl font-bold text-blue-400">
+                  {safeStatistics.total}
+                </div>
                 <div className="text-xs text-muted-foreground">Total</div>
               </div>
             </div>
@@ -448,7 +499,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Globe className="w-5 h-5 text-green-400" />
               <div>
-                <div className="text-2xl font-bold text-green-400">{safeStatistics.online}</div>
+                <div className="text-2xl font-bold text-green-400">
+                  {safeStatistics.online}
+                </div>
                 <div className="text-xs text-muted-foreground">En ligne</div>
               </div>
             </div>
@@ -460,7 +513,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <WifiOff className="w-5 h-5 text-gray-400" />
               <div>
-                <div className="text-2xl font-bold text-gray-400">{safeStatistics.offline}</div>
+                <div className="text-2xl font-bold text-gray-400">
+                  {safeStatistics.offline}
+                </div>
                 <div className="text-xs text-muted-foreground">Hors ligne</div>
               </div>
             </div>
@@ -472,7 +527,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Ban className="w-5 h-5 text-red-400" />
               <div>
-                <div className="text-2xl font-bold text-red-400">{safeStatistics.banned}</div>
+                <div className="text-2xl font-bold text-red-400">
+                  {safeStatistics.banned}
+                </div>
                 <div className="text-xs text-muted-foreground">Bannis</div>
               </div>
             </div>
@@ -484,7 +541,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-purple-400" />
               <div>
-                <div className="text-2xl font-bold text-purple-400">{safeStatistics.admins}</div>
+                <div className="text-2xl font-bold text-purple-400">
+                  {safeStatistics.admins}
+                </div>
                 <div className="text-xs text-muted-foreground">Admins</div>
               </div>
             </div>
@@ -496,7 +555,9 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Activity className="w-5 h-5 text-orange-400" />
               <div>
-                <div className="text-2xl font-bold text-orange-400">{safeStatistics.activeUsers}</div>
+                <div className="text-2xl font-bold text-orange-400">
+                  {safeStatistics.activeUsers}
+                </div>
                 <div className="text-xs text-muted-foreground">Actifs 24h</div>
               </div>
             </div>
@@ -512,8 +573,12 @@ export function UserManagement({ className }: UserManagementProps) {
               <div className="flex items-center space-x-2">
                 <Globe className="w-5 h-5 text-cyan-400" />
                 <div>
-                  <div className="text-2xl font-bold text-cyan-400">{cleanupStats.totalSessions}</div>
-                  <div className="text-xs text-muted-foreground">Sessions actives</div>
+                  <div className="text-2xl font-bold text-cyan-400">
+                    {cleanupStats.totalSessions}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Sessions actives
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -524,8 +589,12 @@ export function UserManagement({ className }: UserManagementProps) {
               <div className="flex items-center space-x-2">
                 <Clock className="w-5 h-5 text-yellow-400" />
                 <div>
-                  <div className="text-2xl font-bold text-yellow-400">{cleanupStats.staleUsers}</div>
-                  <div className="text-xs text-muted-foreground">Sessions inactives</div>
+                  <div className="text-2xl font-bold text-yellow-400">
+                    {cleanupStats.staleUsers}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Sessions inactives
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -536,8 +605,12 @@ export function UserManagement({ className }: UserManagementProps) {
               <div className="flex items-center space-x-2">
                 <XCircle className="w-5 h-5 text-red-400" />
                 <div>
-                  <div className="text-2xl font-bold text-red-400">{cleanupStats.expiredSessions}</div>
-                  <div className="text-xs text-muted-foreground">Sessions expirées</div>
+                  <div className="text-2xl font-bold text-red-400">
+                    {cleanupStats.expiredSessions}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Sessions expirées
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -549,9 +622,11 @@ export function UserManagement({ className }: UserManagementProps) {
                 <Settings className="w-5 h-5 text-primary" />
                 <div>
                   <div className="text-sm font-bold text-primary">
-                    {cleanupRunning ? 'Actif' : 'Inactif'}
+                    {cleanupRunning ? "Actif" : "Inactif"}
                   </div>
-                  <div className="text-xs text-muted-foreground">Nettoyage auto</div>
+                  <div className="text-xs text-muted-foreground">
+                    Nettoyage auto
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -591,9 +666,16 @@ export function UserManagement({ className }: UserManagementProps) {
               </div>
 
               {/* Firebase Status */}
-              <Badge variant={isOnline ? "default" : "secondary"} className="flex items-center space-x-1">
-                {isOnline ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                <span>{isOnline ? 'Firebase Connecté' : 'Mode Local'}</span>
+              <Badge
+                variant={isOnline ? "default" : "secondary"}
+                className="flex items-center space-x-1"
+              >
+                {isOnline ? (
+                  <CheckCircle className="w-3 h-3" />
+                ) : (
+                  <XCircle className="w-3 h-3" />
+                )}
+                <span>{isOnline ? "Firebase Connecté" : "Mode Local"}</span>
               </Badge>
             </div>
 
@@ -632,12 +714,15 @@ export function UserManagement({ className }: UserManagementProps) {
                   ) : (
                     <Settings className="w-4 h-4" />
                   )}
-                  <span>{isCleaningUp ? 'Nettoyage...' : 'Nettoyer'}</span>
+                  <span>{isCleaningUp ? "Nettoyage..." : "Nettoyer"}</span>
                 </Button>
               )}
 
               {/* Create User Dialog */}
-              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+              <Dialog
+                open={isCreateDialogOpen}
+                onOpenChange={setIsCreateDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button className="bg-gradient-primary hover:opacity-90 text-white">
                     <UserPlus className="w-4 h-4 mr-2" />
@@ -654,7 +739,12 @@ export function UserManagement({ className }: UserManagementProps) {
                       <Input
                         id="username"
                         value={createForm.username}
-                        onChange={(e) => setCreateForm(prev => ({ ...prev, username: e.target.value }))}
+                        onChange={(e) =>
+                          setCreateForm((prev) => ({
+                            ...prev,
+                            username: e.target.value,
+                          }))
+                        }
                         placeholder="nom_utilisateur"
                       />
                     </div>
@@ -664,7 +754,12 @@ export function UserManagement({ className }: UserManagementProps) {
                         id="email"
                         type="email"
                         value={createForm.email}
-                        onChange={(e) => setCreateForm(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setCreateForm((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         placeholder="email@exemple.com"
                       />
                     </div>
@@ -674,7 +769,12 @@ export function UserManagement({ className }: UserManagementProps) {
                         id="password"
                         type="password"
                         value={createForm.password}
-                        onChange={(e) => setCreateForm(prev => ({ ...prev, password: e.target.value }))}
+                        onChange={(e) =>
+                          setCreateForm((prev) => ({
+                            ...prev,
+                            password: e.target.value,
+                          }))
+                        }
                         placeholder="Mot de passe sécurisé"
                       />
                     </div>
@@ -682,17 +782,26 @@ export function UserManagement({ className }: UserManagementProps) {
                       <Switch
                         id="isAdmin"
                         checked={createForm.isAdmin}
-                        onCheckedChange={(checked) => setCreateForm(prev => ({ ...prev, isAdmin: checked }))}
+                        onCheckedChange={(checked) =>
+                          setCreateForm((prev) => ({
+                            ...prev,
+                            isAdmin: checked,
+                          }))
+                        }
                       />
                       <Label htmlFor="isAdmin">Administrateur</Label>
                     </div>
                     <div className="flex justify-end space-x-2">
-                      <Button variant="outline" onClick={() => { resetForms(); setIsCreateDialogOpen(false); }}>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          resetForms();
+                          setIsCreateDialogOpen(false);
+                        }}
+                      >
                         Annuler
                       </Button>
-                      <Button onClick={handleCreateUser}>
-                        Créer
-                      </Button>
+                      <Button onClick={handleCreateUser}>Créer</Button>
                     </div>
                   </div>
                 </DialogContent>
@@ -729,28 +838,41 @@ export function UserManagement({ className }: UserManagementProps) {
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-4 flex-1">
                       {/* Avatar */}
-                      <div className={cn(
-                        "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
-                        user.isOnline ? "bg-green-500" : "bg-gray-500"
-                      )}>
-                        {user.profile?.displayName?.[0] || user.username[0].toUpperCase()}
+                      <div
+                        className={cn(
+                          "w-12 h-12 rounded-full flex items-center justify-center text-white font-bold",
+                          user.isOnline ? "bg-green-500" : "bg-gray-500",
+                        )}
+                      >
+                        {user.profile?.displayName?.[0] ||
+                          user.username[0].toUpperCase()}
                       </div>
 
                       {/* User Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-semibold text-lg">{user.profile?.displayName || user.username}</h3>
-                          <Badge variant="outline" className="text-xs">@{user.username}</Badge>
-                          
+                          <h3 className="font-semibold text-lg">
+                            {user.profile?.displayName || user.username}
+                          </h3>
+                          <Badge variant="outline" className="text-xs">
+                            @{user.username}
+                          </Badge>
+
                           {user.isOnline && (
-                            <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">
+                            <Badge
+                              variant="default"
+                              className="bg-green-500/20 text-green-400 border-green-500/30"
+                            >
                               <div className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse" />
                               En ligne
                             </Badge>
                           )}
 
                           {user.isAdmin && (
-                            <Badge variant="secondary" className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                            <Badge
+                              variant="secondary"
+                              className="bg-purple-500/20 text-purple-400 border-purple-500/30"
+                            >
                               <Shield className="w-3 h-3 mr-1" />
                               Admin
                             </Badge>
@@ -765,11 +887,15 @@ export function UserManagement({ className }: UserManagementProps) {
                         </div>
 
                         {user.email && (
-                          <p className="text-sm text-muted-foreground mb-1">{user.email}</p>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {user.email}
+                          </p>
                         )}
 
                         {user.profile?.bio && (
-                          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{user.profile.bio}</p>
+                          <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                            {user.profile.bio}
+                          </p>
                         )}
 
                         <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
@@ -777,7 +903,7 @@ export function UserManagement({ className }: UserManagementProps) {
                             <Calendar className="w-3 h-3" />
                             <span>Créé {formatTimeAgo(user.createdAt)}</span>
                           </div>
-                          
+
                           <div className="flex items-center space-x-1">
                             <Clock className="w-3 h-3" />
                             <span>Vu {formatTimeAgo(user.lastActive)}</span>
@@ -785,18 +911,28 @@ export function UserManagement({ className }: UserManagementProps) {
 
                           <div className="flex items-center space-x-1">
                             <TrendingUp className="w-3 h-3" />
-                            <span>{user.statistics?.loginCount || 0} connexions</span>
+                            <span>
+                              {user.statistics?.loginCount || 0} connexions
+                            </span>
                           </div>
 
                           <div className="flex items-center space-x-1">
                             <Activity className="w-3 h-3" />
-                            <span>{formatDuration(user.statistics?.totalTimeOnline || 0)} total</span>
+                            <span>
+                              {formatDuration(
+                                user.statistics?.totalTimeOnline || 0,
+                              )}{" "}
+                              total
+                            </span>
                           </div>
 
                           {user.sessionInfo && (
                             <div className="flex items-center space-x-1">
                               <Globe className="w-3 h-3" />
-                              <span>Session depuis {formatTimeAgo(user.sessionInfo.startTime)}</span>
+                              <span>
+                                Session depuis{" "}
+                                {formatTimeAgo(user.sessionInfo.startTime)}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -859,10 +995,12 @@ export function UserManagement({ className }: UserManagementProps) {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Supprimer l'utilisateur</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Supprimer l'utilisateur
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous sûr de vouloir supprimer l'utilisateur "{user.username}" ?
-                              Cette action est irréversible.
+                              Êtes-vous sûr de vouloir supprimer l'utilisateur "
+                              {user.username}" ? Cette action est irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -907,7 +1045,9 @@ export function UserManagement({ className }: UserManagementProps) {
                 id="edit-email"
                 type="email"
                 value={editForm.email}
-                onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setEditForm((prev) => ({ ...prev, email: e.target.value }))
+                }
                 placeholder="email@exemple.com"
               />
             </div>
@@ -916,7 +1056,12 @@ export function UserManagement({ className }: UserManagementProps) {
               <Input
                 id="edit-displayName"
                 value={editForm.displayName}
-                onChange={(e) => setEditForm(prev => ({ ...prev, displayName: e.target.value }))}
+                onChange={(e) =>
+                  setEditForm((prev) => ({
+                    ...prev,
+                    displayName: e.target.value,
+                  }))
+                }
                 placeholder="Nom d'affichage"
               />
             </div>
@@ -925,7 +1070,9 @@ export function UserManagement({ className }: UserManagementProps) {
               <Textarea
                 id="edit-bio"
                 value={editForm.bio}
-                onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
+                onChange={(e) =>
+                  setEditForm((prev) => ({ ...prev, bio: e.target.value }))
+                }
                 placeholder="Biographie de l'utilisateur"
                 rows={3}
               />
@@ -935,7 +1082,9 @@ export function UserManagement({ className }: UserManagementProps) {
                 <Switch
                   id="edit-isAdmin"
                   checked={editForm.isAdmin}
-                  onCheckedChange={(checked) => setEditForm(prev => ({ ...prev, isAdmin: checked }))}
+                  onCheckedChange={(checked) =>
+                    setEditForm((prev) => ({ ...prev, isAdmin: checked }))
+                  }
                 />
                 <Label htmlFor="edit-isAdmin">Administrateur</Label>
               </div>
@@ -943,7 +1092,9 @@ export function UserManagement({ className }: UserManagementProps) {
                 <Switch
                   id="edit-isBanned"
                   checked={editForm.isBanned}
-                  onCheckedChange={(checked) => setEditForm(prev => ({ ...prev, isBanned: checked }))}
+                  onCheckedChange={(checked) =>
+                    setEditForm((prev) => ({ ...prev, isBanned: checked }))
+                  }
                 />
                 <Label htmlFor="edit-isBanned">Banni</Label>
               </div>
@@ -953,7 +1104,12 @@ export function UserManagement({ className }: UserManagementProps) {
                   <Textarea
                     id="edit-banReason"
                     value={editForm.banReason}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, banReason: e.target.value }))}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({
+                        ...prev,
+                        banReason: e.target.value,
+                      }))
+                    }
                     placeholder="Raison du bannissement"
                     rows={2}
                   />
@@ -961,19 +1117,26 @@ export function UserManagement({ className }: UserManagementProps) {
               )}
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => { resetForms(); setIsEditDialogOpen(false); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  resetForms();
+                  setIsEditDialogOpen(false);
+                }}
+              >
                 Annuler
               </Button>
-              <Button onClick={handleEditUser}>
-                Modifier
-              </Button>
+              <Button onClick={handleEditUser}>Modifier</Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* Change Password Dialog */}
-      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+      <Dialog
+        open={isPasswordDialogOpen}
+        onOpenChange={setIsPasswordDialogOpen}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Changer le mot de passe</DialogTitle>
@@ -986,7 +1149,12 @@ export function UserManagement({ className }: UserManagementProps) {
                   id="newPassword"
                   type={showPassword ? "text" : "password"}
                   value={passwordForm.newPassword}
-                  onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                  onChange={(e) =>
+                    setPasswordForm((prev) => ({
+                      ...prev,
+                      newPassword: e.target.value,
+                    }))
+                  }
                   placeholder="Nouveau mot de passe"
                 />
                 <Button
@@ -996,7 +1164,11 @@ export function UserManagement({ className }: UserManagementProps) {
                   className="absolute right-0 top-0 h-full px-3 py-2"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -1006,17 +1178,26 @@ export function UserManagement({ className }: UserManagementProps) {
                 id="confirmPassword"
                 type={showPassword ? "text" : "password"}
                 value={passwordForm.confirmPassword}
-                onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                onChange={(e) =>
+                  setPasswordForm((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
+                }
                 placeholder="Confirmer le mot de passe"
               />
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => { resetForms(); setIsPasswordDialogOpen(false); }}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  resetForms();
+                  setIsPasswordDialogOpen(false);
+                }}
+              >
                 Annuler
               </Button>
-              <Button onClick={handleChangePassword}>
-                Changer
-              </Button>
+              <Button onClick={handleChangePassword}>Changer</Button>
             </div>
           </div>
         </DialogContent>
@@ -1038,7 +1219,7 @@ export function UserManagement({ className }: UserManagementProps) {
                   <strong>Utilisateur:</strong> {userToBan.username}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {userToBan.email || 'Aucun email'}
+                  {userToBan.email || "Aucun email"}
                 </p>
               </div>
             )}
@@ -1048,7 +1229,12 @@ export function UserManagement({ className }: UserManagementProps) {
               <Textarea
                 id="banReason"
                 value={banFormData.reason}
-                onChange={(e) => setBanFormData(prev => ({ ...prev, reason: e.target.value }))}
+                onChange={(e) =>
+                  setBanFormData((prev) => ({
+                    ...prev,
+                    reason: e.target.value,
+                  }))
+                }
                 placeholder="Violation des conditions d'utilisation..."
                 rows={3}
               />
@@ -1063,10 +1249,17 @@ export function UserManagement({ className }: UserManagementProps) {
                     id="banTemporary"
                     name="banType"
                     value="temporary"
-                    checked={banFormData.banType === 'temporary'}
-                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                    checked={banFormData.banType === "temporary"}
+                    onChange={(e) =>
+                      setBanFormData((prev) => ({
+                        ...prev,
+                        banType: e.target.value as "temporary" | "permanent",
+                      }))
+                    }
                   />
-                  <label htmlFor="banTemporary" className="text-sm">Temporaire</label>
+                  <label htmlFor="banTemporary" className="text-sm">
+                    Temporaire
+                  </label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input
@@ -1074,15 +1267,22 @@ export function UserManagement({ className }: UserManagementProps) {
                     id="banPermanent"
                     name="banType"
                     value="permanent"
-                    checked={banFormData.banType === 'permanent'}
-                    onChange={(e) => setBanFormData(prev => ({ ...prev, banType: e.target.value as 'temporary' | 'permanent' }))}
+                    checked={banFormData.banType === "permanent"}
+                    onChange={(e) =>
+                      setBanFormData((prev) => ({
+                        ...prev,
+                        banType: e.target.value as "temporary" | "permanent",
+                      }))
+                    }
                   />
-                  <label htmlFor="banPermanent" className="text-sm">Permanent</label>
+                  <label htmlFor="banPermanent" className="text-sm">
+                    Permanent
+                  </label>
                 </div>
               </div>
             </div>
 
-            {banFormData.banType === 'temporary' && (
+            {banFormData.banType === "temporary" && (
               <div>
                 <Label htmlFor="banHours">Durée (heures)</Label>
                 <Input
@@ -1091,7 +1291,12 @@ export function UserManagement({ className }: UserManagementProps) {
                   min="1"
                   max="8760"
                   value={banFormData.hours}
-                  onChange={(e) => setBanFormData(prev => ({ ...prev, hours: parseInt(e.target.value) || 24 }))}
+                  onChange={(e) =>
+                    setBanFormData((prev) => ({
+                      ...prev,
+                      hours: parseInt(e.target.value) || 24,
+                    }))
+                  }
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   Maximum: 8760 heures (1 an)
@@ -1105,7 +1310,11 @@ export function UserManagement({ className }: UserManagementProps) {
                 onClick={() => {
                   setIsBanDialogOpen(false);
                   setUserToBan(null);
-                  setBanFormData({ reason: '', banType: 'temporary', hours: 24 });
+                  setBanFormData({
+                    reason: "",
+                    banType: "temporary",
+                    hours: 24,
+                  });
                 }}
                 disabled={isSubmitting}
               >
@@ -1121,7 +1330,7 @@ export function UserManagement({ className }: UserManagementProps) {
                 ) : (
                   <Ban className="w-4 h-4 mr-2" />
                 )}
-                {isSubmitting ? 'Bannissement...' : 'Bannir'}
+                {isSubmitting ? "Bannissement..." : "Bannir"}
               </Button>
             </div>
           </div>

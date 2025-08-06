@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, Eye, EyeOff } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Shield, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface PasswordSetupDialogProps {
   isOpen: boolean;
@@ -13,33 +18,37 @@ interface PasswordSetupDialogProps {
   onSetPassword: (password: string) => Promise<void>;
 }
 
-export default function PasswordSetupDialog({ isOpen, username, onSetPassword }: PasswordSetupDialogProps) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+export default function PasswordSetupDialog({
+  isOpen,
+  username,
+  onSetPassword,
+}: PasswordSetupDialogProps) {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
+      setError("Le mot de passe doit contenir au moins 6 caractères");
       return;
     }
-    
+
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError("Les mots de passe ne correspondent pas");
       return;
     }
 
     setIsSubmitting(true);
-    setError('');
-    
+    setError("");
+
     try {
       await onSetPassword(password);
     } catch (error: any) {
-      setError(error.message || 'Erreur lors de la création du compte');
+      setError(error.message || "Erreur lors de la création du compte");
     } finally {
       setIsSubmitting(false);
     }
@@ -63,9 +72,18 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
           <Alert className="border-blue-200 bg-blue-50/50 text-blue-800">
             <AlertDescription>
               <div className="space-y-2">
-                <p className="font-medium">Votre nom d'utilisateur : <span className="text-primary">{username}</span></p>
-                <p className="text-sm">Créez un mot de passe pour sauvegarder ce compte et pouvoir vous reconnecter.</p>
-                <p className="text-xs text-blue-600">Le compte sera sauvegardé localement et synchronisé quand possible.</p>
+                <p className="font-medium">
+                  Votre nom d'utilisateur :{" "}
+                  <span className="text-primary">{username}</span>
+                </p>
+                <p className="text-sm">
+                  Créez un mot de passe pour sauvegarder ce compte et pouvoir
+                  vous reconnecter.
+                </p>
+                <p className="text-xs text-blue-600">
+                  Le compte sera sauvegardé localement et synchronisé quand
+                  possible.
+                </p>
               </div>
             </AlertDescription>
           </Alert>
@@ -76,7 +94,7 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
               <div className="relative">
                 <Input
                   id="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Créer un mot de passe"
@@ -90,7 +108,11 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
                   className="absolute right-0 top-0 h-full px-3"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -99,7 +121,7 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
               <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
               <Input
                 id="confirmPassword"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirmer le mot de passe"
@@ -118,7 +140,7 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
               className="w-full bg-gradient-to-r from-primary to-purple-500 hover:from-primary/80 hover:to-purple-500/80"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Création en cours...' : 'Créer mon compte'}
+              {isSubmitting ? "Création en cours..." : "Créer mon compte"}
             </Button>
           </form>
 

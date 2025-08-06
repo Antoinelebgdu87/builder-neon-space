@@ -34,17 +34,22 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { isAdminLoginOpen, closeAdminLogin } = useAdminShortcut();
-  const { user: anonymousUser, loading: userLoading, refreshUserStatus } = useAnonymousUser();
+  const {
+    user: anonymousUser,
+    loading: userLoading,
+    refreshUserStatus,
+  } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Surveillance automatique des bans
   useAutoBanDetection(anonymousUser?.username || null);
 
-
   // Mode local forcé
   useEffect(() => {
-    console.log('💾 Mode local activé - Toutes les données sauvegardées localement');
+    console.log(
+      "💾 Mode local activé - Toutes les données sauvegardées localement",
+    );
   }, []);
 
   // Simple ban system - no complex synchronization
@@ -53,35 +58,37 @@ function AppContent() {
   // Listen for instant ban updates and force refresh
   useEffect(() => {
     const handleInstantRefresh = () => {
-      console.log('Forcing instant refresh...');
-      setRefreshTrigger(prev => prev + 1);
+      console.log("Forcing instant refresh...");
+      setRefreshTrigger((prev) => prev + 1);
       refreshUserStatus();
     };
 
-    window.addEventListener('banStatusChanged', handleInstantRefresh);
-    window.addEventListener('userBanned', handleInstantRefresh);
-    window.addEventListener('userUnbanned', handleInstantRefresh);
+    window.addEventListener("banStatusChanged", handleInstantRefresh);
+    window.addEventListener("userBanned", handleInstantRefresh);
+    window.addEventListener("userUnbanned", handleInstantRefresh);
 
     return () => {
-      window.removeEventListener('banStatusChanged', handleInstantRefresh);
-      window.removeEventListener('userBanned', handleInstantRefresh);
-      window.removeEventListener('userUnbanned', handleInstantRefresh);
+      window.removeEventListener("banStatusChanged", handleInstantRefresh);
+      window.removeEventListener("userBanned", handleInstantRefresh);
+      window.removeEventListener("userUnbanned", handleInstantRefresh);
     };
   }, [refreshUserStatus]);
 
   // Check if current user is banned by username (Firebase) or locally
-  const firebaseBanStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
+  const firebaseBanStatus = anonymousUser
+    ? isUsernameBanned(anonymousUser.username)
+    : { isBanned: false };
   const localBanStatus = anonymousUser?.isBanned || false;
 
   // Show ban notification if user is banned (either locally or in Firebase)
   if (!userLoading && (firebaseBanStatus.isBanned || localBanStatus)) {
     const banRecord = firebaseBanStatus.banRecord || {
-      userId: anonymousUser?.username || '',
-      username: anonymousUser?.username || '',
-      reason: anonymousUser?.banReason || 'Violation des règles',
-      banType: 'permanent' as const,
+      userId: anonymousUser?.username || "",
+      username: anonymousUser?.username || "",
+      reason: anonymousUser?.banReason || "Violation des règles",
+      banType: "permanent" as const,
       bannedAt: new Date().toISOString(),
-      bannedBy: 'Admin'
+      bannedBy: "Admin",
     };
 
     return <BanNotification banRecord={banRecord} />;
@@ -103,11 +110,14 @@ function AppContent() {
           <Route path="/" element={<Index />} />
           <Route path="/scripts" element={<Scripts />} />
           <Route path="/forum" element={<Forum />} />
-          <Route path="/admin" element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,9 +1,20 @@
-import { useState, useEffect } from 'react';
-import { doc, updateDoc, getDoc, setDoc, collection, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { safeFirebaseOperation, useFirebaseAvailable, reportFirebaseError } from './useFirebaseGlobalControl';
+import { useState, useEffect } from "react";
+import {
+  doc,
+  updateDoc,
+  getDoc,
+  setDoc,
+  collection,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import {
+  safeFirebaseOperation,
+  useFirebaseAvailable,
+  reportFirebaseError,
+} from "./useFirebaseGlobalControl";
 
-export type Role = 'fondateur' | 'admin' | 'moderateur' | 'user';
+export type Role = "fondateur" | "admin" | "moderateur" | "user";
 
 export interface UserRole {
   userId: string;
@@ -30,7 +41,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   admin: {
     canManageMaintenance: false,
@@ -38,7 +49,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   moderateur: {
     canManageMaintenance: false,
@@ -46,7 +57,7 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: true,
     canWarnUsers: true,
     canManageForum: true,
-    canAccessAdminPanel: true
+    canAccessAdminPanel: true,
   },
   user: {
     canManageMaintenance: false,
@@ -54,8 +65,8 @@ const ROLE_PERMISSIONS: Record<Role, RolePermissions> = {
     canBanUsers: false,
     canWarnUsers: false,
     canManageForum: false,
-    canAccessAdminPanel: false
-  }
+    canAccessAdminPanel: false,
+  },
 };
 
 export function useRoleSystem() {
@@ -101,10 +112,10 @@ export function useRoleSystem() {
   // Obtenir le rôle d'un utilisateur
   const getUserRole = (userId: string): Role => {
     // Le fondateur est toujours le compte admin officiel
-    if (userId === 'admin-1') return 'fondateur';
-    
-    const userRole = userRoles.find(role => role.userId === userId);
-    return userRole?.role || 'user';
+    if (userId === "admin-1") return "fondateur";
+
+    const userRole = userRoles.find((role) => role.userId === userId);
+    return userRole?.role || "user";
   };
 
   // Obtenir les permissions d'un utilisateur
@@ -115,11 +126,11 @@ export function useRoleSystem() {
 
   // Assigner un rôle à un utilisateur
   const assignRole = async (
-    targetUserId: string, 
-    targetUsername: string, 
-    role: Role, 
+    targetUserId: string,
+    targetUsername: string,
+    role: Role,
     assignerUserId: string,
-    assignerUsername: string
+    assignerUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -127,12 +138,14 @@ export function useRoleSystem() {
       // Vérifier que l'assigneur a les permissions
       const assignerPermissions = getUserPermissions(assignerUserId);
       if (!assignerPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour assigner des rôles');
+        throw new Error(
+          "Vous n'avez pas les permissions pour assigner des rôles",
+        );
       }
 
       // Ne pas permettre d'assigner le rôle fondateur
-      if (role === 'fondateur') {
-        throw new Error('Le rôle fondateur ne peut pas être assigné');
+      if (role === "fondateur") {
+        throw new Error("Le rôle fondateur ne peut pas être assigné");
       }
 
       const roleData: UserRole = {
@@ -140,11 +153,13 @@ export function useRoleSystem() {
         username: targetUsername,
         role,
         assignedBy: assignerUsername,
-        assignedAt: new Date().toISOString()
+        assignedAt: new Date().toISOString(),
       };
 
       // Temporairement désactivé pour éviter les erreurs Firebase
-      console.log(`🏷️ [MODE LOCAL] Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`);
+      console.log(
+        `🏷️ [MODE LOCAL] Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`,
+      );
 
       // TODO: Réactiver quand Firebase sera stable
       // await safeFirebaseOperation(
@@ -162,8 +177,9 @@ export function useRoleSystem() {
       //   'update-user-role'
       // );
 
-      console.log(`Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`);
-
+      console.log(
+        `Rôle ${role} assigné à ${targetUsername} par ${assignerUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -172,9 +188,9 @@ export function useRoleSystem() {
 
   // Révoquer un rôle
   const revokeRole = async (
-    targetUserId: string, 
+    targetUserId: string,
     revokerUserId: string,
-    revokerUsername: string
+    revokerUsername: string,
   ): Promise<void> => {
     try {
       setError(null);
@@ -182,16 +198,20 @@ export function useRoleSystem() {
       // Vérifier que le révocateur a les permissions
       const revokerPermissions = getUserPermissions(revokerUserId);
       if (!revokerPermissions.canAssignRoles) {
-        throw new Error('Vous n\'avez pas les permissions pour révoquer des rôles');
+        throw new Error(
+          "Vous n'avez pas les permissions pour révoquer des rôles",
+        );
       }
 
       // Ne pas permettre de révoquer le fondateur
-      if (targetUserId === 'admin-1') {
-        throw new Error('Le rôle fondateur ne peut pas être révoqué');
+      if (targetUserId === "admin-1") {
+        throw new Error("Le rôle fondateur ne peut pas être révoqué");
       }
 
       // Temporairement désactivé pour éviter les erreurs Firebase
-      console.log(`🏷️ [MODE LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
+      console.log(
+        `🏷️ [MODE LOCAL] Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`,
+      );
 
       // TODO: Réactiver quand Firebase sera stable
       // await safeFirebaseOperation(
@@ -211,8 +231,9 @@ export function useRoleSystem() {
       //   'update-user-role-revoke'
       // );
 
-      console.log(`Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`);
-
+      console.log(
+        `Rôle révoqué pour l'utilisateur ${targetUserId} par ${revokerUsername}`,
+      );
     } catch (err: any) {
       setError(err.message);
       throw err;
@@ -221,10 +242,10 @@ export function useRoleSystem() {
 
   // Obtenir le nom d'affichage pour les actions
   const getDisplayNameForActions = (userId: string): string => {
-    if (userId === 'admin-1') return 'Fondateur Antoine80';
-    
-    const userRole = userRoles.find(role => role.userId === userId);
-    return userRole?.username || 'Admin';
+    if (userId === "admin-1") return "Fondateur Antoine80";
+
+    const userRole = userRoles.find((role) => role.userId === userId);
+    return userRole?.username || "Admin";
   };
 
   return {
@@ -235,6 +256,6 @@ export function useRoleSystem() {
     getUserPermissions,
     assignRole,
     revokeRole,
-    getDisplayNameForActions
+    getDisplayNameForActions,
   };
 }

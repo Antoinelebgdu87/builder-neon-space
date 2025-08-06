@@ -1,14 +1,31 @@
-import { useState, useEffect, useRef } from 'react';
-import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
-import { useAuth } from '@/contexts/LocalAuthContext';
-import { safeFirebaseWrite, safeFirebaseBatch, cleanForFirebase, withRetry } from '@/lib/firebaseSafeWrapper';
+import { useState, useEffect, useRef } from "react";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  serverTimestamp,
+  writeBatch,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
+import { useAuth } from "@/contexts/LocalAuthContext";
+import {
+  safeFirebaseWrite,
+  safeFirebaseBatch,
+  cleanForFirebase,
+  withRetry,
+} from "@/lib/firebaseSafeWrapper";
 
 export interface BanData {
   isBanned: boolean;
   banReason?: string;
-  banType?: 'temporary' | 'permanent';
+  banType?: "temporary" | "permanent";
   banExpiry?: string;
   bannedAt?: string;
   bannedBy?: string;
@@ -21,7 +38,7 @@ export interface BannedUser {
   email?: string; // Optional to avoid undefined issues
   isBanned: boolean;
   banReason: string;
-  banType: 'temporary' | 'permanent';
+  banType: "temporary" | "permanent";
   banExpiry?: string; // Optional for permanent bans
   bannedAt: string;
   bannedBy: string;
@@ -38,10 +55,10 @@ export function useInstantFirebaseBan() {
 
   // Fonction pour obtenir le nom de l'admin qui fait l'action
   const getAdminName = (): string => {
-    if (adminUser?.id === 'admin-1') {
-      return 'Fondateur Antoine80';
+    if (adminUser?.id === "admin-1") {
+      return "Fondateur Antoine80";
     }
-    return adminUser?.username || 'Admin';
+    return adminUser?.username || "Admin";
   };
 
   // Initialize real-time listeners
@@ -52,11 +69,11 @@ export function useInstantFirebaseBan() {
 
     return () => {
       // Cleanup listeners
-      listenersRef.current.forEach(unsubscribe => {
+      listenersRef.current.forEach((unsubscribe) => {
         try {
           unsubscribe();
         } catch (error) {
-          console.error('Error unsubscribing:', error);
+          console.error("Error unsubscribing:", error);
         }
       });
       listenersRef.current = [];
@@ -67,7 +84,7 @@ export function useInstantFirebaseBan() {
     try {
       // Listen to banned users collection
       const bannedUsersUnsubscribe = onSnapshot(
-        collection(db, 'bannedUsers'),
+        collection(db, "bannedUsers"),
         (snapshot) => {
           const users: BannedUser[] = [];
           snapshot.forEach((doc) => {
@@ -79,15 +96,15 @@ export function useInstantFirebaseBan() {
           setBannedUsers(users);
         },
         (error) => {
-          console.error('Error listening to banned users:', error);
-          setError('Erreur de synchronisation des utilisateurs bannis');
-        }
+          console.error("Error listening to banned users:", error);
+          setError("Erreur de synchronisation des utilisateurs bannis");
+        },
       );
 
       listenersRef.current = [bannedUsersUnsubscribe];
     } catch (error) {
-      console.error('Error setting up ban listeners:', error);
-      setError('Erreur lors de la configuration des écouteurs de ban');
+      console.error("Error setting up ban listeners:", error);
+      setError("Erreur lors de la configuration des écouteurs de ban");
     }
   };
 
@@ -96,7 +113,7 @@ export function useInstantFirebaseBan() {
     const cleaned: any = {};
     for (const key in obj) {
       if (obj[key] !== undefined && obj[key] !== null) {
-        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+        if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
           // Recursively clean nested objects
           const cleanedNested = cleanFirebaseData(obj[key]);
           if (Object.keys(cleanedNested).length > 0) {
@@ -116,11 +133,11 @@ export function useInstantFirebaseBan() {
     username: string,
     email: string | undefined,
     reason: string,
-    banType: 'temporary' | 'permanent',
-    hours?: number
+    banType: "temporary" | "permanent",
+    hours?: number,
   ): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise pour bannir un utilisateur');
+      throw new Error("Connexion Firebase requise pour bannir un utilisateur");
     }
 
     setLoading(true);
@@ -137,22 +154,22 @@ export function useInstantFirebaseBan() {
         banType,
         bannedAt: now,
         bannedBy: getAdminName(),
-        banId
+        banId,
       };
 
-      if (banType === 'temporary' && hours) {
+      if (banType === "temporary" && hours) {
         const expiryDate = new Date();
         expiryDate.setHours(expiryDate.getHours() + hours);
         banData.banExpiry = expiryDate.toISOString();
       }
 
       // 1. Update user account with ban data
-      const userRef = doc(db, 'userAccounts', userId);
+      const userRef = doc(db, "userAccounts", userId);
       const cleanedBanData = cleanFirebaseData(banData);
       batch.update(userRef, cleanedBanData);
 
       // 2. Add to banned users collection for quick reference
-      const bannedUserRef = doc(db, 'bannedUsers', banId);
+      const bannedUserRef = doc(db, "bannedUsers", banId);
       const bannedUserData: any = {
         userId,
         username,
@@ -161,7 +178,7 @@ export function useInstantFirebaseBan() {
         banType,
         bannedAt: now,
         bannedBy: getAdminName(),
-        banId
+        banId,
       };
 
       // Only add email if it exists (avoid undefined values)
@@ -178,20 +195,20 @@ export function useInstantFirebaseBan() {
       batch.set(bannedUserRef, cleanedBannedUserData);
 
       // 3. Remove active session if exists
-      const sessionRef = doc(db, 'onlineSessions', userId);
+      const sessionRef = doc(db, "onlineSessions", userId);
       batch.delete(sessionRef);
 
       // 4. Add to ban log for audit trail
-      const banLogRef = doc(collection(db, 'banLogs'));
+      const banLogRef = doc(collection(db, "banLogs"));
       const banLogData: any = {
-        action: 'ban',
+        action: "ban",
         userId,
         username,
         reason,
         banType,
         timestamp: now,
-        adminId: 'admin',
-        banId
+        adminId: "admin",
+        banId,
       };
 
       // Only add banExpiry if it exists
@@ -203,21 +220,24 @@ export function useInstantFirebaseBan() {
       batch.set(banLogRef, cleanedBanLogData);
 
       // Execute all operations atomically with safety wrapper
-      const batchResult = await safeFirebaseBatch(batch, 'ban user');
+      const batchResult = await safeFirebaseBatch(batch, "ban user");
 
       if (!batchResult.success) {
-        throw new Error(batchResult.error || 'Erreur lors du bannissement Firebase');
+        throw new Error(
+          batchResult.error || "Erreur lors du bannissement Firebase",
+        );
       }
 
       // Trigger real-time event for immediate UI updates
-      window.dispatchEvent(new CustomEvent('userBannedInstant', {
-        detail: { userId, username, reason, banType }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("userBannedInstant", {
+          detail: { userId, username, reason, banType },
+        }),
+      );
 
       console.log(`✅ User ${username} banned instantly with ID: ${banId}`);
-
     } catch (error: any) {
-      console.error('Error banning user instantly:', error);
+      console.error("Error banning user instantly:", error);
       setError(`Erreur lors du bannissement: ${error.message}`);
       throw error;
     } finally {
@@ -226,9 +246,14 @@ export function useInstantFirebaseBan() {
   };
 
   // Unban user instantly
-  const unbanUserInstant = async (userId: string, username: string): Promise<void> => {
+  const unbanUserInstant = async (
+    userId: string,
+    username: string,
+  ): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise pour débannir un utilisateur');
+      throw new Error(
+        "Connexion Firebase requise pour débannir un utilisateur",
+      );
     }
 
     setLoading(true);
@@ -239,7 +264,7 @@ export function useInstantFirebaseBan() {
       const now = new Date().toISOString();
 
       // 1. Update user account to remove ban
-      const userRef = doc(db, 'userAccounts', userId);
+      const userRef = doc(db, "userAccounts", userId);
       batch.update(userRef, {
         isBanned: false,
         banReason: null,
@@ -247,46 +272,49 @@ export function useInstantFirebaseBan() {
         banExpiry: null,
         bannedAt: null,
         bannedBy: null,
-        banId: null
+        banId: null,
       });
 
       // 2. Remove from banned users collection
-      const bannedUsersQuery = query(collection(db, 'bannedUsers'));
+      const bannedUsersQuery = query(collection(db, "bannedUsers"));
       const bannedUsersSnapshot = await getDocs(bannedUsersQuery);
-      
+
       bannedUsersSnapshot.forEach((docSnap) => {
         const data = docSnap.data();
         if (data.userId === userId) {
-          batch.delete(doc(db, 'bannedUsers', docSnap.id));
+          batch.delete(doc(db, "bannedUsers", docSnap.id));
         }
       });
 
       // 3. Add to ban log for audit trail
-      const banLogRef = doc(collection(db, 'banLogs'));
+      const banLogRef = doc(collection(db, "banLogs"));
       batch.set(banLogRef, {
-        action: 'unban',
+        action: "unban",
         userId,
         username,
         timestamp: now,
-        adminId: 'admin'
+        adminId: "admin",
       });
 
       // Execute all operations atomically with safety wrapper
-      const batchResult = await safeFirebaseBatch(batch, 'unban user');
+      const batchResult = await safeFirebaseBatch(batch, "unban user");
 
       if (!batchResult.success) {
-        throw new Error(batchResult.error || 'Erreur lors du débannissement Firebase');
+        throw new Error(
+          batchResult.error || "Erreur lors du débannissement Firebase",
+        );
       }
 
       // Trigger real-time event for immediate UI updates
-      window.dispatchEvent(new CustomEvent('userUnbannedInstant', {
-        detail: { userId, username }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("userUnbannedInstant", {
+          detail: { userId, username },
+        }),
+      );
 
       console.log(`✅ User ${username} unbanned instantly`);
-
     } catch (error: any) {
-      console.error('Error unbanning user instantly:', error);
+      console.error("Error unbanning user instantly:", error);
       setError(`Erreur lors du débannissement: ${error.message}`);
       throw error;
     } finally {
@@ -303,12 +331,15 @@ export function useInstantFirebaseBan() {
 
       // Use safe wrapper for Firebase read
       const readResult = await safeFirebaseWrite(
-        () => getDoc(doc(db, 'userAccounts', userId)),
-        'check ban status'
+        () => getDoc(doc(db, "userAccounts", userId)),
+        "check ban status",
       );
 
       if (!readResult.success) {
-        console.error('❌ Erreur lors de la vérification du ban:', readResult.error);
+        console.error(
+          "❌ Erreur lors de la vérification du ban:",
+          readResult.error,
+        );
         return { isBanned: false };
       }
 
@@ -318,20 +349,20 @@ export function useInstantFirebaseBan() {
       }
 
       const userData = userDoc.data();
-      
+
       if (userData.isBanned) {
         // Check if temporary ban has expired
-        if (userData.banType === 'temporary' && userData.banExpiry) {
+        if (userData.banType === "temporary" && userData.banExpiry) {
           const now = new Date();
           const expiry = new Date(userData.banExpiry);
-          
+
           if (now > expiry) {
             // Ban expired, automatically unban
-            await unbanUserInstant(userId, userData.username || 'Unknown');
+            await unbanUserInstant(userId, userData.username || "Unknown");
             return { isBanned: false };
           }
         }
-        
+
         return {
           isBanned: true,
           banReason: userData.banReason,
@@ -339,13 +370,13 @@ export function useInstantFirebaseBan() {
           banExpiry: userData.banExpiry,
           bannedAt: userData.bannedAt,
           bannedBy: userData.bannedBy,
-          banId: userData.banId
+          banId: userData.banId,
         };
       }
 
       return { isBanned: false };
     } catch (error) {
-      console.error('Error checking ban status:', error);
+      console.error("Error checking ban status:", error);
       return { isBanned: false };
     }
   };
@@ -357,9 +388,9 @@ export function useInstantFirebaseBan() {
         return [];
       }
 
-      const bannedUsersSnapshot = await getDocs(collection(db, 'bannedUsers'));
+      const bannedUsersSnapshot = await getDocs(collection(db, "bannedUsers"));
       const users: BannedUser[] = [];
-      
+
       bannedUsersSnapshot.forEach((doc) => {
         const data = doc.data();
         if (data.isBanned) {
@@ -369,7 +400,7 @@ export function useInstantFirebaseBan() {
 
       return users;
     } catch (error) {
-      console.error('Error getting banned users:', error);
+      console.error("Error getting banned users:", error);
       return [];
     }
   };
@@ -382,11 +413,13 @@ export function useInstantFirebaseBan() {
       email?: string;
     }>,
     reason: string,
-    banType: 'temporary' | 'permanent',
-    hours?: number
+    banType: "temporary" | "permanent",
+    hours?: number,
   ): Promise<void> => {
     if (!isOnline) {
-      throw new Error('Connexion Firebase requise pour bannir des utilisateurs');
+      throw new Error(
+        "Connexion Firebase requise pour bannir des utilisateurs",
+      );
     }
 
     setLoading(true);
@@ -405,21 +438,21 @@ export function useInstantFirebaseBan() {
           banType,
           bannedAt: now,
           bannedBy: getAdminName(),
-          banId
+          banId,
         };
 
-        if (banType === 'temporary' && hours) {
+        if (banType === "temporary" && hours) {
           const expiryDate = new Date();
           expiryDate.setHours(expiryDate.getHours() + hours);
           banData.banExpiry = expiryDate.toISOString();
         }
 
         // Update user account
-        const userRef = doc(db, 'userAccounts', user.userId);
+        const userRef = doc(db, "userAccounts", user.userId);
         batch.update(userRef, banData);
 
         // Add to banned users collection
-        const bannedUserRef = doc(db, 'bannedUsers', banId);
+        const bannedUserRef = doc(db, "bannedUsers", banId);
         const bannedUserData: any = {
           userId: user.userId,
           username: user.username,
@@ -428,7 +461,7 @@ export function useInstantFirebaseBan() {
           banType,
           bannedAt: now,
           bannedBy: getAdminName(),
-          banId
+          banId,
         };
 
         // Only add email if it exists
@@ -445,20 +478,20 @@ export function useInstantFirebaseBan() {
         batch.set(bannedUserRef, cleanedBannedUserData2);
 
         // Remove active session
-        const sessionRef = doc(db, 'onlineSessions', user.userId);
+        const sessionRef = doc(db, "onlineSessions", user.userId);
         batch.delete(sessionRef);
 
         // Add to ban log
-        const banLogRef = doc(collection(db, 'banLogs'));
+        const banLogRef = doc(collection(db, "banLogs"));
         const banLogData: any = {
-          action: 'mass_ban',
+          action: "mass_ban",
           userId: user.userId,
           username: user.username,
           reason,
           banType,
           timestamp: now,
-          adminId: 'admin',
-          banId
+          adminId: "admin",
+          banId,
         };
 
         // Only add banExpiry if it exists
@@ -471,21 +504,24 @@ export function useInstantFirebaseBan() {
       }
 
       // Execute all operations atomically with safety wrapper
-      const batchResult = await safeFirebaseBatch(batch, 'ban multiple users');
+      const batchResult = await safeFirebaseBatch(batch, "ban multiple users");
 
       if (!batchResult.success) {
-        throw new Error(batchResult.error || 'Erreur lors du bannissement multiple Firebase');
+        throw new Error(
+          batchResult.error || "Erreur lors du bannissement multiple Firebase",
+        );
       }
 
       // Trigger real-time event
-      window.dispatchEvent(new CustomEvent('multipleUsersBanned', {
-        detail: { userCount: users.length, reason, banType }
-      }));
+      window.dispatchEvent(
+        new CustomEvent("multipleUsersBanned", {
+          detail: { userCount: users.length, reason, banType },
+        }),
+      );
 
       console.log(`✅ ${users.length} users banned instantly`);
-
     } catch (error: any) {
-      console.error('Error banning multiple users:', error);
+      console.error("Error banning multiple users:", error);
       setError(`Erreur lors du bannissement multiple: ${error.message}`);
       throw error;
     } finally {
@@ -498,18 +534,17 @@ export function useInstantFirebaseBan() {
     try {
       if (!isOnline) return;
 
-      const sessionRef = doc(db, 'onlineSessions', userId);
+      const sessionRef = doc(db, "onlineSessions", userId);
       await deleteDoc(sessionRef);
 
       // Update user status
-      const userRef = doc(db, 'userAccounts', userId);
+      const userRef = doc(db, "userAccounts", userId);
       await updateDoc(userRef, {
         isOnline: false,
-        lastActive: new Date().toISOString()
+        lastActive: new Date().toISOString(),
       });
-
     } catch (error) {
-      console.error('Error forcing user logout:', error);
+      console.error("Error forcing user logout:", error);
     }
   };
 
@@ -524,24 +559,26 @@ export function useInstantFirebaseBan() {
     banUserInstant,
     unbanUserInstant,
     banMultipleUsers,
-    
+
     // Status checks
     checkUserBanStatus,
     getAllBannedUsers,
-    
+
     // Utilities
     forceUserLogout,
-    
+
     // Helpers
-    isUserBanned: (userId: string) => bannedUsers.some(u => u.userId === userId),
-    getBannedUserInfo: (userId: string) => bannedUsers.find(u => u.userId === userId),
+    isUserBanned: (userId: string) =>
+      bannedUsers.some((u) => u.userId === userId),
+    getBannedUserInfo: (userId: string) =>
+      bannedUsers.find((u) => u.userId === userId),
     getBanCount: () => bannedUsers.length,
-    
+
     // Refresh data
     refresh: () => {
       if (isOnline) {
         setupRealtimeListeners();
       }
-    }
+    },
   };
 }

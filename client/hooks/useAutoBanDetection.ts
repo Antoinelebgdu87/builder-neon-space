@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { useInstantFirebaseBan } from './useInstantFirebaseBan';
-import { useAdvancedUserManagement } from './useAdvancedUserManagement';
+import { useEffect, useRef } from "react";
+import { useInstantFirebaseBan } from "./useInstantFirebaseBan";
+import { useAdvancedUserManagement } from "./useAdvancedUserManagement";
 
 export function useAutoBanDetection(currentUsername: string | null) {
   const { checkUserBanStatus, isOnline } = useInstantFirebaseBan();
@@ -21,17 +21,19 @@ export function useAutoBanDetection(currentUsername: string | null) {
     const checkCurrentUserBan = async () => {
       try {
         console.log(`🔍 Vérification auto du ban pour ${currentUsername}`);
-        
+
         // Trouver l'utilisateur local
         const localUser = getUserByUsername(currentUsername);
         if (!localUser) {
-          console.log(`⚠️ Utilisateur ${currentUsername} non trouvé localement`);
+          console.log(
+            `⚠️ Utilisateur ${currentUsername} non trouvé localement`,
+          );
           return;
         }
 
         // Vérifier le statut sur Firebase
         const banStatus = await checkUserBanStatus(localUser.id);
-        
+
         if (banStatus.isBanned) {
           console.log(`🚫 Ban détecté pour ${currentUsername}:`, banStatus);
 
@@ -49,30 +51,31 @@ export function useAutoBanDetection(currentUsername: string | null) {
           }
 
           // Déclencher le modal de ban UNE SEULE FOIS
-          window.dispatchEvent(new CustomEvent('userBanDetected', {
-            detail: {
-              isBanned: true,
-              banReason: banStatus.banReason,
-              banType: banStatus.banType,
-              banExpiry: banStatus.banExpiry,
-              bannedAt: banStatus.bannedAt,
-              bannedBy: banStatus.bannedBy,
-              showBanModal: true,
-              timeRemaining: banStatus.banType === 'temporary' && banStatus.banExpiry
-                ? calculateTimeRemaining(banStatus.banExpiry)
-                : undefined
-            }
-          }));
+          window.dispatchEvent(
+            new CustomEvent("userBanDetected", {
+              detail: {
+                isBanned: true,
+                banReason: banStatus.banReason,
+                banType: banStatus.banType,
+                banExpiry: banStatus.banExpiry,
+                bannedAt: banStatus.bannedAt,
+                bannedBy: banStatus.bannedBy,
+                showBanModal: true,
+                timeRemaining:
+                  banStatus.banType === "temporary" && banStatus.banExpiry
+                    ? calculateTimeRemaining(banStatus.banExpiry)
+                    : undefined,
+              },
+            }),
+          );
 
           // PAS de rechargement automatique de page - laisser l'utilisateur tranquille
-
         } else {
           console.log(`✅ ${currentUsername} n'est pas banni`);
           lastCheckRef.current = null; // Reset si plus banni
         }
-
       } catch (error) {
-        console.error('❌ Erreur lors de la vérification auto du ban:', error);
+        console.error("❌ Erreur lors de la vérification auto du ban:", error);
       }
     };
 
@@ -89,7 +92,6 @@ export function useAutoBanDetection(currentUsername: string | null) {
         intervalRef.current = null;
       }
     };
-
   }, [currentUsername, isOnline, checkUserBanStatus, getUserByUsername]);
 
   // Calculer le temps restant
@@ -98,7 +100,7 @@ export function useAutoBanDetection(currentUsername: string | null) {
     const expiry = new Date(expiryDate);
     const diff = expiry.getTime() - now.getTime();
 
-    if (diff <= 0) return 'Expiré';
+    if (diff <= 0) return "Expiré";
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -120,6 +122,6 @@ export function useAutoBanDetection(currentUsername: string | null) {
         }
       }
       return null;
-    }
+    },
   };
 }

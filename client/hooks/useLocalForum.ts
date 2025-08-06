@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export interface ForumPost {
   id?: string;
@@ -15,7 +15,7 @@ export interface ForumPost {
   tags?: string[];
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_forum';
+const LOCAL_STORAGE_KEY = "sysbreak_forum";
 
 export function useLocalForum() {
   const [posts, setPosts] = useState<ForumPost[]>([]);
@@ -29,7 +29,7 @@ export function useLocalForum() {
         setPosts(parsedPosts);
       }
     } catch (error) {
-      console.error('Error loading forum posts from localStorage:', error);
+      console.error("Error loading forum posts from localStorage:", error);
     } finally {
       setLoading(false);
     }
@@ -40,48 +40,50 @@ export function useLocalForum() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newPosts));
       setPosts(newPosts);
     } catch (error) {
-      console.error('Error saving forum posts to localStorage:', error);
+      console.error("Error saving forum posts to localStorage:", error);
       throw error;
     }
   };
 
-  const addPost = async (post: Omit<ForumPost, 'id' | 'createdAt' | 'replies' | 'views'>) => {
+  const addPost = async (
+    post: Omit<ForumPost, "id" | "createdAt" | "replies" | "views">,
+  ) => {
     try {
       const newPost: ForumPost = {
         ...post,
         id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
         createdAt: new Date().toISOString(),
         replies: 0,
-        views: 0
+        views: 0,
       };
-      
+
       const updatedPosts = [...posts, newPost];
       savePosts(updatedPosts);
       return newPost;
     } catch (error) {
-      console.error('Error adding forum post:', error);
+      console.error("Error adding forum post:", error);
       throw error;
     }
   };
 
   const updatePost = async (id: string, updatedData: Partial<ForumPost>) => {
     try {
-      const updatedPosts = posts.map(post => 
-        post.id === id ? { ...post, ...updatedData } : post
+      const updatedPosts = posts.map((post) =>
+        post.id === id ? { ...post, ...updatedData } : post,
       );
       savePosts(updatedPosts);
     } catch (error) {
-      console.error('Error updating forum post:', error);
+      console.error("Error updating forum post:", error);
       throw error;
     }
   };
 
   const deletePost = async (id: string) => {
     try {
-      const updatedPosts = posts.filter(post => post.id !== id);
+      const updatedPosts = posts.filter((post) => post.id !== id);
       savePosts(updatedPosts);
     } catch (error) {
-      console.error('Error deleting forum post:', error);
+      console.error("Error deleting forum post:", error);
       throw error;
     }
   };
@@ -96,6 +98,6 @@ export function useLocalForum() {
     addPost,
     updatePost,
     deletePost,
-    refetch: loadPosts
+    refetch: loadPosts,
   };
 }

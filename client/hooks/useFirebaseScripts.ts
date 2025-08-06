@@ -1,6 +1,14 @@
-import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export interface Script {
   id?: string;
@@ -26,72 +34,74 @@ export function useFirebaseScripts() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(db, 'scripts'),
+      collection(db, "scripts"),
       (snapshot) => {
         try {
-          const scriptsData = snapshot.docs.map(doc => ({
+          const scriptsData = snapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           })) as Script[];
-          
+
           // Sort by creation date, newest first
           scriptsData.sort((a, b) => {
             if (!a.createdAt || !b.createdAt) return 0;
             return b.createdAt.toMillis() - a.createdAt.toMillis();
           });
-          
+
           setScripts(scriptsData);
           setError(null);
         } catch (err) {
-          console.error('Error fetching scripts:', err);
-          setError('Erreur lors du chargement des scripts');
+          console.error("Error fetching scripts:", err);
+          setError("Erreur lors du chargement des scripts");
         } finally {
           setLoading(false);
         }
       },
       (err) => {
-        console.error('Firestore error:', err);
-        setError('Erreur de connexion Firebase');
+        console.error("Firestore error:", err);
+        setError("Erreur de connexion Firebase");
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
   }, []);
 
-  const addScript = async (script: Omit<Script, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addScript = async (
+    script: Omit<Script, "id" | "createdAt" | "updatedAt">,
+  ) => {
     try {
-      const docRef = await addDoc(collection(db, 'scripts'), {
+      const docRef = await addDoc(collection(db, "scripts"), {
         ...script,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
-      
+
       return { id: docRef.id, ...script };
     } catch (error) {
-      console.error('Error adding script:', error);
-      throw new Error('Erreur lors de l\'ajout du script');
+      console.error("Error adding script:", error);
+      throw new Error("Erreur lors de l'ajout du script");
     }
   };
 
   const updateScript = async (id: string, updates: Partial<Script>) => {
     try {
-      await updateDoc(doc(db, 'scripts', id), {
+      await updateDoc(doc(db, "scripts", id), {
         ...updates,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
     } catch (error) {
-      console.error('Error updating script:', error);
-      throw new Error('Erreur lors de la mise à jour du script');
+      console.error("Error updating script:", error);
+      throw new Error("Erreur lors de la mise à jour du script");
     }
   };
 
   const deleteScript = async (id: string) => {
     try {
-      await deleteDoc(doc(db, 'scripts', id));
+      await deleteDoc(doc(db, "scripts", id));
     } catch (error) {
-      console.error('Error deleting script:', error);
-      throw new Error('Erreur lors de la suppression du script');
+      console.error("Error deleting script:", error);
+      throw new Error("Erreur lors de la suppression du script");
     }
   };
 
@@ -101,6 +111,6 @@ export function useFirebaseScripts() {
     error,
     addScript,
     updateScript,
-    deleteScript
+    deleteScript,
   };
 }

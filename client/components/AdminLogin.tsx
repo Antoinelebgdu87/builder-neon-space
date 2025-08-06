@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,7 +18,10 @@ interface AdminLoginProps {
 }
 
 export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    username: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -49,7 +57,7 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
             Administration SysBreak
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -63,13 +71,18 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
                   type="text"
                   placeholder="Admin"
                   value={credentials.username}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  onChange={(e) =>
+                    setCredentials((prev) => ({
+                      ...prev,
+                      username: e.target.value,
+                    }))
+                  }
                   className="pl-10 glass border-border/50"
                   required
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="password" className="text-sm font-medium">
                 Mot de passe
@@ -81,7 +94,12 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
                   type="password"
                   placeholder="Antoine80"
                   value={credentials.password}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  onChange={(e) =>
+                    setCredentials((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
                   className="pl-10 glass border-border/50"
                   required
                 />
@@ -103,9 +121,12 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
             {loading ? "Connexion..." : "Se connecter"}
           </Button>
         </form>
-        
+
         <div className="text-center text-xs text-muted-foreground">
-          Appuyez sur <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl</kbd> + <kbd className="px-2 py-1 bg-muted rounded text-xs">F1</kbd> pour ouvrir
+          Appuyez sur{" "}
+          <kbd className="px-2 py-1 bg-muted rounded text-xs">Ctrl</kbd> +{" "}
+          <kbd className="px-2 py-1 bg-muted rounded text-xs">F1</kbd> pour
+          ouvrir
         </div>
       </DialogContent>
     </Dialog>

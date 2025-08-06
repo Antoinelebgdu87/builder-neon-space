@@ -1,8 +1,19 @@
-import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
-import { isFirebaseDisabled, handleFirebaseError } from '@/utils/firebaseProtection';
+import { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
+import {
+  isFirebaseDisabled,
+  handleFirebaseError,
+} from "@/utils/firebaseProtection";
 
 export interface Script {
   id?: string;
@@ -29,50 +40,54 @@ export function useHybridScripts() {
 
   useEffect(() => {
     // Firebase désactivé - Mode local uniquement
-    if (false) { // Désactivé temporairement
+    if (false) {
+      // Désactivé temporairement
       try {
         const unsubscribe = onSnapshot(
-          collection(db, 'scripts'),
+          collection(db, "scripts"),
           (snapshot) => {
             try {
-              const scriptsData = snapshot.docs.map(doc => ({
+              const scriptsData = snapshot.docs.map((doc) => ({
                 id: doc.id,
-                ...doc.data()
+                ...doc.data(),
               })) as Script[];
 
               scriptsData.sort((a, b) => {
                 if (!a.createdAt || !b.createdAt) return 0;
-                return new Date(b.createdAt.toDate()).getTime() - new Date(a.createdAt.toDate()).getTime();
+                return (
+                  new Date(b.createdAt.toDate()).getTime() -
+                  new Date(a.createdAt.toDate()).getTime()
+                );
               });
 
               setScripts(scriptsData);
               setError(null);
               setLoading(false);
             } catch (err) {
-              console.error('Error processing Firebase data:', err);
+              console.error("Error processing Firebase data:", err);
               setUseFirebase(false);
               setLoading(false);
             }
           },
           (err) => {
-            console.error('Firebase permission error:', err);
+            console.error("Firebase permission error:", err);
             const isNetworkError = handleFirebaseError(err);
             setUseFirebase(false);
 
             if (isNetworkError) {
-              setError('📶 Connexion Firebase impossible - Mode hors ligne');
-            } else if (err.code === 'permission-denied') {
-              setError('⚠️ Firebase: Permissions insuffisantes');
+              setError("📶 Connexion Firebase impossible - Mode hors ligne");
+            } else if (err.code === "permission-denied") {
+              setError("⚠️ Firebase: Permissions insuffisantes");
             } else {
-              setError('Erreur Firebase - Tentative de reconnexion...');
+              setError("Erreur Firebase - Tentative de reconnexion...");
             }
             setLoading(false);
-          }
+          },
         );
 
         return () => unsubscribe();
       } catch (error) {
-        console.error('Failed to setup Firebase listener:', error);
+        console.error("Failed to setup Firebase listener:", error);
         handleFirebaseError(error);
         setUseFirebase(false);
         setLoading(false);
@@ -82,38 +97,40 @@ export function useHybridScripts() {
     }
   }, [useFirebase]);
 
-  const addScript = async (script: Omit<Script, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addScript = async (
+    script: Omit<Script, "id" | "createdAt" | "updatedAt">,
+  ) => {
     try {
-      const docRef = await addDoc(collection(db, 'scripts'), {
+      const docRef = await addDoc(collection(db, "scripts"), {
         ...script,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
       return { id: docRef.id, ...script };
     } catch (error) {
-      console.error('Erreur ajout script:', error);
+      console.error("Erreur ajout script:", error);
       throw error;
     }
   };
 
   const updateScript = async (id: string, updates: Partial<Script>) => {
     try {
-      await updateDoc(doc(db, 'scripts', id), {
+      await updateDoc(doc(db, "scripts", id), {
         ...updates,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
     } catch (error) {
-      console.error('Erreur mise à jour script:', error);
+      console.error("Erreur mise à jour script:", error);
       throw error;
     }
   };
 
   const deleteScript = async (id: string) => {
     try {
-      await deleteDoc(doc(db, 'scripts', id));
+      await deleteDoc(doc(db, "scripts", id));
     } catch (error) {
-      console.error('Erreur suppression script:', error);
+      console.error("Erreur suppression script:", error);
       throw error;
     }
   };
@@ -121,10 +138,12 @@ export function useHybridScripts() {
   return {
     scripts,
     loading,
-    error: error || (useFirebase ? null : 'Mode local - Données sauvegardées localement'),
+    error:
+      error ||
+      (useFirebase ? null : "Mode local - Données sauvegardées localement"),
     addScript,
     updateScript,
     deleteScript,
-    isOnline: useFirebase
+    isOnline: useFirebase,
   };
 }

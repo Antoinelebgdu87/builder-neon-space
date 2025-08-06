@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export interface Script {
   id?: string;
@@ -15,7 +15,7 @@ export interface Script {
   code?: string;
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_scripts';
+const LOCAL_STORAGE_KEY = "sysbreak_scripts";
 
 export function useLocalScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
@@ -29,7 +29,7 @@ export function useLocalScripts() {
         setScripts(parsedScripts);
       }
     } catch (error) {
-      console.error('Error loading scripts from localStorage:', error);
+      console.error("Error loading scripts from localStorage:", error);
     } finally {
       setLoading(false);
     }
@@ -40,45 +40,45 @@ export function useLocalScripts() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newScripts));
       setScripts(newScripts);
     } catch (error) {
-      console.error('Error saving scripts to localStorage:', error);
+      console.error("Error saving scripts to localStorage:", error);
       throw error;
     }
   };
 
-  const addScript = async (script: Omit<Script, 'id'>) => {
+  const addScript = async (script: Omit<Script, "id">) => {
     try {
       const newScript = {
         ...script,
-        id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       };
-      
+
       const updatedScripts = [...scripts, newScript];
       saveScripts(updatedScripts);
       return newScript;
     } catch (error) {
-      console.error('Error adding script:', error);
+      console.error("Error adding script:", error);
       throw error;
     }
   };
 
   const updateScript = async (id: string, updatedData: Partial<Script>) => {
     try {
-      const updatedScripts = scripts.map(script => 
-        script.id === id ? { ...script, ...updatedData } : script
+      const updatedScripts = scripts.map((script) =>
+        script.id === id ? { ...script, ...updatedData } : script,
       );
       saveScripts(updatedScripts);
     } catch (error) {
-      console.error('Error updating script:', error);
+      console.error("Error updating script:", error);
       throw error;
     }
   };
 
   const deleteScript = async (id: string) => {
     try {
-      const updatedScripts = scripts.filter(script => script.id !== id);
+      const updatedScripts = scripts.filter((script) => script.id !== id);
       saveScripts(updatedScripts);
     } catch (error) {
-      console.error('Error deleting script:', error);
+      console.error("Error deleting script:", error);
       throw error;
     }
   };
@@ -93,6 +93,6 @@ export function useLocalScripts() {
     addScript,
     updateScript,
     deleteScript,
-    refetch: loadScripts
+    refetch: loadScripts,
   };
 }

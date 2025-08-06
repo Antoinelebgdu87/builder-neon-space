@@ -14,7 +14,11 @@
 }
 
 /* Force clickable elements */
-button, a, input, textarea, select {
+button,
+a,
+input,
+textarea,
+select {
   pointer-events: auto !important;
   cursor: pointer !important;
 }

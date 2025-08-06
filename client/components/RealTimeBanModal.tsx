@@ -1,25 +1,36 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Ban, 
-  Clock, 
-  Shield, 
-  AlertTriangle, 
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Ban,
+  Clock,
+  Shield,
+  AlertTriangle,
   LogOut,
   Timer,
-  Calendar
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useRealTimeBanProtection, type BanProtectionState } from '@/hooks/useRealTimeBanProtection';
+  Calendar,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  useRealTimeBanProtection,
+  type BanProtectionState,
+} from "@/hooks/useRealTimeBanProtection";
 
 interface RealTimeBanModalProps {
   userId: string | null;
   onForceLogout?: () => void;
 }
 
-export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProps) {
+export function RealTimeBanModal({
+  userId,
+  onForceLogout,
+}: RealTimeBanModalProps) {
   const {
     banState,
     loading,
@@ -29,7 +40,7 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
     shouldShowModal,
     isTemporary,
     isPermanent,
-    hasTimeRemaining
+    hasTimeRemaining,
   } = useRealTimeBanProtection(userId);
 
   const handleLogout = () => {
@@ -41,12 +52,12 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
   };
 
   const formatBanDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -55,25 +66,23 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
   }
 
   return (
-    <Dialog open={shouldShowModal} onOpenChange={() => {}} >
+    <Dialog open={shouldShowModal} onOpenChange={() => {}}>
       <DialogContent
         className="sm:max-w-md bg-black border-red-500 border-2"
         hideCloseButton
         style={{
-          backgroundColor: '#000000',
-          color: '#ffffff',
-          border: '2px solid #ef4444',
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 9999
+          backgroundColor: "#000000",
+          color: "#ffffff",
+          border: "2px solid #ef4444",
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 9999,
         }}
       >
         <DialogHeader>
-          <DialogTitle className="sr-only">
-            Notification
-          </DialogTitle>
+          <DialogTitle className="sr-only">Notification</DialogTitle>
         </DialogHeader>
 
         <motion.div
@@ -100,7 +109,9 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Raison du bannissement</span>
+                  <span className="text-sm font-medium">
+                    Raison du bannissement
+                  </span>
                 </div>
                 <div className="pl-6 p-3 bg-muted/30 rounded border">
                   <p className="text-sm">{banState.banReason}</p>
@@ -113,7 +124,9 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Date du bannissement</span>
+                  <span className="text-sm font-medium">
+                    Date du bannissement
+                  </span>
                 </div>
                 <div className="pl-6">
                   <p className="text-sm text-muted-foreground">
@@ -128,11 +141,16 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Timer className="w-4 h-4 text-orange-400" />
-                  <span className="text-sm font-medium text-orange-400">Temps restant</span>
+                  <span className="text-sm font-medium text-orange-400">
+                    Temps restant
+                  </span>
                 </div>
                 <div className="pl-6">
                   <div className="flex items-center space-x-2">
-                    <Badge variant="outline" className="bg-orange-500/10 text-orange-400 border-orange-500/30">
+                    <Badge
+                      variant="outline"
+                      className="bg-orange-500/10 text-orange-400 border-orange-500/30"
+                    >
                       <Clock className="w-3 h-3 mr-1" />
                       {banState.timeRemaining}
                     </Badge>
@@ -184,7 +202,9 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
                   <span className="text-sm font-medium">Banni par</span>
                 </div>
                 <div className="pl-6">
-                  <p className="text-sm text-muted-foreground">{banState.bannedBy}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {banState.bannedBy}
+                  </p>
                 </div>
               </div>
             )}
@@ -193,10 +213,10 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
           {/* Information Notice */}
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
             <p className="text-sm text-blue-400">
-              Si vous pensez que ce bannissement est une erreur, veuillez contacter l'administration.
+              Si vous pensez que ce bannissement est une erreur, veuillez
+              contacter l'administration.
             </p>
           </div>
-
         </motion.div>
       </DialogContent>
     </Dialog>

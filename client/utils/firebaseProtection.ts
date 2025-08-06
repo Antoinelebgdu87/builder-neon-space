@@ -7,7 +7,7 @@ export function isFirebaseDisabled(): boolean {
   return firebaseDisabled;
 }
 
-export function disableFirebase(reason: string = 'Erreurs réseau') {
+export function disableFirebase(reason: string = "Erreurs réseau") {
   firebaseDisabled = true;
   console.warn(`🚫 Firebase désactivé: ${reason}`);
 }
@@ -15,27 +15,27 @@ export function disableFirebase(reason: string = 'Erreurs réseau') {
 export function enableFirebase() {
   firebaseDisabled = false;
   errorCount = 0;
-  console.log('✅ Firebase réactivé');
+  console.log("✅ Firebase réactivé");
 }
 
 export function handleFirebaseError(error: any): boolean {
   errorCount++;
   console.warn(`🔥 Erreur Firebase (${errorCount}/${MAX_ERRORS}):`, error);
-  
+
   // Détecter les erreurs de réseau
-  const errorString = String(error?.message || error || '');
+  const errorString = String(error?.message || error || "");
   const isNetworkError = [
-    'Failed to fetch',
-    'Network request failed',
-    'NETWORK_ERROR',
-    'TypeError: Failed to fetch'
-  ].some(netError => errorString.includes(netError));
-  
+    "Failed to fetch",
+    "Network request failed",
+    "NETWORK_ERROR",
+    "TypeError: Failed to fetch",
+  ].some((netError) => errorString.includes(netError));
+
   if (isNetworkError && errorCount >= MAX_ERRORS) {
-    disableFirebase('Trop d\'erreurs réseau');
+    disableFirebase("Trop d'erreurs réseau");
     return true; // Indique qu'il faut utiliser le mode local
   }
-  
+
   return isNetworkError;
 }
 
@@ -49,6 +49,11 @@ export function handleFirebaseError(error: any): boolean {
 //   }
 // }, 120000);
 
-console.log('🚫 Firebase définitivement désactivé - Mode local forcé');
+console.log("🚫 Firebase définitivement désactivé - Mode local forcé");
 
-export default { isFirebaseDisabled, disableFirebase, enableFirebase, handleFirebaseError };
+export default {
+  isFirebaseDisabled,
+  disableFirebase,
+  enableFirebase,
+  handleFirebaseError,
+};

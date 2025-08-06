@@ -1,30 +1,30 @@
-import React from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { AlertTriangle, Wifi, WifiOff, RefreshCw } from 'lucide-react';
-import { useFirebaseAvailable } from '@/hooks/useFirebaseGlobalControl';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, Wifi, WifiOff, RefreshCw } from "lucide-react";
+import { useFirebaseAvailable } from "@/hooks/useFirebaseGlobalControl";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FirebaseStatusIndicatorProps {
   showWhenWorking?: boolean;
   compact?: boolean;
 }
 
-export function FirebaseStatusIndicator({ 
-  showWhenWorking = false, 
-  compact = true 
+export function FirebaseStatusIndicator({
+  showWhenWorking = false,
+  compact = true,
 }: FirebaseStatusIndicatorProps) {
   const { isAvailable, errorCount, forceEnable } = useFirebaseAvailable();
-  
+
   // Ne pas afficher si Firebase fonctionne et showWhenWorking = false
   if (isAvailable && !showWhenWorking) {
     return null;
   }
-  
+
   if (compact) {
     return (
-      <Badge 
+      <Badge
         variant={isAvailable ? "secondary" : "destructive"}
         className="flex items-center space-x-1"
       >
@@ -34,12 +34,12 @@ export function FirebaseStatusIndicator({
           <WifiOff className="w-3 h-3" />
         )}
         <span className="text-xs">
-          {isAvailable ? 'Firebase OK' : 'Mode local'}
+          {isAvailable ? "Firebase OK" : "Mode local"}
         </span>
       </Badge>
     );
   }
-  
+
   return (
     <AnimatePresence>
       {!isAvailable && (
@@ -53,10 +53,12 @@ export function FirebaseStatusIndicator({
             <AlertTriangle className="h-4 w-4 text-orange-500" />
             <AlertDescription className="flex items-center justify-between">
               <div>
-                <span className="font-medium text-orange-600">Mode local forcé</span>
+                <span className="font-medium text-orange-600">
+                  Mode local forcé
+                </span>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Firebase désactivé pour éviter les erreurs réseau.
-                  Toutes les fonctionnalités sont disponibles en mode local.
+                  Firebase désactivé pour éviter les erreurs réseau. Toutes les
+                  fonctionnalités sont disponibles en mode local.
                 </p>
               </div>
               <Button

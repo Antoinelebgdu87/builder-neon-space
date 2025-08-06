@@ -9,10 +9,7 @@ interface ForumPostCardProps {
   onClick?: () => void;
 }
 
-export default function ForumPostCard({
-  post,
-  onClick
-}: ForumPostCardProps) {
+export default function ForumPostCard({ post, onClick }: ForumPostCardProps) {
   const {
     title,
     content,
@@ -25,17 +22,17 @@ export default function ForumPostCard({
     createdAt,
     lastReply,
     tags = [],
-    comments = []
+    comments = [],
   } = post;
   const formatDate = (dateInput: any) => {
     // Handle different date formats (Firebase timestamp vs ISO string)
     const date = dateInput?.toDate ? dateInput.toDate() : new Date(dateInput);
-    return date.toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return date.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -49,12 +46,8 @@ export default function ForumPostCard({
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-2">
-              {isSticky && (
-                <Pin className="w-4 h-4 text-primary" />
-              )}
-              {isLocked && (
-                <Lock className="w-4 h-4 text-muted-foreground" />
-              )}
+              {isSticky && <Pin className="w-4 h-4 text-primary" />}
+              {isLocked && <Lock className="w-4 h-4 text-muted-foreground" />}
               <Badge variant="outline" className="text-xs">
                 {category}
               </Badge>
@@ -64,11 +57,11 @@ export default function ForumPostCard({
                 </Badge>
               ))}
             </div>
-            
+
             <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors mb-2 line-clamp-2">
               {title}
             </h3>
-            
+
             <p className="text-muted-foreground text-sm mb-4 line-clamp-2 leading-relaxed">
               {content}
             </p>

@@ -4,11 +4,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff, Code, MessageSquare, Shield, Loader2, Pin, Ban, Clock, Users } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Settings,
+  AlertTriangle,
+  Power,
+  PowerOff,
+  Code,
+  MessageSquare,
+  Shield,
+  Loader2,
+  Pin,
+  Ban,
+  Clock,
+  Users,
+} from "lucide-react";
 import { useHybridExploits, type Exploit } from "@/hooks/useHybridExploits";
 import { useHybridScripts, type Script } from "@/hooks/useHybridScripts";
 import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
@@ -29,10 +53,40 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Admin() {
-  const { exploits, loading: exploitsLoading, addExploit, updateExploit, deleteExploit, error: exploitsError } = useHybridExploits();
-  const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript, error: scriptsError } = useHybridScripts();
-  const { posts, loading: postsLoading, addPost, updatePost, deletePost, deleteComment, error: forumError } = useHybridForum();
-  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError, isOnline } = useHybridMaintenance();
+  const {
+    exploits,
+    loading: exploitsLoading,
+    addExploit,
+    updateExploit,
+    deleteExploit,
+    error: exploitsError,
+  } = useHybridExploits();
+  const {
+    scripts,
+    loading: scriptsLoading,
+    addScript,
+    updateScript,
+    deleteScript,
+    error: scriptsError,
+  } = useHybridScripts();
+  const {
+    posts,
+    loading: postsLoading,
+    addPost,
+    updatePost,
+    deletePost,
+    deleteComment,
+    error: forumError,
+  } = useHybridForum();
+  const {
+    maintenanceState,
+    enableMaintenance,
+    disableMaintenance,
+    updateMaintenanceMessage,
+    loading: maintenanceLoading,
+    error: maintenanceError,
+    isOnline,
+  } = useHybridMaintenance();
   const { bans, banUser, unbanUser, loading: bansLoading } = useBanSystem();
   const { user } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
@@ -40,33 +94,41 @@ export default function Admin() {
   const { getUserRole, getUserPermissions } = useLocalRoleSystem();
 
   // Vérifier si l'utilisateur a les permissions admin
-  const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
+  const anonymousUserAccount = anonymousUser
+    ? getUserById(anonymousUser.id)
+    : null;
   const isAnonymousAdmin = anonymousUserAccount?.isAdmin || false;
   const hasAdminAccess = user || isAnonymousAdmin;
 
   // Synchroniser automatiquement l'utilisateur anonyme
   useEffect(() => {
     if (anonymousUser && !getUserById(anonymousUser.id)) {
-      console.log('Synchronisation utilisateur anonyme avec le système de gestion');
+      console.log(
+        "Synchronisation utilisateur anonyme avec le système de gestion",
+      );
       registerAnonymousUser({
         id: anonymousUser.id,
         username: anonymousUser.username,
         displayName: anonymousUser.displayName,
-        createdAt: anonymousUser.createdAt
+        createdAt: anonymousUser.createdAt,
       });
     }
   }, [anonymousUser, getUserById, registerAnonymousUser]);
 
   // Obtenir le rôle et permissions de l'utilisateur actuel
   const currentUserId = user?.id || anonymousUser?.id;
-  const currentUserRole = currentUserId ? getUserRole(currentUserId) : 'user';
-  const currentUserPermissions = currentUserId ? getUserPermissions(currentUserId) : null;
-  
+  const currentUserRole = currentUserId ? getUserRole(currentUserId) : "user";
+  const currentUserPermissions = currentUserId
+    ? getUserPermissions(currentUserId)
+    : null;
+
   const [activeTab, setActiveTab] = useState("exploits");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [maintenanceMessage, setMaintenanceMessage] = useState(maintenanceState.message || "");
-  
+  const [maintenanceMessage, setMaintenanceMessage] = useState(
+    maintenanceState.message || "",
+  );
+
   // Edit states
   const [editingExploit, setEditingExploit] = useState<Exploit | null>(null);
   const [editingScript, setEditingScript] = useState<Script | null>(null);
@@ -74,13 +136,31 @@ export default function Admin() {
 
   // Form states
   const [exploitFormData, setExploitFormData] = useState<Partial<Exploit>>({
-    name: "", description: "", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
-    downloads: "0", platforms: [], isVerified: false, isPopular: false, gradient: "from-blue-500 to-purple-500", downloadUrl: ""
+    name: "",
+    description: "",
+    imageUrl:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
+    downloads: "0",
+    platforms: [],
+    isVerified: false,
+    isPopular: false,
+    gradient: "from-blue-500 to-purple-500",
+    downloadUrl: "",
   });
 
   const [scriptFormData, setScriptFormData] = useState<Partial<Script>>({
-    name: "", description: "", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
-    downloads: "0", category: "Utility", language: "Lua", isVerified: false, isPopular: false, gradient: "from-blue-500 to-purple-500", downloadUrl: "", code: ""
+    name: "",
+    description: "",
+    imageUrl:
+      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
+    downloads: "0",
+    category: "Utility",
+    language: "Lua",
+    isVerified: false,
+    isPopular: false,
+    gradient: "from-blue-500 to-purple-500",
+    downloadUrl: "",
+    code: "",
   });
 
   // Ban form states
@@ -88,18 +168,47 @@ export default function Admin() {
     username: "",
     reason: "",
     banType: "temporary" as "temporary" | "permanent",
-    hours: 24
+    hours: 24,
   });
   const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
 
   const [forumFormData, setForumFormData] = useState<Partial<ForumPost>>({
-    title: "", content: "", author: user?.username || "Admin", category: "General", isSticky: false, isLocked: false, tags: []
+    title: "",
+    content: "",
+    author: user?.username || "Admin",
+    category: "General",
+    isSticky: false,
+    isLocked: false,
+    tags: [],
   });
 
   const platformOptions = ["windows", "android", "ios", "mac"];
-  const gradientOptions = ["from-blue-500 to-purple-500", "from-cyan-500 to-blue-600", "from-purple-600 to-indigo-700", "from-orange-500 to-red-600", "from-emerald-500 to-teal-600", "from-pink-500 to-rose-600", "from-red-600 to-orange-500", "from-green-500 to-emerald-600"];
-  const scriptCategories = ["Utility", "Game", "Tool", "Automation", "GUI", "Anti-Cheat"];
-  const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "Suggestions"];
+  const gradientOptions = [
+    "from-blue-500 to-purple-500",
+    "from-cyan-500 to-blue-600",
+    "from-purple-600 to-indigo-700",
+    "from-orange-500 to-red-600",
+    "from-emerald-500 to-teal-600",
+    "from-pink-500 to-rose-600",
+    "from-red-600 to-orange-500",
+    "from-green-500 to-emerald-600",
+  ];
+  const scriptCategories = [
+    "Utility",
+    "Game",
+    "Tool",
+    "Automation",
+    "GUI",
+    "Anti-Cheat",
+  ];
+  const forumCategories = [
+    "General",
+    "Support",
+    "Scripts",
+    "Exploits",
+    "Bugs",
+    "Suggestions",
+  ];
 
   // Update maintenance message when state changes
   useState(() => {
@@ -107,9 +216,41 @@ export default function Admin() {
   }, [maintenanceState.message]);
 
   const resetForms = () => {
-    setExploitFormData({ name: "", description: "", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center", downloads: "0", platforms: [], isVerified: false, isPopular: false, gradient: "from-blue-500 to-purple-500", downloadUrl: "" });
-    setScriptFormData({ name: "", description: "", imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center", downloads: "0", category: "Utility", language: "Lua", isVerified: false, isPopular: false, gradient: "from-blue-500 to-purple-500", downloadUrl: "", code: "" });
-    setForumFormData({ title: "", content: "", author: user?.username || "Admin", category: "General", isSticky: false, isLocked: false, tags: [] });
+    setExploitFormData({
+      name: "",
+      description: "",
+      imageUrl:
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
+      downloads: "0",
+      platforms: [],
+      isVerified: false,
+      isPopular: false,
+      gradient: "from-blue-500 to-purple-500",
+      downloadUrl: "",
+    });
+    setScriptFormData({
+      name: "",
+      description: "",
+      imageUrl:
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
+      downloads: "0",
+      category: "Utility",
+      language: "Lua",
+      isVerified: false,
+      isPopular: false,
+      gradient: "from-blue-500 to-purple-500",
+      downloadUrl: "",
+      code: "",
+    });
+    setForumFormData({
+      title: "",
+      content: "",
+      author: user?.username || "Admin",
+      category: "General",
+      isSticky: false,
+      isLocked: false,
+      tags: [],
+    });
     setEditingExploit(null);
     setEditingScript(null);
     setEditingPost(null);
@@ -118,33 +259,38 @@ export default function Admin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       if (activeTab === "exploits") {
         if (editingExploit) {
           await updateExploit(editingExploit.id!, exploitFormData);
         } else {
-          await addExploit(exploitFormData as Omit<Exploit, 'id'>);
+          await addExploit(exploitFormData as Omit<Exploit, "id">);
         }
       } else if (activeTab === "scripts") {
         if (editingScript) {
           await updateScript(editingScript.id!, scriptFormData);
         } else {
-          await addScript(scriptFormData as Omit<Script, 'id'>);
+          await addScript(scriptFormData as Omit<Script, "id">);
         }
       } else if (activeTab === "forum") {
         if (editingPost) {
           await updatePost(editingPost.id!, forumFormData);
         } else {
-          await addPost(forumFormData as Omit<ForumPost, 'id' | 'createdAt' | 'replies' | 'views'>);
+          await addPost(
+            forumFormData as Omit<
+              ForumPost,
+              "id" | "createdAt" | "replies" | "views"
+            >,
+          );
         }
       }
-      
+
       resetForms();
       setIsAddDialogOpen(false);
     } catch (error: any) {
-      console.error('Error saving:', error);
-      alert(error.message || 'Erreur lors de la sauvegarde');
+      console.error("Error saving:", error);
+      alert(error.message || "Erreur lors de la sauvegarde");
     } finally {
       setIsSubmitting(false);
     }
@@ -165,8 +311,8 @@ export default function Admin() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) return;
-    
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) return;
+
     try {
       if (activeTab === "exploits") {
         await deleteExploit(id);
@@ -176,7 +322,7 @@ export default function Admin() {
         await deletePost(id);
       }
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la suppression');
+      alert(error.message || "Erreur lors de la suppression");
     }
   };
 
@@ -185,55 +331,67 @@ export default function Admin() {
       if (maintenanceState.isActive) {
         await disableMaintenance();
       } else {
-        await enableMaintenance(maintenanceMessage, user?.username || 'Admin');
+        await enableMaintenance(maintenanceMessage, user?.username || "Admin");
       }
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du changement de maintenance');
+      alert(error.message || "Erreur lors du changement de maintenance");
     }
   };
 
   const handleMaintenanceMessageUpdate = async () => {
     try {
       await updateMaintenanceMessage(maintenanceMessage);
-      alert('Message de maintenance mis à jour');
+      alert("Message de maintenance mis à jour");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors de la mise à jour du message');
+      alert(error.message || "Erreur lors de la mise à jour du message");
     }
   };
 
   const togglePlatform = (platform: string) => {
-    setExploitFormData(prev => ({
+    setExploitFormData((prev) => ({
       ...prev,
       platforms: prev.platforms?.includes(platform)
-        ? prev.platforms.filter(p => p !== platform)
-        : [...(prev.platforms || []), platform]
+        ? prev.platforms.filter((p) => p !== platform)
+        : [...(prev.platforms || []), platform],
     }));
   };
 
   const getCurrentItems = () => {
     switch (activeTab) {
-      case "exploits": return exploits;
-      case "scripts": return scripts;
-      case "forum": return posts;
-      default: return [];
+      case "exploits":
+        return exploits;
+      case "scripts":
+        return scripts;
+      case "forum":
+        return posts;
+      default:
+        return [];
     }
   };
 
   const getCurrentLoading = () => {
     switch (activeTab) {
-      case "exploits": return exploitsLoading;
-      case "scripts": return scriptsLoading;
-      case "forum": return postsLoading;
-      default: return false;
+      case "exploits":
+        return exploitsLoading;
+      case "scripts":
+        return scriptsLoading;
+      case "forum":
+        return postsLoading;
+      default:
+        return false;
     }
   };
 
   const getCurrentError = () => {
     switch (activeTab) {
-      case "exploits": return exploitsError;
-      case "scripts": return scriptsError;
-      case "forum": return forumError;
-      default: return null;
+      case "exploits":
+        return exploitsError;
+      case "scripts":
+        return scriptsError;
+      case "forum":
+        return forumError;
+      default:
+        return null;
     }
   };
 
@@ -243,7 +401,7 @@ export default function Admin() {
 
   const handleBanUser = async () => {
     if (!banFormData.username.trim() || !banFormData.reason.trim()) {
-      alert('Veuillez remplir tous les champs requis');
+      alert("Veuillez remplir tous les champs requis");
       return;
     }
 
@@ -254,32 +412,34 @@ export default function Admin() {
         id: banFormData.username, // Use username as ID for direct matching
         username: banFormData.username,
         isBanned: false,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await banUser(
         mockUser,
         banFormData.reason,
         banFormData.banType,
-        banFormData.banType === 'temporary' ? banFormData.hours : undefined
+        banFormData.banType === "temporary" ? banFormData.hours : undefined,
       );
 
       // Trigger instant ban update event
-      window.dispatchEvent(new CustomEvent('userBanned', {
-        detail: { username: banFormData.username }
-      }));
-      window.dispatchEvent(new CustomEvent('banStatusChanged'));
+      window.dispatchEvent(
+        new CustomEvent("userBanned", {
+          detail: { username: banFormData.username },
+        }),
+      );
+      window.dispatchEvent(new CustomEvent("banStatusChanged"));
 
       setBanFormData({
         username: "",
         reason: "",
         banType: "temporary",
-        hours: 24
+        hours: 24,
       });
       setIsBanDialogOpen(false);
-      alert('Utilisateur banni avec succès');
+      alert("Utilisateur banni avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du bannissement');
+      alert(error.message || "Erreur lors du bannissement");
     } finally {
       setIsSubmitting(false);
     }
@@ -290,14 +450,16 @@ export default function Admin() {
       await unbanUser(userId);
 
       // Trigger instant unban update event
-      window.dispatchEvent(new CustomEvent('userUnbanned', {
-        detail: { userId }
-      }));
-      window.dispatchEvent(new CustomEvent('banStatusChanged'));
+      window.dispatchEvent(
+        new CustomEvent("userUnbanned", {
+          detail: { userId },
+        }),
+      );
+      window.dispatchEvent(new CustomEvent("banStatusChanged"));
 
-      alert('Utilisateur débanni avec succès');
+      alert("Utilisateur débanni avec succès");
     } catch (error: any) {
-      alert(error.message || 'Erreur lors du débannissement');
+      alert(error.message || "Erreur lors du débannissement");
     }
   };
 
@@ -351,7 +513,6 @@ export default function Admin() {
         {/* Status général Firebase */}
         <FirebaseStatusIndicator />
 
-
         {/* Maintenance Control - Fondateur seulement */}
         {currentUserPermissions?.canManageMaintenance && (
           <motion.div
@@ -359,108 +520,134 @@ export default function Admin() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-          <Card className="glass border-border/50 mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="w-5 h-5" />
-                <span>Contrôle de Maintenance</span>
-                {maintenanceLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {maintenanceError && (
-                <div className="text-red-400 text-sm bg-red-500/10 p-3 rounded border border-red-500/20">
-                  {maintenanceError}
-                </div>
-              )}
-              
-              <div className="flex items-center justify-between p-4 glass rounded-lg border border-border/50">
-                <div className="flex items-center space-x-3">
-                  <motion.div 
-                    className={`w-3 h-3 rounded-full ${maintenanceState.isActive ? 'bg-red-500' : 'bg-green-500'}`}
-                    animate={{ 
-                      scale: maintenanceState.isActive ? [1, 1.2, 1] : 1,
-                      opacity: maintenanceState.isActive ? [0.8, 1, 0.8] : 1
-                    }}
-                    transition={{ duration: 2, repeat: maintenanceState.isActive ? Infinity : 0 }}
-                  />
-                  <div>
-                    <span className="font-medium">
-                      Statut: {maintenanceState.isActive ? 'En maintenance' : 'En ligne'}
-                    </span>
-                    {maintenanceState.isActive && maintenanceState.enabledAt && (
-                      <p className="text-sm text-muted-foreground">
-                        Activé le {
-                          typeof maintenanceState.enabledAt === 'string'
-                            ? new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')
-                            : maintenanceState.enabledAt.toDate
-                              ? new Date(maintenanceState.enabledAt.toDate()).toLocaleString('fr-FR')
-                              : new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')
-                        } par {maintenanceState.enabledBy}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <Button
-                  onClick={handleMaintenanceToggle}
-                  disabled={maintenanceLoading}
-                  variant={maintenanceState.isActive ? "destructive" : "default"}
-                  className={maintenanceState.isActive ? "hover:bg-destructive/80" : "bg-gradient-primary hover:opacity-90 text-white"}
-                >
-                  {maintenanceLoading ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : maintenanceState.isActive ? (
-                    <Power className="w-4 h-4 mr-2" />
-                  ) : (
-                    <PowerOff className="w-4 h-4 mr-2" />
+            <Card className="glass border-border/50 mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Settings className="w-5 h-5" />
+                  <span>Contrôle de Maintenance</span>
+                  {maintenanceLoading && (
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   )}
-                  {maintenanceState.isActive ? "Désactiver" : "Activer"}
-                </Button>
-              </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {maintenanceError && (
+                  <div className="text-red-400 text-sm bg-red-500/10 p-3 rounded border border-red-500/20">
+                    {maintenanceError}
+                  </div>
+                )}
 
-              <div className="space-y-4">
-                <Label htmlFor="maintenanceMessage">Message de maintenance</Label>
-                <div className="flex space-x-2">
-                  <Textarea
-                    id="maintenanceMessage"
-                    value={maintenanceMessage}
-                    onChange={(e) => setMaintenanceMessage(e.target.value)}
-                    placeholder="Site en maintenance. Nous reviendrons bientôt!"
-                    className="glass border-border/50 flex-1"
-                    rows={3}
-                  />
+                <div className="flex items-center justify-between p-4 glass rounded-lg border border-border/50">
+                  <div className="flex items-center space-x-3">
+                    <motion.div
+                      className={`w-3 h-3 rounded-full ${maintenanceState.isActive ? "bg-red-500" : "bg-green-500"}`}
+                      animate={{
+                        scale: maintenanceState.isActive ? [1, 1.2, 1] : 1,
+                        opacity: maintenanceState.isActive ? [0.8, 1, 0.8] : 1,
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: maintenanceState.isActive ? Infinity : 0,
+                      }}
+                    />
+                    <div>
+                      <span className="font-medium">
+                        Statut:{" "}
+                        {maintenanceState.isActive
+                          ? "En maintenance"
+                          : "En ligne"}
+                      </span>
+                      {maintenanceState.isActive &&
+                        maintenanceState.enabledAt && (
+                          <p className="text-sm text-muted-foreground">
+                            Activé le{" "}
+                            {typeof maintenanceState.enabledAt === "string"
+                              ? new Date(
+                                  maintenanceState.enabledAt,
+                                ).toLocaleString("fr-FR")
+                              : maintenanceState.enabledAt.toDate
+                                ? new Date(
+                                    maintenanceState.enabledAt.toDate(),
+                                  ).toLocaleString("fr-FR")
+                                : new Date(
+                                    maintenanceState.enabledAt,
+                                  ).toLocaleString("fr-FR")}{" "}
+                            par {maintenanceState.enabledBy}
+                          </p>
+                        )}
+                    </div>
+                  </div>
                   <Button
-                    onClick={handleMaintenanceMessageUpdate}
-                    variant="outline"
-                    className="self-start"
+                    onClick={handleMaintenanceToggle}
                     disabled={maintenanceLoading}
+                    variant={
+                      maintenanceState.isActive ? "destructive" : "default"
+                    }
+                    className={
+                      maintenanceState.isActive
+                        ? "hover:bg-destructive/80"
+                        : "bg-gradient-primary hover:opacity-90 text-white"
+                    }
                   >
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
+                    {maintenanceLoading ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : maintenanceState.isActive ? (
+                      <Power className="w-4 h-4 mr-2" />
+                    ) : (
+                      <PowerOff className="w-4 h-4 mr-2" />
+                    )}
+                    {maintenanceState.isActive ? "Désactiver" : "Activer"}
                   </Button>
                 </div>
-              </div>
 
-              <AnimatePresence>
-                {maintenanceState.isActive && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="flex items-start space-x-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg"
-                  >
-                    <AlertTriangle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm">
-                      <p className="font-medium text-orange-400">Site en mode maintenance</p>
-                      <p className="text-orange-300/80">
-                        Les visiteurs verront le message de maintenance et ne pourront pas accéder au contenu principal.
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </CardContent>
-          </Card>
+                <div className="space-y-4">
+                  <Label htmlFor="maintenanceMessage">
+                    Message de maintenance
+                  </Label>
+                  <div className="flex space-x-2">
+                    <Textarea
+                      id="maintenanceMessage"
+                      value={maintenanceMessage}
+                      onChange={(e) => setMaintenanceMessage(e.target.value)}
+                      placeholder="Site en maintenance. Nous reviendrons bientôt!"
+                      className="glass border-border/50 flex-1"
+                      rows={3}
+                    />
+                    <Button
+                      onClick={handleMaintenanceMessageUpdate}
+                      variant="outline"
+                      className="self-start"
+                      disabled={maintenanceLoading}
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      Save
+                    </Button>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {maintenanceState.isActive && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="flex items-start space-x-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg"
+                    >
+                      <AlertTriangle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-medium text-orange-400">
+                          Site en mode maintenance
+                        </p>
+                        <p className="text-orange-300/80">
+                          Les visiteurs verront le message de maintenance et ne
+                          pourront pas accéder au contenu principal.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
           </motion.div>
         )}
 
@@ -470,64 +657,116 @@ export default function Admin() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <div className="flex items-center justify-between">
-              <TabsList className="glass border-border/50" style={{ margin: "auto 0" }}>
-                <TabsTrigger value="exploits" className="flex items-center space-x-2">
+              <TabsList
+                className="glass border-border/50"
+                style={{ margin: "auto 0" }}
+              >
+                <TabsTrigger
+                  value="exploits"
+                  className="flex items-center space-x-2"
+                >
                   <Shield className="w-4 h-4" />
                   <span>Exploits</span>
-                  <Badge variant="secondary" className="ml-1">{exploits.length}</Badge>
+                  <Badge variant="secondary" className="ml-1">
+                    {exploits.length}
+                  </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="scripts" className="flex items-center space-x-2">
+                <TabsTrigger
+                  value="scripts"
+                  className="flex items-center space-x-2"
+                >
                   <Code className="w-4 h-4" />
                   <span>Scripts</span>
-                  <Badge variant="secondary" className="ml-1">{scripts.length}</Badge>
+                  <Badge variant="secondary" className="ml-1">
+                    {scripts.length}
+                  </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="forum" className="flex items-center space-x-2">
+                <TabsTrigger
+                  value="forum"
+                  className="flex items-center space-x-2"
+                >
                   <MessageSquare className="w-4 h-4" />
                   <span>Forum</span>
-                  <Badge variant="secondary" className="ml-1">{posts.length}</Badge>
+                  <Badge variant="secondary" className="ml-1">
+                    {posts.length}
+                  </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="bans" className="flex items-center space-x-2">
+                <TabsTrigger
+                  value="bans"
+                  className="flex items-center space-x-2"
+                >
                   <Ban className="w-4 h-4" />
                   <span>Bans</span>
-                  <Badge variant="secondary" className="ml-1">Firebase</Badge>
+                  <Badge variant="secondary" className="ml-1">
+                    Firebase
+                  </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="warnings" className="flex items-center space-x-2">
+                <TabsTrigger
+                  value="warnings"
+                  className="flex items-center space-x-2"
+                >
                   <MessageSquare className="w-4 h-4" />
                   <span>Avertissements</span>
-                  <Badge variant="secondary" className="ml-1">Système</Badge>
+                  <Badge variant="secondary" className="ml-1">
+                    Système
+                  </Badge>
                 </TabsTrigger>
                 {currentUserPermissions?.canAssignRoles && (
-                  <TabsTrigger value="roles" className="flex items-center space-x-2">
+                  <TabsTrigger
+                    value="roles"
+                    className="flex items-center space-x-2"
+                  >
                     <Users className="w-4 h-4" />
                     <span>Rôles</span>
-                    <Badge variant="secondary" className="ml-1 bg-amber-500/20 text-amber-400">Fondateur</Badge>
+                    <Badge
+                      variant="secondary"
+                      className="ml-1 bg-amber-500/20 text-amber-400"
+                    >
+                      Fondateur
+                    </Badge>
                   </TabsTrigger>
                 )}
               </TabsList>
 
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button 
+                  <Button
                     className="bg-gradient-primary hover:opacity-90 text-white font-medium glow-hover"
                     onClick={resetForms}
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Ajouter {activeTab === "exploits" ? "un exploit" : activeTab === "scripts" ? "un script" : "un post"}
+                    Ajouter{" "}
+                    {activeTab === "exploits"
+                      ? "un exploit"
+                      : activeTab === "scripts"
+                        ? "un script"
+                        : "un post"}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-2xl glass border-border/50 max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>
-                      {editingExploit || editingScript || editingPost ? "Modifier" : "Ajouter"} {activeTab === "exploits" ? "un exploit" : activeTab === "scripts" ? "un script" : "un post"}
+                      {editingExploit || editingScript || editingPost
+                        ? "Modifier"
+                        : "Ajouter"}{" "}
+                      {activeTab === "exploits"
+                        ? "un exploit"
+                        : activeTab === "scripts"
+                          ? "un script"
+                          : "un post"}
                     </DialogTitle>
                   </DialogHeader>
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Form content based on active tab would go here - same as before but with proper form data binding */}
                     {/* For brevity, I'll include a simplified version */}
-                    
+
                     {activeTab === "exploits" && (
                       <>
                         <div className="space-y-2">
@@ -535,7 +774,12 @@ export default function Admin() {
                           <Input
                             id="name"
                             value={exploitFormData.name}
-                            onChange={(e) => setExploitFormData(prev => ({ ...prev, name: e.target.value }))}
+                            onChange={(e) =>
+                              setExploitFormData((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50"
                             required
                           />
@@ -545,7 +789,12 @@ export default function Admin() {
                           <Textarea
                             id="description"
                             value={exploitFormData.description}
-                            onChange={(e) => setExploitFormData(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={(e) =>
+                              setExploitFormData((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50"
                             required
                           />
@@ -560,7 +809,12 @@ export default function Admin() {
                           <Input
                             id="name"
                             value={scriptFormData.name}
-                            onChange={(e) => setScriptFormData(prev => ({ ...prev, name: e.target.value }))}
+                            onChange={(e) =>
+                              setScriptFormData((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50"
                             required
                           />
@@ -570,7 +824,12 @@ export default function Admin() {
                           <Textarea
                             id="description"
                             value={scriptFormData.description}
-                            onChange={(e) => setScriptFormData(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={(e) =>
+                              setScriptFormData((prev) => ({
+                                ...prev,
+                                description: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50"
                             required
                           />
@@ -585,7 +844,12 @@ export default function Admin() {
                           <Input
                             id="title"
                             value={forumFormData.title}
-                            onChange={(e) => setForumFormData(prev => ({ ...prev, title: e.target.value }))}
+                            onChange={(e) =>
+                              setForumFormData((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50"
                             required
                           />
@@ -595,7 +859,12 @@ export default function Admin() {
                           <Textarea
                             id="content"
                             value={forumFormData.content}
-                            onChange={(e) => setForumFormData(prev => ({ ...prev, content: e.target.value }))}
+                            onChange={(e) =>
+                              setForumFormData((prev) => ({
+                                ...prev,
+                                content: e.target.value,
+                              }))
+                            }
                             className="glass border-border/50 min-h-[150px]"
                             required
                           />
@@ -604,17 +873,20 @@ export default function Admin() {
                     )}
 
                     <div className="flex justify-end space-x-2">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => { resetForms(); setIsAddDialogOpen(false); }}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          resetForms();
+                          setIsAddDialogOpen(false);
+                        }}
                         disabled={isSubmitting}
                       >
                         <X className="w-4 h-4 mr-2" />
                         Annuler
                       </Button>
-                      <Button 
-                        type="submit" 
+                      <Button
+                        type="submit"
                         className="bg-gradient-primary hover:opacity-90 text-white font-medium"
                         disabled={isSubmitting}
                       >
@@ -623,7 +895,11 @@ export default function Admin() {
                         ) : (
                           <Save className="w-4 h-4 mr-2" />
                         )}
-                        {isSubmitting ? "Sauvegarde..." : (editingExploit || editingScript || editingPost ? "Modifier" : "Ajouter")}
+                        {isSubmitting
+                          ? "Sauvegarde..."
+                          : editingExploit || editingScript || editingPost
+                            ? "Modifier"
+                            : "Ajouter"}
                       </Button>
                     </div>
                   </form>
@@ -650,26 +926,42 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-primary">{exploits.length}</div>
-                    <div className="text-sm text-muted-foreground">Total des exploits</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {exploits.length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total des exploits
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-green-400">{exploits.filter(e => e.isVerified).length}</div>
-                    <div className="text-sm text-muted-foreground">Vérifi��s</div>
+                    <div className="text-2xl font-bold text-green-400">
+                      {exploits.filter((e) => e.isVerified).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Vérifi��s
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-orange-400">{exploits.filter(e => e.isPopular).length}</div>
-                    <div className="text-sm text-muted-foreground">Populaires</div>
+                    <div className="text-2xl font-bold text-orange-400">
+                      {exploits.filter((e) => e.isPopular).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Populaires
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
                     <div className="text-2xl font-bold text-blue-400">
-                      {exploitsLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Firebase"}
+                      {exploitsLoading ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                      ) : (
+                        "Firebase"
+                      )}
                     </div>
                     <div className="text-sm text-muted-foreground">Statut</div>
                   </CardContent>
@@ -680,12 +972,16 @@ export default function Admin() {
               {currentLoading ? (
                 <div className="flex items-center justify-center py-16">
                   <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                  <span className="ml-2 text-muted-foreground">Chargement...</span>
+                  <span className="ml-2 text-muted-foreground">
+                    Chargement...
+                  </span>
                 </div>
               ) : currentItems.length === 0 ? (
                 <div className="text-center py-16">
                   <h3 className="text-2xl font-semibold mb-2">Aucun élément</h3>
-                  <p className="text-muted-foreground">Ajoutez des éléments avec le bouton ci-dessus.</p>
+                  <p className="text-muted-foreground">
+                    Ajoutez des éléments avec le bouton ci-dessus.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -699,35 +995,49 @@ export default function Admin() {
                     >
                       <div className="flex items-center space-x-4">
                         {item.imageUrl && (
-                          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient || 'from-blue-500 to-purple-500'} p-1 flex items-center justify-center overflow-hidden`}>
-                            <img 
-                              src={item.imageUrl} 
+                          <div
+                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient || "from-blue-500 to-purple-500"} p-1 flex items-center justify-center overflow-hidden`}
+                          >
+                            <img
+                              src={item.imageUrl}
                               alt={item.name || item.title}
                               className="w-full h-full object-cover rounded-lg"
                               onError={(e) => {
-                                e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzFGMkEzNyIvPgo8cGF0aCBkPSJNMjAgMTBMMjUgMTVIMjJWMjVIMThWMTVIMTVMMjAgMTBaIiBmaWxsPSIjMDA5NEZGIi8+CjwvcGc+";
+                                e.currentTarget.src =
+                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzFGMkEzNyIvPgo8cGF0aCBkPSJNMjAgMTBMMjUgMTVIMjJWMjVIMThWMTVIMTVMMjAgMTBaIiBmaWxsPSIjMDA5NEZGIi8+CjwvcGc+";
                               }}
                             />
                           </div>
                         )}
                         <div>
-                          <h3 className="font-semibold text-lg">{item.name || item.title}</h3>
+                          <h3 className="font-semibold text-lg">
+                            {item.name || item.title}
+                          </h3>
                           <p className="text-sm text-muted-foreground line-clamp-1">
                             {item.description || item.content}
                           </p>
                           <div className="flex items-center space-x-2 mt-1">
                             {item.isVerified && (
-                              <Badge variant="secondary" className="bg-green-500/20 text-green-400 border-green-500/30">
+                              <Badge
+                                variant="secondary"
+                                className="bg-green-500/20 text-green-400 border-green-500/30"
+                              >
                                 Vérifié
                               </Badge>
                             )}
                             {item.isPopular && (
-                              <Badge variant="secondary" className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                              <Badge
+                                variant="secondary"
+                                className="bg-orange-500/20 text-orange-400 border-orange-500/30"
+                              >
                                 Populaire
                               </Badge>
                             )}
                             {item.isSticky && (
-                              <Badge variant="secondary" className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                              <Badge
+                                variant="secondary"
+                                className="bg-blue-500/20 text-blue-400 border-blue-500/30"
+                              >
                                 Épinglé
                               </Badge>
                             )}
@@ -739,7 +1049,7 @@ export default function Admin() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2">
                         <Button
                           variant="outline"
@@ -767,26 +1077,42 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-primary">{scripts.length}</div>
-                    <div className="text-sm text-muted-foreground">Total des scripts</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {scripts.length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total des scripts
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-green-400">{scripts.filter(s => s.isVerified).length}</div>
-                    <div className="text-sm text-muted-foreground">Vérifiés</div>
+                    <div className="text-2xl font-bold text-green-400">
+                      {scripts.filter((s) => s.isVerified).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Vérifiés
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-orange-400">{scripts.filter(s => s.isPopular).length}</div>
-                    <div className="text-sm text-muted-foreground">Populaires</div>
+                    <div className="text-2xl font-bold text-orange-400">
+                      {scripts.filter((s) => s.isPopular).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Populaires
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
                     <div className="text-2xl font-bold text-blue-400">
-                      {scriptsLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Firebase"}
+                      {scriptsLoading ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                      ) : (
+                        "Firebase"
+                      )}
                     </div>
                     <div className="text-sm text-muted-foreground">Statut</div>
                   </CardContent>
@@ -799,22 +1125,36 @@ export default function Admin() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-primary">{posts.length}</div>
-                    <div className="text-sm text-muted-foreground">Total des posts</div>
+                    <div className="text-2xl font-bold text-primary">
+                      {posts.length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total des posts
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-green-400">{posts.filter(p => p.isSticky).length}</div>
-                    <div className="text-sm text-muted-foreground">Épinglés</div>
+                    <div className="text-2xl font-bold text-green-400">
+                      {posts.filter((p) => p.isSticky).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Épinglés
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
                     <div className="text-2xl font-bold text-orange-400">
-                      {posts.reduce((sum, post) => sum + (post.comments?.length || post.replies || 0), 0)}
+                      {posts.reduce(
+                        (sum, post) =>
+                          sum + (post.comments?.length || post.replies || 0),
+                        0,
+                      )}
                     </div>
-                    <div className="text-sm text-muted-foreground">Commentaires</div>
+                    <div className="text-sm text-muted-foreground">
+                      Commentaires
+                    </div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
@@ -822,7 +1162,9 @@ export default function Admin() {
                     <div className="text-2xl font-bold text-blue-400">
                       {posts.reduce((sum, post) => sum + (post.views || 0), 0)}
                     </div>
-                    <div className="text-sm text-muted-foreground">Vues totales</div>
+                    <div className="text-sm text-muted-foreground">
+                      Vues totales
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -849,22 +1191,34 @@ export default function Admin() {
                   ) : (
                     <div className="space-y-4">
                       {posts.map((post) => (
-                        <div key={post.id} className="border border-border/30 rounded-lg p-4 space-y-3">
+                        <div
+                          key={post.id}
+                          className="border border-border/30 rounded-lg p-4 space-y-3"
+                        >
                           {/* Post Header */}
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
                               <div className="flex items-center space-x-2 mb-2">
                                 <h3 className="font-semibold">{post.title}</h3>
                                 <Badge variant="outline">{post.category}</Badge>
-                                {post.isSticky && <Badge variant="default">Épinglé</Badge>}
-                                {post.isLocked && <Badge variant="destructive">Verrouillé</Badge>}
+                                {post.isSticky && (
+                                  <Badge variant="default">Épinglé</Badge>
+                                )}
+                                {post.isLocked && (
+                                  <Badge variant="destructive">
+                                    Verrouillé
+                                  </Badge>
+                                )}
                               </div>
                               <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                                 {post.content}
                               </p>
                               <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                                 <span>Par {post.author}</span>
-                                <span>{post.comments?.length || post.replies || 0} commentaires</span>
+                                <span>
+                                  {post.comments?.length || post.replies || 0}{" "}
+                                  commentaires
+                                </span>
                                 <span>{post.views || 0} vues</span>
                               </div>
                             </div>
@@ -872,7 +1226,11 @@ export default function Admin() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={() => updatePost(post.id!, { isSticky: !post.isSticky })}
+                                onClick={() =>
+                                  updatePost(post.id!, {
+                                    isSticky: !post.isSticky,
+                                  })
+                                }
                                 className="text-green-400 hover:text-green-300"
                               >
                                 <Pin className="w-4 h-4" />
@@ -895,17 +1253,27 @@ export default function Admin() {
                                 Commentaires ({post.comments.length})
                               </h4>
                               {post.comments.map((comment) => (
-                                <div key={comment.id} className="flex items-start justify-between bg-background/50 rounded p-3">
+                                <div
+                                  key={comment.id}
+                                  className="flex items-start justify-between bg-background/50 rounded p-3"
+                                >
                                   <div className="flex-1">
                                     <div className="flex items-center space-x-2 mb-1">
-                                      <span className="text-sm font-medium">{comment.author}</span>
+                                      <span className="text-sm font-medium">
+                                        {comment.author}
+                                      </span>
                                       <span className="text-xs text-muted-foreground">
-                                        {typeof comment.createdAt === 'string'
-                                          ? new Date(comment.createdAt).toLocaleDateString('fr-FR')
+                                        {typeof comment.createdAt === "string"
+                                          ? new Date(
+                                              comment.createdAt,
+                                            ).toLocaleDateString("fr-FR")
                                           : comment.createdAt?.toDate
-                                            ? new Date(comment.createdAt.toDate()).toLocaleDateString('fr-FR')
-                                            : new Date(comment.createdAt).toLocaleDateString('fr-FR')
-                                        }
+                                            ? new Date(
+                                                comment.createdAt.toDate(),
+                                              ).toLocaleDateString("fr-FR")
+                                            : new Date(
+                                                comment.createdAt,
+                                              ).toLocaleDateString("fr-FR")}
                                       </span>
                                     </div>
                                     <p className="text-sm">{comment.content}</p>
@@ -913,7 +1281,9 @@ export default function Admin() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => deleteComment(post.id!, comment.id)}
+                                    onClick={() =>
+                                      deleteComment(post.id!, comment.id)
+                                    }
                                     className="text-destructive hover:text-destructive/80 w-8 h-8"
                                   >
                                     <Trash2 className="w-3 h-3" />

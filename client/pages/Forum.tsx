@@ -13,13 +13,17 @@ export default function Forum() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPost, setSelectedPost] = useState<ForumPost | null>(null);
 
-  const filteredPosts = (posts || []).filter(post =>
-    post && (
-      (post.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (post.content?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (post.category?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (post.author?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-    )
+  const filteredPosts = (posts || []).filter(
+    (post) =>
+      post &&
+      ((post.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (post.content?.toLowerCase() || "").includes(
+          searchTerm.toLowerCase(),
+        ) ||
+        (post.category?.toLowerCase() || "").includes(
+          searchTerm.toLowerCase(),
+        ) ||
+        (post.author?.toLowerCase() || "").includes(searchTerm.toLowerCase())),
   );
 
   // Sort posts - sticky first, then by creation date
@@ -31,11 +35,15 @@ export default function Forum() {
     if (!a.createdAt || !b.createdAt) return 0;
 
     try {
-      const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
-      const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+      const dateA = a.createdAt?.toDate
+        ? a.createdAt.toDate()
+        : new Date(a.createdAt);
+      const dateB = b.createdAt?.toDate
+        ? b.createdAt.toDate()
+        : new Date(b.createdAt);
       return dateB.getTime() - dateA.getTime();
     } catch (error) {
-      console.error('Error sorting forum posts by date:', error);
+      console.error("Error sorting forum posts by date:", error);
       return 0;
     }
   });
@@ -48,30 +56,29 @@ export default function Forum() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10"></div>
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
-        
+
         <div className="container mx-auto relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Forum
-            </h1>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">Forum</h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Communauté de développeurs et utilisateurs SysBreak.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-8">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  placeholder="Rechercher dans le forum..." 
+                <Input
+                  placeholder="Rechercher dans le forum..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-4 text-lg glass border-border/50 focus:border-primary/50 focus:ring-primary/20"
                   style={{
-                    backgroundImage: "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
+                    backgroundImage:
+                      "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
-                    backgroundSize: "cover"
+                    backgroundSize: "cover",
                   }}
                 />
               </div>
@@ -80,11 +87,15 @@ export default function Forum() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
               <div className="glass p-4 rounded-xl border-border/50">
-                <div className="text-2xl font-bold text-primary">{posts.length}</div>
+                <div className="text-2xl font-bold text-primary">
+                  {posts.length}
+                </div>
                 <div className="text-sm text-muted-foreground">Posts</div>
               </div>
               <div className="glass p-4 rounded-xl border-border/50">
-                <div className="text-2xl font-bold text-primary">{posts.reduce((sum, post) => sum + post.replies, 0)}</div>
+                <div className="text-2xl font-bold text-primary">
+                  {posts.reduce((sum, post) => sum + post.replies, 0)}
+                </div>
                 <div className="text-sm text-muted-foreground">Réponses</div>
               </div>
               <div className="glass p-4 rounded-xl border-border/50">
@@ -127,14 +138,18 @@ export default function Forum() {
           {loading && (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Chargement du forum...</span>
+              <span className="ml-2 text-muted-foreground">
+                Chargement du forum...
+              </span>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && posts.length === 0 && (
             <div className="text-center py-16">
-              <h3 className="text-2xl font-semibold mb-2">Aucun post disponible</h3>
+              <h3 className="text-2xl font-semibold mb-2">
+                Aucun post disponible
+              </h3>
               <p className="text-muted-foreground">
                 Les posts seront ajoutés par la communauté et l'administration.
               </p>
@@ -172,16 +187,24 @@ export default function Forum() {
           <h2 className="text-3xl font-bold mb-8">Règles de la Communauté</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="glass p-6 rounded-xl border-border/50">
-              <h3 className="text-xl font-semibold mb-2">Respectez les Autres</h3>
-              <p className="text-muted-foreground">Maintenez un environnement accueillant et respectueux.</p>
+              <h3 className="text-xl font-semibold mb-2">
+                Respectez les Autres
+              </h3>
+              <p className="text-muted-foreground">
+                Maintenez un environnement accueillant et respectueux.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Contenu Approprié</h3>
-              <p className="text-muted-foreground">Partagez du contenu constructif et en rapport avec SysBreak.</p>
+              <p className="text-muted-foreground">
+                Partagez du contenu constructif et en rapport avec SysBreak.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Aide & Support</h3>
-              <p className="text-muted-foreground">Aidez les autres membres et demandez de l'aide quand nécessaire.</p>
+              <p className="text-muted-foreground">
+                Aidez les autres membres et demandez de l'aide quand nécessaire.
+              </p>
             </div>
           </div>
         </div>

@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { AlertTriangle, Wifi, WifiOff } from 'lucide-react';
-import EmergencyMode from '@/utils/emergencyMode';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, Wifi, WifiOff } from "lucide-react";
+import EmergencyMode from "@/utils/emergencyMode";
 
 export function EmergencyModeToggle() {
-  const [isEmergencyMode, setIsEmergencyMode] = useState(EmergencyMode.isEnabled());
+  const [isEmergencyMode, setIsEmergencyMode] = useState(
+    EmergencyMode.isEnabled(),
+  );
 
   useEffect(() => {
     const checkMode = () => setIsEmergencyMode(EmergencyMode.isEnabled());
-    
+
     // Vérifier le mode toutes les secondes
     const interval = setInterval(checkMode, 1000);
     return () => clearInterval(interval);
@@ -45,7 +47,7 @@ export function EmergencyModeToggle() {
           </>
         )}
       </Button>
-      
+
       {isEmergencyMode && (
         <div className="mt-2 text-xs text-center text-muted-foreground">
           Données locales uniquement

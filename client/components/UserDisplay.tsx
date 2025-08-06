@@ -1,9 +1,9 @@
-import React from 'react';
-import { User, Shield, LogOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAnonymousUser } from '@/hooks/useAnonymousUser';
-import { useBanSystem } from '@/hooks/useBanSystem';
-import { useAuth } from '@/contexts/LocalAuthContext';
+import React from "react";
+import { User, Shield, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { useBanSystem } from "@/hooks/useBanSystem";
+import { useAuth } from "@/contexts/LocalAuthContext";
 
 export default function UserDisplay() {
   const { user: anonymousUser, loading } = useAnonymousUser();
@@ -18,7 +18,7 @@ export default function UserDisplay() {
       // Force page refresh to ensure clean state
       window.location.reload();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -29,7 +29,9 @@ export default function UserDisplay() {
         <div className="flex items-center space-x-2 px-3 py-2">
           <Shield className="w-4 h-4 text-red-400" />
           <span className="text-sm font-medium">{adminUser.username}</span>
-          <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">Admin</span>
+          <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">
+            Admin
+          </span>
         </div>
         <div className="border-t border-white/20 px-3 py-2">
           <Button
@@ -53,7 +55,10 @@ export default function UserDisplay() {
     const isBanned = firebaseBanned || localBanned;
 
     return (
-      <div className="fixed top-4 right-4 z-50 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg text-white" style={{ padding: "0 12px 8px" }}>
+      <div
+        className="fixed top-4 right-4 z-50 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg text-white"
+        style={{ padding: "0 12px 8px" }}
+      >
         <div className="flex items-center space-x-2">
           <User className="w-4 h-4 text-blue-400" />
           <span className="text-sm font-medium">{anonymousUser.username}</span>
@@ -65,7 +70,7 @@ export default function UserDisplay() {
         </div>
         {/* Debug info - remove in production */}
         <div className="text-xs text-gray-400 mt-1">
-          FB: {firebaseBanned ? 'Y' : 'N'} | Local: {localBanned ? 'Y' : 'N'}
+          FB: {firebaseBanned ? "Y" : "N"} | Local: {localBanned ? "Y" : "N"}
         </div>
       </div>
     );

@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, getDoc, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { useState, useEffect } from "react";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
 
 export interface UserAccount {
   username: string;
@@ -10,15 +18,15 @@ export interface UserAccount {
   lastLogin: string;
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_user_accounts';
+const LOCAL_STORAGE_KEY = "sysbreak_user_accounts";
 
 // Simple hash function for password storage
 const hashPassword = async (password: string): Promise<string> => {
   const encoder = new TextEncoder();
-  const data = encoder.encode(password + 'sysbreak_salt_2024');
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const data = encoder.encode(password + "sysbreak_salt_2024");
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
 export function useUserAccounts() {
@@ -35,7 +43,7 @@ export function useUserAccounts() {
         setAccounts(parsedAccounts);
       }
     } catch (err) {
-      console.error('Error loading accounts from localStorage:', err);
+      console.error("Error loading accounts from localStorage:", err);
     }
   };
 
@@ -44,7 +52,7 @@ export function useUserAccounts() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(accountList));
       setAccounts(accountList);
     } catch (err) {
-      console.error('Error saving accounts to localStorage:', err);
+      console.error("Error saving accounts to localStorage:", err);
     }
   };
 
@@ -65,17 +73,17 @@ export function useUserAccounts() {
 
   const syncWithFirebase = async () => {
     try {
-      console.log('Syncing user accounts with Firebase');
+      console.log("Syncing user accounts with Firebase");
 
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+        setTimeout(() => reject(new Error("Firebase timeout")), 5000),
       );
 
-      const querySnapshot = await Promise.race([
-        getDocs(collection(db, 'userAccounts')),
-        timeoutPromise
-      ]) as any;
+      const querySnapshot = (await Promise.race([
+        getDocs(collection(db, "userAccounts")),
+        timeoutPromise,
+      ])) as any;
 
       const firebaseAccounts: UserAccount[] = [];
 
@@ -86,20 +94,26 @@ export function useUserAccounts() {
       setAccounts(firebaseAccounts);
       saveToLocalStorage(firebaseAccounts);
     } catch (error: any) {
-      console.error('Error syncing with Firebase:', error);
-      if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
-        console.log('Firebase unavailable, using localStorage only');
+      console.error("Error syncing with Firebase:", error);
+      if (
+        error.message.includes("Failed to fetch") ||
+        error.message.includes("timeout")
+      ) {
+        console.log("Firebase unavailable, using localStorage only");
       }
       setUseFirebase(false);
     }
   };
 
-  const createAccount = async (username: string, password: string): Promise<void> => {
+  const createAccount = async (
+    username: string,
+    password: string,
+  ): Promise<void> => {
     try {
       // Check if username already exists
-      const existingAccount = accounts.find(acc => acc.username === username);
+      const existingAccount = accounts.find((acc) => acc.username === username);
       if (existingAccount) {
-        throw new Error('Ce nom d\'utilisateur existe déjà');
+        throw new Error("Ce nom d'utilisateur existe déjà");
       }
 
       const passwordHash = await hashPassword(password);
@@ -107,26 +121,32 @@ export function useUserAccounts() {
         username,
         passwordHash,
         createdAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString()
+        lastLogin: new Date().toISOString(),
       };
 
       if (useFirebase) {
         try {
           // Add timeout for Firebase operations
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+            setTimeout(() => reject(new Error("Firebase timeout")), 5000),
           );
 
           await Promise.race([
-            setDoc(doc(db, 'userAccounts', username), newAccount),
-            timeoutPromise
+            setDoc(doc(db, "userAccounts", username), newAccount),
+            timeoutPromise,
           ]);
 
-          console.log('Account created in Firebase');
+          console.log("Account created in Firebase");
         } catch (error: any) {
-          console.error('Firebase create error, falling back to localStorage:', error);
-          if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
-            console.log('Firebase unavailable for account creation');
+          console.error(
+            "Firebase create error, falling back to localStorage:",
+            error,
+          );
+          if (
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("timeout")
+          ) {
+            console.log("Firebase unavailable for account creation");
           }
           setUseFirebase(false);
         }
@@ -135,30 +155,32 @@ export function useUserAccounts() {
       // Update local state
       const updatedAccounts = [...accounts, newAccount];
       saveToLocalStorage(updatedAccounts);
-      
     } catch (error) {
-      console.error('Error creating account:', error);
+      console.error("Error creating account:", error);
       throw error;
     }
   };
 
-  const validateLogin = async (username: string, password: string): Promise<boolean> => {
+  const validateLogin = async (
+    username: string,
+    password: string,
+  ): Promise<boolean> => {
     try {
       const passwordHash = await hashPassword(password);
-      
+
       // First check Firebase if online
       if (useFirebase) {
         try {
           // Add timeout for Firebase operations
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+            setTimeout(() => reject(new Error("Firebase timeout")), 5000),
           );
 
-          const docRef = doc(db, 'userAccounts', username);
-          const docSnap = await Promise.race([
+          const docRef = doc(db, "userAccounts", username);
+          const docSnap = (await Promise.race([
             getDoc(docRef),
-            timeoutPromise
-          ]) as any;
+            timeoutPromise,
+          ])) as any;
 
           if (docSnap.exists()) {
             const account = docSnap.data() as UserAccount;
@@ -166,32 +188,41 @@ export function useUserAccounts() {
               // Update last login with timeout protection
               try {
                 await Promise.race([
-                  setDoc(docRef, { ...account, lastLogin: new Date().toISOString() }),
-                  setTimeout(() => Promise.reject(new Error('Update timeout')), 3000)
+                  setDoc(docRef, {
+                    ...account,
+                    lastLogin: new Date().toISOString(),
+                  }),
+                  setTimeout(
+                    () => Promise.reject(new Error("Update timeout")),
+                    3000,
+                  ),
                 ]);
               } catch (updateError) {
-                console.log('Could not update last login time');
+                console.log("Could not update last login time");
               }
               return true;
             }
           }
         } catch (error: any) {
-          console.error('Firebase login error:', error);
-          if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
-            console.log('Firebase unavailable for login check');
+          console.error("Firebase login error:", error);
+          if (
+            error.message.includes("Failed to fetch") ||
+            error.message.includes("timeout")
+          ) {
+            console.log("Firebase unavailable for login check");
           }
           setUseFirebase(false);
         }
       }
 
       // Fallback to localStorage
-      const account = accounts.find(acc => acc.username === username);
+      const account = accounts.find((acc) => acc.username === username);
       if (account && account.passwordHash === passwordHash) {
         // Update last login in localStorage
-        const updatedAccounts = accounts.map(acc => 
-          acc.username === username 
+        const updatedAccounts = accounts.map((acc) =>
+          acc.username === username
             ? { ...acc, lastLogin: new Date().toISOString() }
-            : acc
+            : acc,
         );
         saveToLocalStorage(updatedAccounts);
         return true;
@@ -199,13 +230,13 @@ export function useUserAccounts() {
 
       return false;
     } catch (error) {
-      console.error('Error validating login:', error);
+      console.error("Error validating login:", error);
       return false;
     }
   };
 
   const accountExists = (username: string): boolean => {
-    return accounts.some(acc => acc.username === username);
+    return accounts.some((acc) => acc.username === username);
   };
 
   return {
@@ -214,6 +245,6 @@ export function useUserAccounts() {
     createAccount,
     validateLogin,
     accountExists,
-    isOnline: useFirebase
+    isOnline: useFirebase,
   };
 }

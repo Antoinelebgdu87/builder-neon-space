@@ -1,10 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
-import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useFirebaseConnectivity } from './useFirebaseConnectivity';
-import { FirebaseSafeWrapper, safeFirebaseRead, safeFirebaseWrite } from '@/lib/firebaseSafeWrapper';
-import { useFirebaseAvailable } from './useFirebaseGlobalControl';
-import { isFirebaseDisabled, handleFirebaseError } from '@/utils/firebaseProtection';
+import { useState, useEffect, useRef } from "react";
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { useFirebaseConnectivity } from "./useFirebaseConnectivity";
+import {
+  FirebaseSafeWrapper,
+  safeFirebaseRead,
+  safeFirebaseWrite,
+} from "@/lib/firebaseSafeWrapper";
+import { useFirebaseAvailable } from "./useFirebaseGlobalControl";
+import {
+  isFirebaseDisabled,
+  handleFirebaseError,
+} from "@/utils/firebaseProtection";
 
 export interface UserAccount {
   id: string;
@@ -39,17 +58,17 @@ export interface OnlineSession {
   ipAddress?: string;
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_advanced_accounts';
-const ONLINE_SESSIONS_KEY = 'sysbreak_online_sessions';
+const LOCAL_STORAGE_KEY = "sysbreak_advanced_accounts";
+const ONLINE_SESSIONS_KEY = "sysbreak_online_sessions";
 const HEARTBEAT_INTERVAL = 30000; // 30 seconds
 
 // Hash function for passwords
 const hashPassword = async (password: string): Promise<string> => {
   const encoder = new TextEncoder();
-  const data = encoder.encode(password + 'sysbreak_advanced_salt_2024');
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const data = encoder.encode(password + "sysbreak_advanced_salt_2024");
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
 // Clean undefined values from object for Firebase
@@ -57,7 +76,11 @@ const cleanUndefinedValues = (obj: any): any => {
   const cleaned: any = {};
   for (const key in obj) {
     if (obj[key] !== undefined) {
-      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+      if (
+        typeof obj[key] === "object" &&
+        obj[key] !== null &&
+        !Array.isArray(obj[key])
+      ) {
         // Recursively clean nested objects
         const cleanedNested = cleanUndefinedValues(obj[key]);
         if (Object.keys(cleanedNested).length > 0) {
@@ -98,7 +121,10 @@ export function useAdvancedUserManagement() {
         const accountsWithProfile = parsedAccounts.map((account: any) => ({
           ...account,
           profile: account.profile || { displayName: account.username },
-          statistics: account.statistics || { loginCount: 0, totalTimeOnline: 0 }
+          statistics: account.statistics || {
+            loginCount: 0,
+            totalTimeOnline: 0,
+          },
         }));
         setAccounts(accountsWithProfile);
       }
@@ -108,12 +134,15 @@ export function useAdvancedUserManagement() {
         setOnlineSessions(parsedSessions);
       }
     } catch (err) {
-      console.error('Error loading from localStorage:', err);
-      setError('Erreur lors du chargement des données locales');
+      console.error("Error loading from localStorage:", err);
+      setError("Erreur lors du chargement des données locales");
     }
   };
 
-  const saveToLocalStorage = (accountList: UserAccount[], sessionList?: OnlineSession[]) => {
+  const saveToLocalStorage = (
+    accountList: UserAccount[],
+    sessionList?: OnlineSession[],
+  ) => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(accountList));
       if (sessionList) {
@@ -121,8 +150,8 @@ export function useAdvancedUserManagement() {
       }
       setAccounts(accountList);
     } catch (err) {
-      console.error('Error saving to localStorage:', err);
-      setError('Erreur lors de la sauvegarde locale');
+      console.error("Error saving to localStorage:", err);
+      setError("Erreur lors de la sauvegarde locale");
     }
   };
 
@@ -136,7 +165,7 @@ export function useAdvancedUserManagement() {
         testFirebaseConnection().then((isWorking) => {
           setUseFirebase(isWorking && globalFirebaseAvailable);
           if (!isWorking) {
-            setError('🌐 Firebase inaccessible - fonctionnement en mode local');
+            setError("🌐 Firebase inaccessible - fonctionnement en mode local");
           }
         });
       }, 1000);
@@ -144,7 +173,7 @@ export function useAdvancedUserManagement() {
     } else {
       setUseFirebase(false);
       if (!globalFirebaseAvailable) {
-        setError('🛑 Firebase temporairement désactivé - mode local');
+        setError("🛑 Firebase temporairement désactivé - mode local");
       }
     }
   }, [firebaseOnline, globalFirebaseAvailable]);
@@ -153,13 +182,13 @@ export function useAdvancedUserManagement() {
   const testFirebaseConnection = async (): Promise<boolean> => {
     try {
       const testResult = await safeFirebaseRead(
-        () => getDoc(doc(db, 'test', 'connection')),
-        'test-connection'
+        () => getDoc(doc(db, "test", "connection")),
+        "test-connection",
       );
 
       return testResult.success || testResult.retryable; // Allow retryable errors to pass
     } catch (error) {
-      console.warn('Firebase connection test failed:', error);
+      console.warn("Firebase connection test failed:", error);
       return false;
     }
   };
@@ -169,34 +198,37 @@ export function useAdvancedUserManagement() {
     setLoading(false);
 
     // Firebase désactivé - Mode local uniquement
-    if (false) { // Désactivé temporairement
+    if (false) {
+      // Désactivé temporairement
       // Add error handling for initial sync
       syncWithFirebase().catch((error) => {
-        console.error('Initial sync failed:', error);
+        console.error("Initial sync failed:", error);
         handleFirebaseError(error);
         setUseFirebase(false);
-        setError('📶 Connexion Firebase impossible - mode local activé');
+        setError("📶 Connexion Firebase impossible - mode local activé");
       });
 
       // Réactiver les listeners avec protection contre les erreurs
       try {
         setupRealtimeListeners();
-        console.log('🔥 Listeners Firebase activés - Détection des nouveaux comptes OK');
+        console.log(
+          "🔥 Listeners Firebase activés - Détection des nouveaux comptes OK",
+        );
       } catch (error) {
-        console.error('Failed to setup listeners:', error);
+        console.error("Failed to setup listeners:", error);
         handleFirebaseError(error);
         setUseFirebase(false);
-        setError('⚠️ Impossible d\'activer la surveillance temps réel');
+        setError("⚠️ Impossible d'activer la surveillance temps réel");
       }
     }
 
     return () => {
       // Cleanup listeners
-      unsubscribes.current.forEach(unsubscribe => {
+      unsubscribes.current.forEach((unsubscribe) => {
         try {
           unsubscribe();
         } catch (error) {
-          console.error('Error unsubscribing:', error);
+          console.error("Error unsubscribing:", error);
         }
       });
       if (heartbeatInterval.current) {
@@ -209,7 +241,7 @@ export function useAdvancedUserManagement() {
     try {
       // Listen to user accounts changes
       const accountsUnsubscribe = onSnapshot(
-        collection(db, 'userAccounts'),
+        collection(db, "userAccounts"),
         (snapshot) => {
           const firebaseAccounts: UserAccount[] = [];
           snapshot.forEach((doc) => {
@@ -224,23 +256,25 @@ export function useAdvancedUserManagement() {
           saveToLocalStorage(firebaseAccounts);
         },
         (error) => {
-          console.error('Error listening to accounts:', error);
+          console.error("Error listening to accounts:", error);
           const isNetworkError = handleFirebaseError(error);
 
           if (isNetworkError) {
-            console.log('📶 Erreur réseau Firebase détectée');
-            setError('📶 Connexion Firebase impossible - mode local activé');
+            console.log("📶 Erreur réseau Firebase détectée");
+            setError("📶 Connexion Firebase impossible - mode local activé");
             setUseFirebase(false);
           } else {
-            setError('⚠️ Erreur de synchronisation des comptes - mode local activé');
+            setError(
+              "⚠️ Erreur de synchronisation des comptes - mode local activé",
+            );
             setUseFirebase(false);
           }
-        }
+        },
       );
 
       // Listen to online sessions
       const sessionsUnsubscribe = onSnapshot(
-        collection(db, 'onlineSessions'),
+        collection(db, "onlineSessions"),
         (snapshot) => {
           const firebaseSessions: OnlineSession[] = [];
           snapshot.forEach((doc) => {
@@ -249,34 +283,41 @@ export function useAdvancedUserManagement() {
           setOnlineSessions(firebaseSessions);
         },
         (error) => {
-          console.error('Error listening to sessions:', error);
+          console.error("Error listening to sessions:", error);
           handleFirebaseError(error);
-          console.log('⚠️ Erreur sessions Firebase (non critique) - continue sans sessions temps réel');
+          console.log(
+            "⚠️ Erreur sessions Firebase (non critique) - continue sans sessions temps réel",
+          );
           // Don't disable Firebase completely for session errors
-        }
+        },
       );
 
       unsubscribes.current = [accountsUnsubscribe, sessionsUnsubscribe];
     } catch (error) {
-      console.error('Error setting up listeners:', error);
-      setError('Erreur lors de la configuration des écouteurs en temps réel - mode local activé');
+      console.error("Error setting up listeners:", error);
+      setError(
+        "Erreur lors de la configuration des écouteurs en temps réel - mode local activé",
+      );
       setUseFirebase(false);
     }
   };
 
   const syncWithFirebase = async () => {
     try {
-      console.log('Syncing with Firebase...');
+      console.log("Syncing with Firebase...");
       setError(null);
 
       // Sync accounts avec wrapper sécurisé
       const accountsResult = await safeFirebaseRead(
-        () => getDocs(collection(db, 'userAccounts')),
-        'sync-accounts'
+        () => getDocs(collection(db, "userAccounts")),
+        "sync-accounts",
       );
 
       if (!accountsResult.success) {
-        throw new Error(accountsResult.error || 'Erreur lors de la synchronisation des comptes');
+        throw new Error(
+          accountsResult.error ||
+            "Erreur lors de la synchronisation des comptes",
+        );
       }
 
       const firebaseAccounts: UserAccount[] = [];
@@ -295,8 +336,8 @@ export function useAdvancedUserManagement() {
 
       // Sync sessions avec wrapper sécurisé
       const sessionsResult = await safeFirebaseRead(
-        () => getDocs(collection(db, 'onlineSessions')),
-        'sync-sessions'
+        () => getDocs(collection(db, "onlineSessions")),
+        "sync-sessions",
       );
 
       const firebaseSessions: OnlineSession[] = [];
@@ -306,28 +347,32 @@ export function useAdvancedUserManagement() {
           firebaseSessions.push({ ...doc.data() } as OnlineSession);
         });
       } else {
-        console.warn('Sessions sync failed:', sessionsResult.error);
+        console.warn("Sessions sync failed:", sessionsResult.error);
       }
 
       setAccounts(firebaseAccounts);
       setOnlineSessions(firebaseSessions);
       saveToLocalStorage(firebaseAccounts, firebaseSessions);
-
     } catch (error: any) {
-      console.error('Error syncing with Firebase:', error);
-      setError(error.message || 'Erreur de synchronisation avec Firebase');
+      console.error("Error syncing with Firebase:", error);
+      setError(error.message || "Erreur de synchronisation avec Firebase");
       setUseFirebase(false);
     }
   };
 
   // Ban user function
-  const banUser = async (userId: string, reason: string, banType: 'temporary' | 'permanent', hours?: number): Promise<void> => {
+  const banUser = async (
+    userId: string,
+    reason: string,
+    banType: "temporary" | "permanent",
+    hours?: number,
+  ): Promise<void> => {
     try {
       setError(null);
 
-      const account = accounts.find(acc => acc.id === userId);
+      const account = accounts.find((acc) => acc.id === userId);
       if (!account) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error("Utilisateur non trouvé");
       }
 
       const banData: any = {
@@ -335,10 +380,10 @@ export function useAdvancedUserManagement() {
         banReason: reason,
         banType,
         bannedAt: new Date().toISOString(),
-        bannedBy: 'Admin'
+        bannedBy: "Admin",
       };
 
-      if (banType === 'temporary' && hours) {
+      if (banType === "temporary" && hours) {
         const expiryDate = new Date();
         expiryDate.setHours(expiryDate.getHours() + hours);
         banData.banExpiry = expiryDate.toISOString();
@@ -348,18 +393,21 @@ export function useAdvancedUserManagement() {
       if (firebaseOnline) {
         const cleanedData = cleanUndefinedValues(banData);
         const banResult = await safeFirebaseWrite(
-          () => updateDoc(doc(db, 'userAccounts', userId), cleanedData),
-          'ban-user'
+          () => updateDoc(doc(db, "userAccounts", userId), cleanedData),
+          "ban-user",
         );
 
         if (!banResult.success) {
-          console.error('Failed to save ban to Firebase:', banResult.error);
-          throw new Error(banResult.error || 'Erreur lors de la sauvegarde du ban sur Firebase');
+          console.error("Failed to save ban to Firebase:", banResult.error);
+          throw new Error(
+            banResult.error ||
+              "Erreur lors de la sauvegarde du ban sur Firebase",
+          );
         }
 
-        console.log('Ban saved to Firebase successfully:', userId);
+        console.log("Ban saved to Firebase successfully:", userId);
       } else {
-        throw new Error('Firebase nécessaire pour sauvegarder les bans');
+        throw new Error("Firebase nécessaire pour sauvegarder les bans");
       }
 
       // Update local state
@@ -371,10 +419,11 @@ export function useAdvancedUserManagement() {
       }
 
       // Trigger events for real-time updates
-      window.dispatchEvent(new CustomEvent('userBanned', {
-        detail: { userId, username: account.username }
-      }));
-
+      window.dispatchEvent(
+        new CustomEvent("userBanned", {
+          detail: { userId, username: account.username },
+        }),
+      );
     } catch (error: any) {
       setError(error.message);
       throw error;
@@ -386,40 +435,44 @@ export function useAdvancedUserManagement() {
     try {
       setError(null);
 
-      const account = accounts.find(acc => acc.id === userId);
+      const account = accounts.find((acc) => acc.id === userId);
       if (!account) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error("Utilisateur non trouvé");
       }
 
       const unbanData = {
-        isBanned: false
+        isBanned: false,
       };
 
       // Force Firebase save
       if (firebaseOnline) {
         const unbanResult = await safeFirebaseWrite(
-          () => updateDoc(doc(db, 'userAccounts', userId), unbanData),
-          'unban-user'
+          () => updateDoc(doc(db, "userAccounts", userId), unbanData),
+          "unban-user",
         );
 
         if (!unbanResult.success) {
-          console.error('Failed to save unban to Firebase:', unbanResult.error);
-          throw new Error(unbanResult.error || 'Erreur lors de la sauvegarde du déban sur Firebase');
+          console.error("Failed to save unban to Firebase:", unbanResult.error);
+          throw new Error(
+            unbanResult.error ||
+              "Erreur lors de la sauvegarde du déban sur Firebase",
+          );
         }
 
-        console.log('Unban saved to Firebase successfully:', userId);
+        console.log("Unban saved to Firebase successfully:", userId);
       } else {
-        throw new Error('Firebase nécessaire pour sauvegarder les débans');
+        throw new Error("Firebase nécessaire pour sauvegarder les débans");
       }
 
       // Update local state
       await updateUserProfile(userId, unbanData);
 
       // Trigger events for real-time updates
-      window.dispatchEvent(new CustomEvent('userUnbanned', {
-        detail: { userId, username: account.username }
-      }));
-
+      window.dispatchEvent(
+        new CustomEvent("userUnbanned", {
+          detail: { userId, username: account.username },
+        }),
+      );
     } catch (error: any) {
       setError(error.message);
       throw error;
@@ -427,14 +480,18 @@ export function useAdvancedUserManagement() {
   };
 
   // Account management functions
-  const createAccount = async (username: string, password: string, email?: string): Promise<UserAccount> => {
+  const createAccount = async (
+    username: string,
+    password: string,
+    email?: string,
+  ): Promise<UserAccount> => {
     try {
       setError(null);
 
       // Check if username already exists
-      const existingAccount = accounts.find(acc => acc.username === username);
+      const existingAccount = accounts.find((acc) => acc.username === username);
       if (existingAccount) {
-        throw new Error('Ce nom d\'utilisateur existe déjà');
+        throw new Error("Ce nom d'utilisateur existe déjà");
       }
 
       const userId = generateUserId();
@@ -455,27 +512,27 @@ export function useAdvancedUserManagement() {
         profile: {
           displayName: username,
           avatar: undefined,
-          bio: undefined
+          bio: undefined,
         },
         statistics: {
           loginCount: 0,
-          totalTimeOnline: 0
-        }
+          totalTimeOnline: 0,
+        },
       };
 
       if (useFirebase) {
         try {
           const cleanedAccount = cleanUndefinedValues(newAccount);
-          await setDoc(doc(db, 'userAccounts', userId), cleanedAccount);
+          await setDoc(doc(db, "userAccounts", userId), cleanedAccount);
         } catch (error) {
-          console.error('Firebase create error:', error);
-          setError('Erreur lors de la création du compte sur Firebase');
+          console.error("Firebase create error:", error);
+          setError("Erreur lors de la création du compte sur Firebase");
         }
       }
 
       const updatedAccounts = [...accounts, newAccount];
       saveToLocalStorage(updatedAccounts);
-      
+
       return newAccount;
     } catch (error: any) {
       setError(error.message);
@@ -483,15 +540,18 @@ export function useAdvancedUserManagement() {
     }
   };
 
-  const updateUserPassword = async (userId: string, newPassword: string): Promise<void> => {
+  const updateUserPassword = async (
+    userId: string,
+    newPassword: string,
+  ): Promise<void> => {
     try {
       setError(null);
-      
+
       const passwordHash = await hashPassword(newPassword);
-      const account = accounts.find(acc => acc.id === userId);
-      
+      const account = accounts.find((acc) => acc.id === userId);
+
       if (!account) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error("Utilisateur non trouvé");
       }
 
       const updatedAccount = { ...account, passwordHash };
@@ -499,31 +559,33 @@ export function useAdvancedUserManagement() {
       if (useFirebase) {
         try {
           const cleanedData = cleanUndefinedValues({ passwordHash });
-          await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
+          await updateDoc(doc(db, "userAccounts", userId), cleanedData);
         } catch (error) {
-          console.error('Firebase update error:', error);
-          setError('Erreur lors de la mise à jour sur Firebase');
+          console.error("Firebase update error:", error);
+          setError("Erreur lors de la mise à jour sur Firebase");
         }
       }
 
-      const updatedAccounts = accounts.map(acc => 
-        acc.id === userId ? updatedAccount : acc
+      const updatedAccounts = accounts.map((acc) =>
+        acc.id === userId ? updatedAccount : acc,
       );
       saveToLocalStorage(updatedAccounts);
-
     } catch (error: any) {
       setError(error.message);
       throw error;
     }
   };
 
-  const updateUserProfile = async (userId: string, profileData: Partial<UserAccount>): Promise<void> => {
+  const updateUserProfile = async (
+    userId: string,
+    profileData: Partial<UserAccount>,
+  ): Promise<void> => {
     try {
       setError(null);
-      
-      const account = accounts.find(acc => acc.id === userId);
+
+      const account = accounts.find((acc) => acc.id === userId);
       if (!account) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error("Utilisateur non trouvé");
       }
 
       const updatedAccount = { ...account, ...profileData };
@@ -533,19 +595,18 @@ export function useAdvancedUserManagement() {
           // Clean undefined values before sending to Firebase
           const cleanedData = cleanUndefinedValues(profileData);
           if (Object.keys(cleanedData).length > 0) {
-            await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
+            await updateDoc(doc(db, "userAccounts", userId), cleanedData);
           }
         } catch (error) {
-          console.error('Firebase update error:', error);
-          setError('Erreur lors de la mise à jour sur Firebase');
+          console.error("Firebase update error:", error);
+          setError("Erreur lors de la mise à jour sur Firebase");
         }
       }
 
-      const updatedAccounts = accounts.map(acc => 
-        acc.id === userId ? updatedAccount : acc
+      const updatedAccounts = accounts.map((acc) =>
+        acc.id === userId ? updatedAccount : acc,
       );
       saveToLocalStorage(updatedAccounts);
-
     } catch (error: any) {
       setError(error.message);
       throw error;
@@ -558,21 +619,22 @@ export function useAdvancedUserManagement() {
 
       if (useFirebase) {
         try {
-          await deleteDoc(doc(db, 'userAccounts', userId));
+          await deleteDoc(doc(db, "userAccounts", userId));
           // Also remove any active sessions
-          await deleteDoc(doc(db, 'onlineSessions', userId));
+          await deleteDoc(doc(db, "onlineSessions", userId));
         } catch (error) {
-          console.error('Firebase delete error:', error);
-          setError('Erreur lors de la suppression sur Firebase');
+          console.error("Firebase delete error:", error);
+          setError("Erreur lors de la suppression sur Firebase");
         }
       }
 
-      const updatedAccounts = accounts.filter(acc => acc.id !== userId);
-      const updatedSessions = onlineSessions.filter(session => session.userId !== userId);
-      
+      const updatedAccounts = accounts.filter((acc) => acc.id !== userId);
+      const updatedSessions = onlineSessions.filter(
+        (session) => session.userId !== userId,
+      );
+
       saveToLocalStorage(updatedAccounts, updatedSessions);
       setOnlineSessions(updatedSessions);
-
     } catch (error: any) {
       setError(error.message);
       throw error;
@@ -582,7 +644,7 @@ export function useAdvancedUserManagement() {
   // Online status management
   const startUserSession = async (userId: string): Promise<void> => {
     try {
-      const account = accounts.find(acc => acc.id === userId);
+      const account = accounts.find((acc) => acc.id === userId);
       if (!account) return;
 
       const now = new Date().toISOString();
@@ -595,22 +657,22 @@ export function useAdvancedUserManagement() {
       };
 
       // Update user status
-      await updateUserProfile(userId, { 
-        isOnline: true, 
+      await updateUserProfile(userId, {
+        isOnline: true,
         lastActive: now,
         lastLogin: now,
         statistics: {
           ...(account.statistics || { loginCount: 0, totalTimeOnline: 0 }),
-          loginCount: (account.statistics?.loginCount || 0) + 1
-        }
+          loginCount: (account.statistics?.loginCount || 0) + 1,
+        },
       });
 
       if (useFirebase) {
         try {
           const cleanedSession = cleanUndefinedValues(session);
-          await setDoc(doc(db, 'onlineSessions', userId), cleanedSession);
+          await setDoc(doc(db, "onlineSessions", userId), cleanedSession);
         } catch (error) {
-          console.error('Firebase session error:', error);
+          console.error("Firebase session error:", error);
         }
       }
 
@@ -618,73 +680,76 @@ export function useAdvancedUserManagement() {
       if (heartbeatInterval.current) {
         clearInterval(heartbeatInterval.current);
       }
-      
+
       heartbeatInterval.current = setInterval(() => {
         updateHeartbeat(userId);
       }, HEARTBEAT_INTERVAL);
 
-      const updatedSessions = [...onlineSessions.filter(s => s.userId !== userId), session];
+      const updatedSessions = [
+        ...onlineSessions.filter((s) => s.userId !== userId),
+        session,
+      ];
       setOnlineSessions(updatedSessions);
-
     } catch (error: any) {
       setError(error.message);
-      console.error('Error starting session:', error);
+      console.error("Error starting session:", error);
     }
   };
 
   const updateHeartbeat = async (userId: string): Promise<void> => {
     try {
       const now = new Date().toISOString();
-      
+
       if (useFirebase) {
         try {
-          await updateDoc(doc(db, 'onlineSessions', userId), {
-            lastHeartbeat: now
+          await updateDoc(doc(db, "onlineSessions", userId), {
+            lastHeartbeat: now,
           });
         } catch (error) {
-          console.error('Heartbeat error:', error);
+          console.error("Heartbeat error:", error);
         }
       }
 
       await updateUserProfile(userId, { lastActive: now });
 
-      const updatedSessions = onlineSessions.map(session =>
-        session.userId === userId 
+      const updatedSessions = onlineSessions.map((session) =>
+        session.userId === userId
           ? { ...session, lastHeartbeat: now }
-          : session
+          : session,
       );
       setOnlineSessions(updatedSessions);
-
     } catch (error) {
-      console.error('Error updating heartbeat:', error);
+      console.error("Error updating heartbeat:", error);
     }
   };
 
   const endUserSession = async (userId: string): Promise<void> => {
     try {
-      const session = onlineSessions.find(s => s.userId === userId);
+      const session = onlineSessions.find((s) => s.userId === userId);
       if (session) {
         const sessionDuration = Math.floor(
-          (new Date().getTime() - new Date(session.startTime).getTime()) / 60000
+          (new Date().getTime() - new Date(session.startTime).getTime()) /
+            60000,
         );
 
-        const account = accounts.find(acc => acc.id === userId);
+        const account = accounts.find((acc) => acc.id === userId);
         if (account) {
           await updateUserProfile(userId, {
             isOnline: false,
             statistics: {
               ...(account.statistics || { loginCount: 0, totalTimeOnline: 0 }),
-              totalTimeOnline: (account.statistics?.totalTimeOnline || 0) + sessionDuration
-            }
+              totalTimeOnline:
+                (account.statistics?.totalTimeOnline || 0) + sessionDuration,
+            },
           });
         }
       }
 
       if (useFirebase) {
         try {
-          await deleteDoc(doc(db, 'onlineSessions', userId));
+          await deleteDoc(doc(db, "onlineSessions", userId));
         } catch (error) {
-          console.error('Firebase session cleanup error:', error);
+          console.error("Firebase session cleanup error:", error);
         }
       }
 
@@ -693,30 +758,32 @@ export function useAdvancedUserManagement() {
         heartbeatInterval.current = null;
       }
 
-      const updatedSessions = onlineSessions.filter(s => s.userId !== userId);
+      const updatedSessions = onlineSessions.filter((s) => s.userId !== userId);
       setOnlineSessions(updatedSessions);
-
     } catch (error: any) {
       setError(error.message);
-      console.error('Error ending session:', error);
+      console.error("Error ending session:", error);
     }
   };
 
   // Authentication
-  const validateLogin = async (username: string, password: string): Promise<UserAccount | null> => {
+  const validateLogin = async (
+    username: string,
+    password: string,
+  ): Promise<UserAccount | null> => {
     try {
       setError(null);
 
       const passwordHash = await hashPassword(password);
-      let account = accounts.find(acc =>
-        acc.username === username && acc.passwordHash === passwordHash
+      let account = accounts.find(
+        (acc) => acc.username === username && acc.passwordHash === passwordHash,
       );
 
       if (account) {
         // Double-check ban status from Firebase if online
         if (firebaseOnline) {
           try {
-            const userDoc = await getDoc(doc(db, 'userAccounts', account.id));
+            const userDoc = await getDoc(doc(db, "userAccounts", account.id));
             if (userDoc.exists()) {
               const firebaseData = userDoc.data();
 
@@ -726,7 +793,10 @@ export function useAdvancedUserManagement() {
               // Check if banned
               if (firebaseData.isBanned) {
                 // Check if temporary ban has expired
-                if (firebaseData.banType === 'temporary' && firebaseData.banExpiry) {
+                if (
+                  firebaseData.banType === "temporary" &&
+                  firebaseData.banExpiry
+                ) {
                   const now = new Date();
                   const expiry = new Date(firebaseData.banExpiry);
 
@@ -735,24 +805,30 @@ export function useAdvancedUserManagement() {
                     await unbanUser(account.id);
                     account.isBanned = false;
                   } else {
-                    throw new Error(`Compte banni: ${firebaseData.banReason || 'Raison non spécifiée'}\nExpire le: ${expiry.toLocaleString('fr-FR')}`);
+                    throw new Error(
+                      `Compte banni: ${firebaseData.banReason || "Raison non spécifiée"}\nExpire le: ${expiry.toLocaleString("fr-FR")}`,
+                    );
                   }
                 } else {
-                  throw new Error(`Compte banni: ${firebaseData.banReason || 'Raison non spécifiée'}`);
+                  throw new Error(
+                    `Compte banni: ${firebaseData.banReason || "Raison non spécifiée"}`,
+                  );
                 }
               }
             }
           } catch (error: any) {
-            if (error.message.includes('Compte banni')) {
+            if (error.message.includes("Compte banni")) {
               throw error; // Re-throw ban errors
             }
-            console.error('Error checking Firebase ban status:', error);
+            console.error("Error checking Firebase ban status:", error);
           }
         }
 
         // Final local check
         if (account.isBanned) {
-          throw new Error(`Compte banni: ${account.banReason || 'Raison non spécifiée'}`);
+          throw new Error(
+            `Compte banni: ${account.banReason || "Raison non spécifiée"}`,
+          );
         }
 
         await startUserSession(account.id);
@@ -767,31 +843,39 @@ export function useAdvancedUserManagement() {
   };
 
   // Helper functions for admin interface
-  const getOnlineUsers = (): (UserAccount & { sessionInfo?: OnlineSession })[] => {
+  const getOnlineUsers = (): (UserAccount & {
+    sessionInfo?: OnlineSession;
+  })[] => {
     return accounts
-      .filter(account => account.isOnline)
-      .map(account => ({
+      .filter((account) => account.isOnline)
+      .map((account) => ({
         ...account,
-        sessionInfo: onlineSessions.find(session => session.userId === account.id)
+        sessionInfo: onlineSessions.find(
+          (session) => session.userId === account.id,
+        ),
       }));
   };
 
   const getOfflineUsers = (): UserAccount[] => {
-    return accounts.filter(account => !account.isOnline);
+    return accounts.filter((account) => !account.isOnline);
   };
 
-  const getAllUsersWithStatus = (): (UserAccount & { sessionInfo?: OnlineSession })[] => {
-    return accounts.map(account => ({
+  const getAllUsersWithStatus = (): (UserAccount & {
+    sessionInfo?: OnlineSession;
+  })[] => {
+    return accounts.map((account) => ({
       ...account,
-      sessionInfo: onlineSessions.find(session => session.userId === account.id)
+      sessionInfo: onlineSessions.find(
+        (session) => session.userId === account.id,
+      ),
     }));
   };
 
   const getUserStatistics = () => {
     const total = accounts.length;
-    const online = accounts.filter(acc => acc.isOnline).length;
-    const banned = accounts.filter(acc => acc.isBanned).length;
-    const admins = accounts.filter(acc => acc.isAdmin).length;
+    const online = accounts.filter((acc) => acc.isOnline).length;
+    const banned = accounts.filter((acc) => acc.isBanned).length;
+    const admins = accounts.filter((acc) => acc.isAdmin).length;
 
     return {
       total,
@@ -799,37 +883,51 @@ export function useAdvancedUserManagement() {
       offline: total - online,
       banned,
       admins,
-      activeUsers: accounts.filter(acc => {
+      activeUsers: accounts.filter((acc) => {
         const lastActive = new Date(acc.lastActive);
         const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
         return lastActive > dayAgo;
-      }).length
+      }).length,
     };
   };
 
   // Fonction pour enregistrer automatiquement un utilisateur anonyme
-  const registerAnonymousUser = async (anonymousUser: { id: string; username: string; displayName?: string; createdAt: string }): Promise<void> => {
+  const registerAnonymousUser = async (anonymousUser: {
+    id: string;
+    username: string;
+    displayName?: string;
+    createdAt: string;
+  }): Promise<void> => {
     try {
       // Vérifier si l'utilisateur existe déjà
-      const existingUser = accounts.find(acc => acc.id === anonymousUser.id);
+      const existingUser = accounts.find((acc) => acc.id === anonymousUser.id);
       if (existingUser) {
-        console.log('Utilisateur anonyme déjà enregistré:', anonymousUser.username);
+        console.log(
+          "Utilisateur anonyme déjà enregistré:",
+          anonymousUser.username,
+        );
         return;
       }
 
-      console.log('🆕 Enregistrement nouvel utilisateur anonyme:', anonymousUser.username);
+      console.log(
+        "🆕 Enregistrement nouvel utilisateur anonyme:",
+        anonymousUser.username,
+      );
 
       // Créer le compte dans le système de gestion avancée
       await createAccount(
         anonymousUser.id,
         anonymousUser.username,
-        '', // Pas d'email pour les utilisateurs anonymes
-        'anonymous_user_no_password' // Mot de passe spécial pour les anonymes
+        "", // Pas d'email pour les utilisateurs anonymes
+        "anonymous_user_no_password", // Mot de passe spécial pour les anonymes
       );
 
-      console.log('✅ Utilisateur anonyme enregistré avec succès');
+      console.log("✅ Utilisateur anonyme enregistré avec succès");
     } catch (error) {
-      console.error('Erreur lors de l\'enregistrement de l\'utilisateur anonyme:', error);
+      console.error(
+        "Erreur lors de l'enregistrement de l'utilisateur anonyme:",
+        error,
+      );
     }
   };
 
@@ -865,9 +963,11 @@ export function useAdvancedUserManagement() {
     getUserStatistics,
 
     // Direct access
-    accountExists: (username: string) => accounts.some(acc => acc.username === username),
-    getUserById: (id: string) => accounts.find(acc => acc.id === id),
-    getUserByUsername: (username: string) => accounts.find(acc => acc.username === username),
+    accountExists: (username: string) =>
+      accounts.some((acc) => acc.username === username),
+    getUserById: (id: string) => accounts.find((acc) => acc.id === id),
+    getUserByUsername: (username: string) =>
+      accounts.find((acc) => acc.username === username),
 
     // Refresh data
     refresh: () => {
@@ -879,6 +979,6 @@ export function useAdvancedUserManagement() {
     },
 
     // Synchronisation utilisateur anonyme
-    registerAnonymousUser
+    registerAnonymousUser,
   };
 }

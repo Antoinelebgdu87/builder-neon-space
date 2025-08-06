@@ -9,11 +9,12 @@ export default function Scripts() {
   const { scripts, loading } = useHybridScripts();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredScripts = scripts.filter(script =>
-    script.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    script.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    script.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    script.language.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredScripts = scripts.filter(
+    (script) =>
+      script.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      script.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      script.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      script.language.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -24,30 +25,29 @@ export default function Scripts() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10"></div>
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
-        
+
         <div className="container mx-auto relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Scripts
-            </h1>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">Scripts</h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Collection de scripts Lua professionnels et optimisés.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-8">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  placeholder="Rechercher des scripts..." 
+                <Input
+                  placeholder="Rechercher des scripts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-4 text-lg glass border-border/50 focus:border-primary/50 focus:ring-primary/20"
                   style={{
-                    backgroundImage: "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
+                    backgroundImage:
+                      "url(https://www.rafflespaint.com/cdn/shop/products/PURE_BLACK_RP0-1_69e69038-13dc-4241-8b7f-a52ad6a2ca1e_1200x630.jpg?v=1566778789)",
                     backgroundRepeat: "no-repeat",
                     backgroundPosition: "center",
-                    backgroundSize: "cover"
+                    backgroundSize: "cover",
                   }}
                 />
               </div>
@@ -56,7 +56,9 @@ export default function Scripts() {
             {/* Quick Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
               <div className="glass p-4 rounded-xl border-border/50">
-                <div className="text-2xl font-bold text-primary">{scripts.length}</div>
+                <div className="text-2xl font-bold text-primary">
+                  {scripts.length}
+                </div>
                 <div className="text-sm text-muted-foreground">Scripts</div>
               </div>
               <div className="glass p-4 rounded-xl border-border/50">
@@ -100,14 +102,18 @@ export default function Scripts() {
           {loading && (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Chargement des scripts...</span>
+              <span className="ml-2 text-muted-foreground">
+                Chargement des scripts...
+              </span>
             </div>
           )}
 
           {/* Empty State */}
           {!loading && scripts.length === 0 && (
             <div className="text-center py-16">
-              <h3 className="text-2xl font-semibold mb-2">Aucun script disponible</h3>
+              <h3 className="text-2xl font-semibold mb-2">
+                Aucun script disponible
+              </h3>
               <p className="text-muted-foreground">
                 Les scripts seront ajoutés par l'administration.
               </p>
@@ -142,15 +148,23 @@ export default function Scripts() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Optimisés & Testés</h3>
-              <p className="text-muted-foreground">Tous les scripts sont optimisés pour les performances.</p>
+              <p className="text-muted-foreground">
+                Tous les scripts sont optimisés pour les performances.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
-              <h3 className="text-xl font-semibold mb-2">Documentation Complète</h3>
-              <p className="text-muted-foreground">Instructions détaillées et exemples d'utilisation.</p>
+              <h3 className="text-xl font-semibold mb-2">
+                Documentation Complète
+              </h3>
+              <p className="text-muted-foreground">
+                Instructions détaillées et exemples d'utilisation.
+              </p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
               <h3 className="text-xl font-semibold mb-2">Support Technique</h3>
-              <p className="text-muted-foreground">Assistance disponible pour tous les scripts.</p>
+              <p className="text-muted-foreground">
+                Assistance disponible pour tous les scripts.
+              </p>
             </div>
           </div>
         </div>

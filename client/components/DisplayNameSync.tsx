@@ -1,69 +1,84 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { RefreshCw, Check, AlertCircle, Wifi, WifiOff } from 'lucide-react';
-import { useGlobalDisplayName } from '@/hooks/useGlobalDisplayName';
-import { useAnonymousUser } from '@/hooks/useAnonymousUser';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { RefreshCw, Check, AlertCircle, Wifi, WifiOff } from "lucide-react";
+import { useGlobalDisplayName } from "@/hooks/useGlobalDisplayName";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { motion } from "framer-motion";
 
 export function DisplayNameSync() {
-  const { effectiveDisplayName, displayName, username, forceSync } = useGlobalDisplayName();
+  const { effectiveDisplayName, displayName, username, forceSync } =
+    useGlobalDisplayName();
   const { user: anonymousUser } = useAnonymousUser();
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
-  const [lastSyncTime, setLastSyncTime] = useState<string>('');
+  const [syncStatus, setSyncStatus] = useState<
+    "idle" | "syncing" | "success" | "error"
+  >("idle");
+  const [lastSyncTime, setLastSyncTime] = useState<string>("");
 
   // Écouter les événements de synchronisation
   useEffect(() => {
     const handleSyncEvent = (event: CustomEvent) => {
-      setSyncStatus('success');
-      setLastSyncTime(new Date().toLocaleTimeString('fr-FR'));
-      
+      setSyncStatus("success");
+      setLastSyncTime(new Date().toLocaleTimeString("fr-FR"));
+
       setTimeout(() => {
-        setSyncStatus('idle');
+        setSyncStatus("idle");
       }, 3000);
     };
 
     const handleSyncError = () => {
-      setSyncStatus('error');
+      setSyncStatus("error");
       setTimeout(() => {
-        setSyncStatus('idle');
+        setSyncStatus("idle");
       }, 3000);
     };
 
-    window.addEventListener('displayNameChanged', handleSyncEvent as EventListener);
-    window.addEventListener('displayNameSynced', handleSyncEvent as EventListener);
-    window.addEventListener('syncError', handleSyncError as EventListener);
+    window.addEventListener(
+      "displayNameChanged",
+      handleSyncEvent as EventListener,
+    );
+    window.addEventListener(
+      "displayNameSynced",
+      handleSyncEvent as EventListener,
+    );
+    window.addEventListener("syncError", handleSyncError as EventListener);
 
     return () => {
-      window.removeEventListener('displayNameChanged', handleSyncEvent as EventListener);
-      window.removeEventListener('displayNameSynced', handleSyncEvent as EventListener);
-      window.removeEventListener('syncError', handleSyncError as EventListener);
+      window.removeEventListener(
+        "displayNameChanged",
+        handleSyncEvent as EventListener,
+      );
+      window.removeEventListener(
+        "displayNameSynced",
+        handleSyncEvent as EventListener,
+      );
+      window.removeEventListener("syncError", handleSyncError as EventListener);
     };
   }, []);
 
   const handleForceSync = () => {
-    setSyncStatus('syncing');
+    setSyncStatus("syncing");
     forceSync();
-    
+
     // Simulation d'un délai de synchronisation
     setTimeout(() => {
-      setSyncStatus('success');
-      setLastSyncTime(new Date().toLocaleTimeString('fr-FR'));
-      
+      setSyncStatus("success");
+      setLastSyncTime(new Date().toLocaleTimeString("fr-FR"));
+
       setTimeout(() => {
-        setSyncStatus('idle');
+        setSyncStatus("idle");
       }, 2000);
     }, 1000);
   };
 
   const getSyncIcon = () => {
     switch (syncStatus) {
-      case 'syncing':
+      case "syncing":
         return <RefreshCw className="w-4 h-4 animate-spin text-blue-500" />;
-      case 'success':
+      case "success":
         return <Check className="w-4 h-4 text-green-500" />;
-      case 'error':
+      case "error":
         return <AlertCircle className="w-4 h-4 text-red-500" />;
       default:
         return <Wifi className="w-4 h-4 text-muted-foreground" />;
@@ -72,12 +87,27 @@ export function DisplayNameSync() {
 
   const getSyncBadge = () => {
     switch (syncStatus) {
-      case 'syncing':
-        return <Badge variant="outline" className="text-blue-500 border-blue-500/30">Synchronisation...</Badge>;
-      case 'success':
-        return <Badge variant="outline" className="text-green-500 border-green-500/30">Synchronisé</Badge>;
-      case 'error':
-        return <Badge variant="outline" className="text-red-500 border-red-500/30">Erreur</Badge>;
+      case "syncing":
+        return (
+          <Badge variant="outline" className="text-blue-500 border-blue-500/30">
+            Synchronisation...
+          </Badge>
+        );
+      case "success":
+        return (
+          <Badge
+            variant="outline"
+            className="text-green-500 border-green-500/30"
+          >
+            Synchronisé
+          </Badge>
+        );
+      case "error":
+        return (
+          <Badge variant="outline" className="text-red-500 border-red-500/30">
+            Erreur
+          </Badge>
+        );
       default:
         return <Badge variant="outline">En attente</Badge>;
     }
@@ -96,26 +126,30 @@ export function DisplayNameSync() {
           {getSyncBadge()}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="space-y-3">
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Nom utilisateur:</span>
             <span className="font-mono">@{username}</span>
           </div>
-          
+
           <div className="flex justify-between">
             <span className="text-muted-foreground">Nom d'affichage:</span>
             <span className="font-medium">
-              {displayName || <span className="text-muted-foreground italic">Non défini</span>}
+              {displayName || (
+                <span className="text-muted-foreground italic">Non défini</span>
+              )}
             </span>
           </div>
-          
+
           <div className="flex justify-between">
             <span className="text-muted-foreground">Nom effectif:</span>
-            <span className="font-medium text-primary">{effectiveDisplayName}</span>
+            <span className="font-medium text-primary">
+              {effectiveDisplayName}
+            </span>
           </div>
-          
+
           {lastSyncTime && (
             <div className="flex justify-between">
               <span className="text-muted-foreground">Dernière sync:</span>
@@ -129,16 +163,18 @@ export function DisplayNameSync() {
             onClick={handleForceSync}
             variant="outline"
             size="sm"
-            disabled={syncStatus === 'syncing'}
+            disabled={syncStatus === "syncing"}
             className="flex-1"
           >
-            <RefreshCw className={`w-3 h-3 mr-1 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-3 h-3 mr-1 ${syncStatus === "syncing" ? "animate-spin" : ""}`}
+            />
             Forcer sync
           </Button>
         </div>
 
         {/* Indicateur visuel de changement */}
-        {syncStatus === 'success' && (
+        {syncStatus === "success" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
