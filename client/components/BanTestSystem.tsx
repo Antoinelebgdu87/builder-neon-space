@@ -270,6 +270,91 @@ export function BanTestSystem({ className }: BanTestSystemProps) {
             </motion.div>
           )}
 
+          {/* Tests Avancés */}
+          {testResult?.localUser && (
+            <div className="space-y-4 p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+              <h4 className="font-semibold">🧪 Tests Avancés pour {testResult.localUser.username}</h4>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    const result = await triggerBanCheck(testResult.localUser.id, testResult.localUser.username);
+                    alert(result.message);
+                  }}
+                  disabled={isTriggering || !isOnline}
+                  className="text-orange-400 border-orange-400/30"
+                >
+                  🔍 Forcer Vérif Ban
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const result = triggerTestBanModal(testResult.localUser.username);
+                    alert(result.message);
+                  }}
+                  className="text-blue-400 border-blue-400/30"
+                >
+                  🧪 Test Modal
+                </Button>
+
+                {testResult.firebaseBan?.isBanned && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const result = forceLogoutBannedUser(
+                        testResult.localUser.id,
+                        testResult.localUser.username,
+                        testResult.firebaseBan.banReason || 'Ban détecté'
+                      );
+                      alert(result.message);
+                      setTimeout(() => window.location.reload(), 2000);
+                    }}
+                    className="text-red-400 border-red-400/30"
+                  >
+                    🚪 Force Logout
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Test Rapide Global */}
+          <div className="space-y-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <h4 className="font-semibold">⚡ Tests Rapides</h4>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => {
+                  const result = triggerTestBanModal('Test User');
+                  alert('Modal de test déclenché! Vérifiez si le modal apparaît.');
+                }}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                🧪 Tester Modal Ban Global
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  console.log('🔍 Debug Info:');
+                  console.log('Firebase online:', isOnline);
+                  console.log('localStorage auth:', localStorage.getItem('firebase_auth_user'));
+                  console.log('Comptes avec ban:', accounts.filter(u => u.isBanned).map(u => ({
+                    username: u.username,
+                    banReason: u.banReason,
+                    id: u.id
+                  })));
+                  alert('Debug info affiché dans la console');
+                }}
+              >
+                📊 Debug Console
+              </Button>
+            </div>
+          </div>
+
           {/* Liste des utilisateurs récents */}
           <div className="space-y-2">
             <h4 className="font-medium">Utilisateurs Récents ({accounts.length})</h4>
