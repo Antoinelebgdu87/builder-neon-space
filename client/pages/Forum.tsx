@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 export default function Forum() {
   const { posts, loading } = useHybridForum();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPost, setSelectedPost] = useState<ForumPost | null>(null);
 
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
