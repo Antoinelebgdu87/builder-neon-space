@@ -188,7 +188,7 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
                           </div>
                         </div>
                         {/* Admin can delete any comment, user can delete own comments */}
-                        {isAuthenticated && (user?.username === 'Admin' || user?.username === comment.author) && (
+                        {currentUser && (currentUser.username === 'Admin' || currentUser.username === comment.author) && (
                           <Button
                             variant="ghost"
                             size="icon"
