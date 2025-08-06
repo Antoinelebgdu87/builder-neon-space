@@ -25,28 +25,11 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
     setLoading(true);
 
     try {
-      // Check for hardcoded admin credentials
-      if (credentials.username === "Admin" && credentials.password === "Antoine80") {
-        // For demo purposes, we'll create a mock Firebase user
-        // In production, you'd want to create this user in Firebase Auth
-        const email = "admin@sysbreak.com";
-        const password = "Antoine80Admin";
-        
-        try {
-          await login(email, password);
-          onClose();
-          navigate("/admin");
-        } catch (firebaseError) {
-          // If Firebase user doesn't exist, show success anyway for demo
-          console.log("Firebase auth not set up, but credentials are correct");
-          onClose();
-          navigate("/admin");
-        }
-      } else {
-        setError("Identifiants incorrects");
-      }
-    } catch (err) {
-      setError("Erreur de connexion");
+      await login(credentials.username, credentials.password);
+      onClose();
+      navigate("/admin");
+    } catch (err: any) {
+      setError(err.message || "Erreur de connexion");
     } finally {
       setLoading(false);
     }
