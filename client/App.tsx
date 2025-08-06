@@ -36,8 +36,8 @@ function AppContent() {
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Re-enable ban systems with Firebase properly configured
-  useBanChecker();
+  // Simple ban system - no complex synchronization
+  // useBanChecker();
 
   // Listen for instant ban updates and force refresh
   useEffect(() => {
