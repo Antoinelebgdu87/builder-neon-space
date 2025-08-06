@@ -15,6 +15,7 @@ export default function Header() {
   const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
   const { isUserBanned, isOnline: banSystemOnline } = useBanSystem();
   const { isOnline: forumOnline } = useHybridForum();
+  const { getUserById } = useAdvancedUserManagement();
   const navigate = useNavigate();
 
   // Check if Firebase is working for any service
