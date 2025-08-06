@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, db } from '@/lib/firebaseDisabled';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
-import { FirebaseErrorHandler, safeFirebaseOperation } from '@/utils/firebaseErrorHandler';
-import EmergencyMode from '@/utils/emergencyMode';
 
 export interface Script {
   id?: string;
@@ -27,7 +26,7 @@ export function useHybridScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
+  const [useFirebase, setUseFirebase] = useState(true);
 
   const loadFromLocalStorage = () => {
     try {

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, db } from '@/lib/firebaseDisabled';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
-import { FirebaseErrorHandler, safeFirebaseOperation } from '@/utils/firebaseErrorHandler';
-import EmergencyMode from '@/utils/emergencyMode';
 
 export interface ForumComment {
   id: string;
@@ -36,7 +35,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
+  const [useFirebase, setUseFirebase] = useState(true);
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
@@ -61,9 +60,9 @@ export function useHybridForum() {
     }
   };
 
-  // Mode local forcé - pas de Firebase
+  // Firebase activé
   useEffect(() => {
-    setUseFirebase(false);
+    setUseFirebase(true);
   }, []);
 
   useEffect(() => {

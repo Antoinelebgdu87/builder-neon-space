@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
-// Your web app's Firebase configuration
+// Configuration Firebase mise à jour avec les nouvelles clés
 const firebaseConfig = {
   apiKey: "AIzaSyDMsFeXMVm61NlmN8QBk7UmH1ngPFW8TWo",
   authDomain: "keysystem-d0b86.firebaseapp.com",
@@ -25,3 +25,5 @@ if (typeof window !== 'undefined') {
   analytics = getAnalytics(app);
 }
 export { analytics };
+
+console.log('🔥 Firebase initialisé avec les nouvelles clés');
