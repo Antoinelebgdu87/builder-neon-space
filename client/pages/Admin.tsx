@@ -138,14 +138,26 @@ export default function Admin() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="icon">Icône (Emoji)</Label>
+                    <Label htmlFor="imageUrl">URL de l'image</Label>
                     <Input
-                      id="icon"
-                      value={formData.icon}
-                      onChange={(e) => setFormData(prev => ({ ...prev, icon: e.target.value }))}
+                      id="imageUrl"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
                       className="glass border-border/50"
-                      placeholder="🔧"
+                      placeholder="https://example.com/image.jpg"
                     />
+                    {formData.imageUrl && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.imageUrl}
+                          alt="Prévisualisation"
+                          className="w-12 h-12 object-cover rounded-lg border border-border/50"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
