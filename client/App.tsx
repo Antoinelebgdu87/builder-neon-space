@@ -33,12 +33,22 @@ function AppContent() {
   // Enable real-time ban checking
   useBanChecker();
 
-  // Check if current user is banned by username
-  const banStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
+  // Check if current user is banned by username (Firebase) or locally
+  const firebaseBanStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
+  const localBanStatus = anonymousUser?.isBanned || false;
 
-  // Show ban notification if user is banned
-  if (!userLoading && banStatus.isBanned && banStatus.banRecord) {
-    return <BanNotification banRecord={banStatus.banRecord} />;
+  // Show ban notification if user is banned (either locally or in Firebase)
+  if (!userLoading && (firebaseBanStatus.isBanned || localBanStatus)) {
+    const banRecord = firebaseBanStatus.banRecord || {
+      userId: anonymousUser?.username || '',
+      username: anonymousUser?.username || '',
+      reason: anonymousUser?.banReason || 'Violation des règles',
+      banType: 'permanent' as const,
+      bannedAt: new Date().toISOString(),
+      bannedBy: 'Admin'
+    };
+
+    return <BanNotification banRecord={banRecord} />;
   }
 
   return (
