@@ -1,0 +1,25 @@
+/* Temporary fix to force interactions */
+* {
+  pointer-events: auto !important;
+}
+
+/* Remove any invisible overlays */
+.fixed {
+  z-index: initial !important;
+}
+
+/* Ensure all dialogs are properly closed */
+[data-state="open"] {
+  display: none !important;
+}
+
+/* Force clickable elements */
+button, a, input, textarea, select {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Remove any transform or overlay that might block */
+body > * {
+  position: relative !important;
+}
