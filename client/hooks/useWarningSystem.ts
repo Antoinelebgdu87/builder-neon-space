@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, db } from '@/lib/firebaseMock';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface WarningData {
