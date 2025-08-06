@@ -19,7 +19,8 @@ const LOCAL_STORAGE_KEY = 'sysbreak_bans';
 export function useBanSystem() {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [useFirebase, setUseFirebase] = useState(true);
+  const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
+  const [useFirebase, setUseFirebase] = useState(false); // Start with false
 
   const loadFromLocalStorage = () => {
     try {
