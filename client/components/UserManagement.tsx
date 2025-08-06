@@ -811,6 +811,26 @@ export function UserManagement({ className }: UserManagementProps) {
                         <Key className="w-4 h-4" />
                       </Button>
 
+                      {user.isBanned ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleUnbanUser(user)}
+                          className="text-green-400 hover:text-green-300 border-green-400/30"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openBanDialog(user)}
+                          className="text-orange-400 hover:text-orange-300 border-orange-400/30"
+                        >
+                          <Ban className="w-4 h-4" />
+                        </Button>
+                      )}
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -825,7 +845,7 @@ export function UserManagement({ className }: UserManagementProps) {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Supprimer l'utilisateur</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous sûr de vouloir supprimer l'utilisateur "{user.username}" ? 
+                              Êtes-vous sûr de vouloir supprimer l'utilisateur "{user.username}" ?
                               Cette action est irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
