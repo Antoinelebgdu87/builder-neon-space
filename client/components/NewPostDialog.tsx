@@ -41,14 +41,9 @@ export default function NewPostDialog() {
       if (isAuthenticated && adminUser) {
         // Utilisateur admin connecté
         displayName = adminUser.username;
-      } else if (anonymousUser) {
-        // Utilisateur anonyme
-        const userAccount = getUserById(anonymousUser.id);
-        if (userAccount?.profile?.displayName) {
-          displayName = userAccount.profile.displayName;
-        } else {
-          displayName = anonymousUser.username;
-        }
+      } else {
+        // Utilisateur anonyme - utiliser le nom d'affichage effectif
+        displayName = effectiveDisplayName;
       }
 
       setFormData(prev => ({
@@ -56,7 +51,7 @@ export default function NewPostDialog() {
         author: displayName
       }));
     }
-  }, [isOpen, isAuthenticated, adminUser, anonymousUser, getUserById]);
+  }, [isOpen, isAuthenticated, adminUser, effectiveDisplayName]);
 
   const resetForm = () => {
     setFormData({
