@@ -209,9 +209,12 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
 
           {/* Actions */}
           <div className="flex flex-col space-y-2">
-            <div className="p-4 bg-black rounded-lg border border-gray-800">
-              <p className="text-center text-gray-400 text-sm">
-                Votre accès est suspendu
+            <div className="p-6 bg-black rounded-lg border border-red-500">
+              <p className="text-center text-red-400 font-bold text-lg">
+                ACCÈS SUSPENDU
+              </p>
+              <p className="text-center text-gray-300 text-sm mt-2">
+                Fermez cette page et revenez plus tard
               </p>
             </div>
           </div>
