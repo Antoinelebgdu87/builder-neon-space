@@ -3,7 +3,7 @@ import NewPostDialog from "@/components/NewPostDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2, MessageSquare } from "lucide-react";
-import { useLocalForum } from "@/hooks/useLocalForum";
+import { useFirebaseForum } from "@/hooks/useFirebaseForum";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
