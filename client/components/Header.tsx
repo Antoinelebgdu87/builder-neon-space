@@ -7,6 +7,7 @@ import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useHybridForum } from "@/hooks/useHybridForum";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
 import { DisplayNameEditor } from "@/components/DisplayNameEditor";
 
 export default function Header() {
