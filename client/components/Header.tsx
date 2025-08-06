@@ -19,6 +19,7 @@ export default function Header() {
   const { isUserBanned, isOnline: banSystemOnline } = useBanSystem();
   const { isOnline: forumOnline } = useHybridForum();
   const { getUserById } = useAdvancedUserManagement();
+  const { effectiveDisplayName, forceSync } = useGlobalDisplayName();
   const navigate = useNavigate();
 
   // Check if Firebase is working for any service
