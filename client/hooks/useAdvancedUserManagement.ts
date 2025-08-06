@@ -127,13 +127,13 @@ export function useAdvancedUserManagement() {
 
   // Initialize and cleanup
   useEffect(() => {
-    // Only enable Firebase if explicitly online and connectivity is good
-    if (firebaseOnline) {
+    // Only enable Firebase if explicitly online, connectivity is good, and global control allows it
+    if (firebaseOnline && globalFirebaseAvailable) {
       // Add a delay to prevent immediate connection attempts
       const timer = setTimeout(() => {
         // Test Firebase connection before enabling
         testFirebaseConnection().then((isWorking) => {
-          setUseFirebase(isWorking);
+          setUseFirebase(isWorking && globalFirebaseAvailable);
           if (!isWorking) {
             setError('🌐 Firebase inaccessible - fonctionnement en mode local');
           }
@@ -142,8 +142,11 @@ export function useAdvancedUserManagement() {
       return () => clearTimeout(timer);
     } else {
       setUseFirebase(false);
+      if (!globalFirebaseAvailable) {
+        setError('🛑 Firebase temporairement désactivé - mode local');
+      }
     }
-  }, [firebaseOnline]);
+  }, [firebaseOnline, globalFirebaseAvailable]);
 
   // Test basic Firebase connectivity
   const testFirebaseConnection = async (): Promise<boolean> => {
@@ -481,7 +484,7 @@ export function useAdvancedUserManagement() {
       const account = accounts.find(acc => acc.id === userId);
       
       if (!account) {
-        throw new Error('Utilisateur non trouvé');
+        throw new Error('Utilisateur non trouv��');
       }
 
       const updatedAccount = { ...account, passwordHash };
