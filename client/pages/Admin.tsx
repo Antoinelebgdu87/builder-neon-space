@@ -43,7 +43,7 @@ export default function Admin() {
     setFormData({
       name: "",
       description: "",
-      icon: "🔧",
+      imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=100&h=100&fit=crop&crop=center",
       downloads: "0",
       platforms: [],
       isVerified: false,
