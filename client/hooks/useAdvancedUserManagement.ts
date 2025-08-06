@@ -313,14 +313,18 @@ export function useAdvancedUserManagement() {
 
       // Force Firebase save even if offline mode
       if (firebaseOnline) {
-        try {
-          const cleanedData = cleanUndefinedValues(banData);
-          await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
-          console.log('Ban saved to Firebase successfully:', userId);
-        } catch (error) {
-          console.error('Failed to save ban to Firebase:', error);
-          throw new Error('Erreur lors de la sauvegarde du ban sur Firebase');
+        const cleanedData = cleanUndefinedValues(banData);
+        const banResult = await safeFirebaseWrite(
+          () => updateDoc(doc(db, 'userAccounts', userId), cleanedData),
+          'ban-user'
+        );
+
+        if (!banResult.success) {
+          console.error('Failed to save ban to Firebase:', banResult.error);
+          throw new Error(banResult.error || 'Erreur lors de la sauvegarde du ban sur Firebase');
         }
+
+        console.log('Ban saved to Firebase successfully:', userId);
       } else {
         throw new Error('Firebase nécessaire pour sauvegarder les bans');
       }
