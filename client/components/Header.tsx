@@ -37,10 +37,6 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link to="/" className="text-xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent pl-2">
-            SysBreak
-          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -75,26 +71,10 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Search */}
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Search className="h-4 w-4" />
-            </Button>
-
-
             {/* Auth Actions */}
             {isAuthenticated && (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground hidden sm:inline">
-                  {user?.username}
-                </span>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  className="hover:bg-destructive/20 hover:text-destructive"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </Button>
+              <div className="text-sm text-muted-foreground ml-4">
+                Admin
               </div>
             )}
 
@@ -102,7 +82,7 @@ export default function Header() {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               <Menu className="h-4 w-4" />
