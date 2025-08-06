@@ -308,7 +308,7 @@ export function useInstantFirebaseBan() {
       );
 
       if (!readResult.success) {
-        console.error('��� Erreur lors de la vérification du ban:', readResult.error);
+        console.error('❌ Erreur lors de la vérification du ban:', readResult.error);
         return { isBanned: false };
       }
 
@@ -427,7 +427,7 @@ export function useInstantFirebaseBan() {
           banReason: reason,
           banType,
           bannedAt: now,
-          bannedBy: 'Admin',
+          bannedBy: getAdminName(),
           banId
         };
 
