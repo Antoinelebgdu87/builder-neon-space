@@ -419,8 +419,8 @@ export function useAdvancedUserManagement() {
         lastActive: now,
         lastLogin: now,
         statistics: {
-          ...account.statistics,
-          loginCount: account.statistics.loginCount + 1
+          ...(account.statistics || { loginCount: 0, totalTimeOnline: 0 }),
+          loginCount: (account.statistics?.loginCount || 0) + 1
         }
       });
 
