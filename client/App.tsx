@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import LoadingScreen from "@/components/LoadingScreen";
 import PageTransition from "@/components/PageTransition";
 import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
+import { firebaseOptimizer } from "@/utils/firebaseOptimization";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
