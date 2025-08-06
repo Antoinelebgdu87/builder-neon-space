@@ -65,6 +65,7 @@ export default function PasswordSetupDialog({ isOpen, username, onSetPassword }:
               <div className="space-y-2">
                 <p className="font-medium">Votre nom d'utilisateur : <span className="text-primary">{username}</span></p>
                 <p className="text-sm">Créez un mot de passe pour sauvegarder ce compte et pouvoir vous reconnecter.</p>
+                <p className="text-xs text-blue-600">Le compte sera sauvegardé localement et synchronisé quand possible.</p>
               </div>
             </AlertDescription>
           </Alert>
