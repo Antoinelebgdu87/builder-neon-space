@@ -20,6 +20,7 @@ export default function NewPostDialog() {
   const { user: anonymousUser } = useAnonymousUser();
   const { isAuthenticated, user: adminUser } = useAuth();
   const { getUserById } = useAdvancedUserManagement();
+  const { effectiveDisplayName } = useGlobalDisplayName();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
