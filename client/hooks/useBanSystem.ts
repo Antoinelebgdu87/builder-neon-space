@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, deleteDoc, onSnapshot, getDocs, db } from '@/lib/firebaseSafe';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, getDocs, db } from '@/lib/firebaseDisabled';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import type { AnonymousUser } from './useAnonymousUser';
 

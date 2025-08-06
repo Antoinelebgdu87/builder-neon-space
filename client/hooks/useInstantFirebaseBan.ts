@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch, db } from '@/lib/firebaseSafe';
+import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch, db } from '@/lib/firebaseDisabled';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { useAuth } from '@/contexts/LocalAuthContext';
 import { safeFirebaseWrite, safeFirebaseBatch, cleanForFirebase, withRetry } from '@/lib/firebaseSafeWrapper';

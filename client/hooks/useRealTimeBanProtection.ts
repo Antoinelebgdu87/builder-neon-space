@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { doc, onSnapshot, db } from '@/lib/firebaseSafe';
+import { doc, onSnapshot, db } from '@/lib/firebaseDisabled';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface BanProtectionState {
