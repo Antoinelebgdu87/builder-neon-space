@@ -36,14 +36,10 @@ function AppContent() {
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Enable real-time ban checking
-  useBanChecker();
-
-  // Enable ban synchronization
-  useBanSync();
-
-  // Bootstrap ban system from Firebase
-  const { isBootstraped, banCount } = useBanBootstrap();
+  // Temporarily disabled ban systems to unblock interface
+  // useBanChecker();
+  // useBanSync();
+  // const { isBootstraped, banCount } = useBanBootstrap();
 
   // Listen for instant ban updates and force refresh
   useEffect(() => {
