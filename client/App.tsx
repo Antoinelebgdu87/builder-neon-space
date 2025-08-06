@@ -13,6 +13,7 @@ import { useBanSystem } from "@/hooks/useBanSystem";
 import { useState, useEffect } from "react";
 import LoadingScreen from "@/components/LoadingScreen";
 import PageTransition from "@/components/PageTransition";
+import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
@@ -49,6 +50,15 @@ function AppContent() {
     }, 3000); // Chargement pendant 3 secondes
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // Log de l'environnement au démarrage
+  useEffect(() => {
+    if (shouldUseFirebaseOnly()) {
+      console.log('🚀 Mode Production: Firebase exclusivement');
+    } else {
+      console.log('🔧 Mode Développement: Firebase avec fallback local');
+    }
   }, []);
 
   // Simple ban system - no complex synchronization
