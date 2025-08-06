@@ -56,8 +56,6 @@ export function UserManagement({ className }: UserManagementProps) {
     updateUserPassword,
     updateUserProfile,
     deleteUser,
-    banUser,
-    unbanUser,
     getOnlineUsers,
     getOfflineUsers,
     getAllUsersWithStatus,
