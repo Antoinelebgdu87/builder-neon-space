@@ -80,6 +80,13 @@ export function UserManagement({ className }: UserManagementProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [cleanupStats, setCleanupStats] = useState({ totalSessions: 0, expiredSessions: 0, staleUsers: 0 });
   const [isCleaningUp, setIsCleaningUp] = useState(false);
+  const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
+  const [banFormData, setBanFormData] = useState({
+    reason: '',
+    banType: 'temporary' as 'temporary' | 'permanent',
+    hours: 24
+  });
+  const [userToBan, setUserToBan] = useState<UserAccount | null>(null);
 
   // Form states
   const [createForm, setCreateForm] = useState({
