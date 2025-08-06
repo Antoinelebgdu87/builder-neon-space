@@ -644,6 +644,7 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="forum" className="space-y-6">
+              {/* Forum Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
@@ -659,19 +660,123 @@ export default function Admin() {
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
-                    <div className="text-2xl font-bold text-orange-400">{posts.reduce((sum, post) => sum + (post.replies || 0), 0)}</div>
-                    <div className="text-sm text-muted-foreground">Réponses</div>
+                    <div className="text-2xl font-bold text-orange-400">
+                      {posts.reduce((sum, post) => sum + (post.comments?.length || post.replies || 0), 0)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Commentaires</div>
                   </CardContent>
                 </Card>
                 <Card className="glass border-border/50">
                   <CardContent className="p-6">
                     <div className="text-2xl font-bold text-blue-400">
-                      {postsLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : "Firebase"}
+                      {posts.reduce((sum, post) => sum + (post.views || 0), 0)}
                     </div>
-                    <div className="text-sm text-muted-foreground">Statut</div>
+                    <div className="text-sm text-muted-foreground">Vues totales</div>
                   </CardContent>
                 </Card>
               </div>
+
+              {/* Forum Posts Management */}
+              <Card className="glass border-border/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <MessageSquare className="w-5 h-5" />
+                    <span>Gestion des Posts du Forum</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {postsLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-6 h-6 animate-spin mr-2" />
+                      <span>Chargement des posts...</span>
+                    </div>
+                  ) : posts.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>Aucun post disponible</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {posts.map((post) => (
+                        <div key={post.id} className="border border-border/30 rounded-lg p-4 space-y-3">
+                          {/* Post Header */}
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <h3 className="font-semibold">{post.title}</h3>
+                                <Badge variant="outline">{post.category}</Badge>
+                                {post.isSticky && <Badge variant="default">Épinglé</Badge>}
+                                {post.isLocked && <Badge variant="destructive">Verrouillé</Badge>}
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                                {post.content}
+                              </p>
+                              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                                <span>Par {post.author}</span>
+                                <span>{post.comments?.length || post.replies || 0} commentaires</span>
+                                <span>{post.views || 0} vues</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => updatePost(post.id!, { isSticky: !post.isSticky })}
+                                className="text-green-400 hover:text-green-300"
+                              >
+                                <Pin className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => deletePost(post.id!)}
+                                className="text-destructive hover:text-destructive/80"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Comments Management */}
+                          {post.comments && post.comments.length > 0 && (
+                            <div className="pl-4 border-l-2 border-border/30 space-y-2">
+                              <h4 className="text-sm font-medium text-muted-foreground">
+                                Commentaires ({post.comments.length})
+                              </h4>
+                              {post.comments.map((comment) => (
+                                <div key={comment.id} className="flex items-start justify-between bg-background/50 rounded p-3">
+                                  <div className="flex-1">
+                                    <div className="flex items-center space-x-2 mb-1">
+                                      <span className="text-sm font-medium">{comment.author}</span>
+                                      <span className="text-xs text-muted-foreground">
+                                        {typeof comment.createdAt === 'string'
+                                          ? new Date(comment.createdAt).toLocaleDateString('fr-FR')
+                                          : comment.createdAt?.toDate
+                                            ? new Date(comment.createdAt.toDate()).toLocaleDateString('fr-FR')
+                                            : new Date(comment.createdAt).toLocaleDateString('fr-FR')
+                                        }
+                                      </span>
+                                    </div>
+                                    <p className="text-sm">{comment.content}</p>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => deleteComment(post.id!, comment.id)}
+                                    className="text-destructive hover:text-destructive/80 w-8 h-8"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </motion.div>
