@@ -89,15 +89,12 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
           className="space-y-6"
         >
           {/* Ban Status Alert */}
-          <div className="bg-red-600 border border-red-500 rounded-lg p-6 text-center">
-            <div className="flex flex-col items-center space-y-3">
-              <AlertTriangle className="w-16 h-16 text-white animate-pulse" />
-              <div>
-                <h3 className="font-bold text-white text-xl mb-2">
-                  ACCÈS REFUSÉ
-                </h3>
-                <p className="text-red-100 font-medium">
-                  Votre compte a été suspendu et vous ne pouvez plus accéder au site.
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+            <div className="flex items-start space-x-3">
+              <AlertTriangle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">
+                  Vous ne pouvez plus accéder aux fonctionnalités du site.
                 </p>
               </div>
             </div>
