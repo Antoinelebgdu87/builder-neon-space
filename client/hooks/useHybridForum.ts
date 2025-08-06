@@ -28,8 +28,6 @@ export interface ForumPost {
   comments?: ForumComment[];
 }
 
-const LOCAL_STORAGE_KEY = 'sysbreak_forum_hybrid';
-
 export function useHybridForum() {
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,40 +35,13 @@ export function useHybridForum() {
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
   const [useFirebase, setUseFirebase] = useState(true);
 
-  // Load from localStorage initially
-  const loadFromLocalStorage = () => {
-    try {
-      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (stored) {
-        const parsedPosts = JSON.parse(stored);
-        setPosts(parsedPosts);
-      }
-    } catch (err) {
-      console.error('Error loading from localStorage:', err);
-    }
-  };
-
-  // Save to localStorage
-  const saveToLocalStorage = (newPosts: ForumPost[]) => {
-    try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newPosts));
-      setPosts(newPosts);
-    } catch (err) {
-      console.error('Error saving to localStorage:', err);
-    }
-  };
-
   // Firebase activé
   useEffect(() => {
     setUseFirebase(true);
   }, []);
 
   useEffect(() => {
-    // Always load from localStorage first for instant data
-    loadFromLocalStorage();
-    setLoading(false);
-
-    // Firebase listener
+    // Firebase listener uniquement
     if (useFirebase && firebaseOnline) {
       console.log('Setting up Firebase listener for forum');
       const unsubscribe = onSnapshot(
@@ -99,8 +70,7 @@ export function useHybridForum() {
           setPosts(postsData);
           setError(null);
 
-          // Also save to localStorage as backup
-          saveToLocalStorage(postsData);
+          // Pas de sauvegarde locale
         },
         (err) => {
           console.error('Firebase forum listener error:', err);
