@@ -279,7 +279,7 @@ export function UserManagement({ className }: UserManagementProps) {
 
   // Export users data
   const exportUsersData = () => {
-    const data = JSON.stringify(allUsersWithStatus, null, 2);
+    const data = JSON.stringify(safeAllUsersWithStatus, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
