@@ -70,14 +70,12 @@ export function useHybridForum() {
     loadFromLocalStorage();
     setLoading(false);
 
-    // Try Firebase if online, not blocked, and not in emergency mode
-    if (useFirebase && firebaseOnline && !FirebaseErrorHandler.isBlocked() && !EmergencyMode.isEnabled()) {
+    // Firebase listener
+    if (useFirebase && firebaseOnline) {
       console.log('Setting up Firebase listener for forum');
-
-      const setupListener = () => {
-        return onSnapshot(
-          collection(db, 'forum'),
-          (snapshot) => {
+      const unsubscribe = onSnapshot(
+        collection(db, 'forum'),
+        (snapshot) => {
           console.log('Firebase forum data received');
           const postsData = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -103,118 +101,61 @@ export function useHybridForum() {
 
           // Also save to localStorage as backup
           saveToLocalStorage(postsData);
-          },
-          (err) => {
-            console.error('Firebase forum listener error:', err);
-            EmergencyMode.recordFirebaseError();
-            const shouldFallback = FirebaseErrorHandler.handleError(err);
+        },
+        (err) => {
+          console.error('Firebase forum listener error:', err);
+          setUseFirebase(false);
+          setError('Erreur Firebase - Tentative de reconnexion...');
+        }
+      );
 
-            setUseFirebase(false);
-            if (EmergencyMode.isEnabled()) {
-              setError('⚙️ Mode local actif - Données sauvegardées localement');
-            } else if (shouldFallback) {
-              setError('⚠️ Mode hors ligne - Données locales utilisées');
-            } else if (err.code === 'permission-denied') {
-              setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
-            } else {
-              setError('Mode hors ligne - Firebase inaccessible');
-            }
-          }
-        );
-      };
-
-      try {
-        const unsubscribe = setupListener();
-        return () => unsubscribe();
-      } catch (error) {
-        console.error('Failed to setup Firebase listener:', error);
-        FirebaseErrorHandler.handleError(error);
-        setUseFirebase(false);
-      }
+      return () => unsubscribe();
 
       return () => unsubscribe();
     }
   }, [useFirebase, firebaseOnline]);
 
   const addPost = async (post: Omit<ForumPost, 'id' | 'createdAt' | 'replies' | 'views'>) => {
-    const newPost: ForumPost = {
-      ...post,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      replies: 0,
-      views: 0,
-      createdAt: new Date().toISOString()
-    };
+    try {
+      const docRef = await addDoc(collection(db, 'forum'), {
+        ...post,
+        replies: 0,
+        views: 0,
+        createdAt: serverTimestamp(),
+        lastReply: serverTimestamp()
+      });
 
-    return await safeFirebaseOperation(
-      // Firebase operation
-      async () => {
-        if (!useFirebase) throw new Error('Firebase disabled');
-
-        const docRef = await addDoc(collection(db, 'forum'), {
-          ...post,
-          replies: 0,
-          views: 0,
-          createdAt: serverTimestamp(),
-          lastReply: serverTimestamp()
-        });
-
-        return {
-          id: docRef.id,
-          ...post,
-          replies: 0,
-          views: 0
-        };
-      },
-      // Local fallback
-      async () => {
-        console.log('Using local storage for addPost');
-        setUseFirebase(false);
-        const updatedPosts = [newPost, ...posts];
-        saveToLocalStorage(updatedPosts);
-        return newPost;
-      }
-    );
+      return {
+        id: docRef.id,
+        ...post,
+        replies: 0,
+        views: 0
+      };
+    } catch (error) {
+      console.error('Erreur ajout post:', error);
+      throw error;
+    }
   };
 
   const updatePost = async (id: string, updates: Partial<ForumPost>) => {
-    return await safeFirebaseOperation(
-      // Firebase operation
-      async () => {
-        if (!useFirebase) throw new Error('Firebase disabled');
-
-        await updateDoc(doc(db, 'forum', id), {
-          ...updates,
-          lastReply: serverTimestamp()
-        });
-      },
-      // Local fallback
-      async () => {
-        console.log('Using local storage for updatePost');
-        setUseFirebase(false);
-        const updatedPosts = posts.map(post =>
-          post.id === id ? { ...post, ...updates } : post
-        );
-        saveToLocalStorage(updatedPosts);
-      }
-    );
+    try {
+      await updateDoc(doc(db, 'forum', id), {
+        ...updates,
+        lastReply: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Erreur mise à jour post:', error);
+      throw error;
+    }
   };
 
   const deletePost = async (id: string) => {
-    return await safeFirebaseOperation(
-      // Firebase operation
-      async () => {
-        if (!useFirebase) throw new Error('Firebase disabled');
-
-        await deleteDoc(doc(db, 'forum', id));
-      },
-      // Local fallback
-      async () => {
-        console.log('Using local storage for deletePost');
-        setUseFirebase(false);
-        const updatedPosts = posts.filter(post => post.id !== id);
-        saveToLocalStorage(updatedPosts);
-      }
-    );
+    try {
+      await deleteDoc(doc(db, 'forum', id));
+    } catch (error) {
+      console.error('Erreur suppression post:', error);
+      throw error;
+    }
   };
 
   const incrementViews = async (id: string) => {
