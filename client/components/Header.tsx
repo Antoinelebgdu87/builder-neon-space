@@ -69,14 +69,6 @@ export default function Header() {
               Forum
             </Link>
 
-            {/* Firebase Status Indicator */}
-            <div className={`text-xs px-2 py-1 rounded-full ${
-              isFirebaseOnline
-                ? 'bg-green-500/20 text-green-400'
-                : 'bg-orange-500/20 text-orange-400'
-            }`}>
-              {isFirebaseOnline ? '🟢 Online' : '🟡 Local'}
-            </div>
           </nav>
 
           {/* Right Side Actions */}
