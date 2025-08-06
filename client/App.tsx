@@ -121,6 +121,7 @@ function AppContent() {
       <WarningModal userId={anonymousUser?.username || null} />
       <MaintenanceMode />
       <ConnectivityStatus />
+      <EmergencyModeToggle />
       <SmoothTransition>
         <Routes>
           <Route path="/" element={<Index />} />
