@@ -104,10 +104,7 @@ export default function Forum() {
               <div className="text-sm text-muted-foreground">
                 {filteredPosts.length} post(s) trouvé(s)
               </div>
-              <Button className="bg-gradient-primary hover:opacity-90 text-white font-medium glow-hover">
-                <Plus className="w-4 h-4 mr-2" />
-                Nouveau Post
-              </Button>
+              <NewPostDialog />
             </div>
           </div>
 
