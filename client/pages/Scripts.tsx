@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2, Code } from "lucide-react";
 import { useHybridScripts } from "@/hooks/useHybridScripts";
 import { useState } from "react";
+import CategoryTransition from "@/components/CategoryTransition";
 
 export default function Scripts() {
   const { scripts, loading } = useHybridScripts();
@@ -17,7 +18,8 @@ export default function Scripts() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <CategoryTransition direction="left">
+      <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Effects */}
@@ -155,6 +157,7 @@ export default function Scripts() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </CategoryTransition>
   );
 }
