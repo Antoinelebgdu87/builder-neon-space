@@ -15,6 +15,8 @@ import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
 import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useAuth } from "@/contexts/LocalAuthContext";
+import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { WarningSystem } from "@/components/WarningSystem";
 import { InstantBanSystem } from "@/components/InstantBanSystem";
