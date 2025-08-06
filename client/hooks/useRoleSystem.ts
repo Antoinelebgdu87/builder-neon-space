@@ -62,28 +62,41 @@ export function useRoleSystem() {
   const [userRoles, setUserRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isAvailable: firebaseAvailable } = useFirebaseAvailable();
 
-  // Charger les rôles depuis Firebase
+  // Charger les rôles depuis Firebase (désactivé temporairement pour éviter les erreurs)
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, 'userRoles'),
-      (snapshot) => {
-        const roles: UserRole[] = [];
-        snapshot.forEach((doc) => {
-          roles.push({ ...doc.data() } as UserRole);
-        });
-        setUserRoles(roles);
-        setLoading(false);
-      },
-      (error) => {
-        console.error('Erreur lors du chargement des rôles:', error);
-        setError('Erreur lors du chargement des rôles');
-        setLoading(false);
-      }
-    );
+    // Temporairement désactivé pour éviter les erreurs "Failed to fetch"
+    setLoading(false);
 
-    return () => unsubscribe();
-  }, []);
+    // if (firebaseAvailable) {
+    //   try {
+    //     const unsubscribe = onSnapshot(
+    //       collection(db, 'userRoles'),
+    //       (snapshot) => {
+    //         const roles: UserRole[] = [];
+    //         snapshot.forEach((doc) => {
+    //           roles.push({ ...doc.data() } as UserRole);
+    //         });
+    //         setUserRoles(roles);
+    //         setLoading(false);
+    //       },
+    //       (error) => {
+    //         reportFirebaseError(error);
+    //         console.error('Erreur lors du chargement des rôles:', error);
+    //         setError('Erreur lors du chargement des rôles');
+    //         setLoading(false);
+    //       }
+    //     );
+    //     return () => unsubscribe();
+    //   } catch (error) {
+    //     reportFirebaseError(error);
+    //     setLoading(false);
+    //   }
+    // } else {
+    //   setLoading(false);
+    // }
+  }, [firebaseAvailable]);
 
   // Obtenir le rôle d'un utilisateur
   const getUserRole = (userId: string): Role => {
