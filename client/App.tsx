@@ -53,10 +53,12 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Log de l'environnement au démarrage
+  // Log de l'environnement au démarrage et optimisation Firebase
   useEffect(() => {
     if (shouldUseFirebaseOnly()) {
       console.log('🚀 Mode Production: Firebase exclusivement');
+      // Optimiser Firebase pour la production
+      firebaseOptimizer.optimizeForProduction();
     } else {
       console.log('🔧 Mode Développement: Firebase avec fallback local');
     }
