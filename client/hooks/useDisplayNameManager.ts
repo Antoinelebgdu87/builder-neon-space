@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
+import { doc, updateDoc, getDoc, setDoc, db } from '@/lib/firebaseMock';
 import { safeFirebaseOperation } from './useFirebaseGlobalControl';
 
 export interface DisplayNameData {
