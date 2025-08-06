@@ -125,7 +125,7 @@ export function useBanSystem() {
 
   const isUserBanned = (userId: string): { isBanned: boolean; banRecord?: BanRecord } => {
     const banRecord = bans.find(ban => ban.userId === userId);
-    
+
     if (!banRecord) {
       return { isBanned: false };
     }
@@ -134,10 +134,32 @@ export function useBanSystem() {
     if (banRecord.banType === 'temporary' && banRecord.expiryDate) {
       const now = new Date();
       const expiryDate = new Date(banRecord.expiryDate);
-      
+
       if (now > expiryDate) {
         // Ban has expired, remove it
         unbanUser(userId);
+        return { isBanned: false };
+      }
+    }
+
+    return { isBanned: true, banRecord };
+  };
+
+  const isUsernameBanned = (username: string): { isBanned: boolean; banRecord?: BanRecord } => {
+    const banRecord = bans.find(ban => ban.username === username);
+
+    if (!banRecord) {
+      return { isBanned: false };
+    }
+
+    // Check if temporary ban has expired
+    if (banRecord.banType === 'temporary' && banRecord.expiryDate) {
+      const now = new Date();
+      const expiryDate = new Date(banRecord.expiryDate);
+
+      if (now > expiryDate) {
+        // Ban has expired, remove it
+        unbanUser(banRecord.userId);
         return { isBanned: false };
       }
     }
