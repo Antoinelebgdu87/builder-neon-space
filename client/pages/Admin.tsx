@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff, Code, MessageSquare, Shield, Loader2, Pin } from "lucide-react";
+import { Plus, Edit, Trash2, Save, X, Settings, AlertTriangle, Power, PowerOff, Code, MessageSquare, Shield, Loader2, Pin, Ban, Clock, Users } from "lucide-react";
 import { useHybridExploits, type Exploit } from "@/hooks/useHybridExploits";
 import { useHybridScripts, type Script } from "@/hooks/useHybridScripts";
 import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
