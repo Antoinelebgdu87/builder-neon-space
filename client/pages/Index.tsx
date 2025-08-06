@@ -2,7 +2,7 @@ import ExploitCard from "@/components/ExploitCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2 } from "lucide-react";
-import { useLocalExploits as useExploits } from "@/hooks/useLocalExploits";
+import { useFirebaseExploits as useExploits } from "@/hooks/useFirebaseExploits";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -30,7 +30,7 @@ export default function Index() {
               SysBreak
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-              Exploits professionnels et sécurisés. Administration contrôlée.
+              Exploits professionnels et sécurisés. Administration contr��lée.
             </p>
             
             {/* Search Bar */}
@@ -157,7 +157,7 @@ export default function Index() {
           <h2 className="text-3xl font-bold mb-8">SysBreak Pro</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="glass p-6 rounded-xl border-border/50">
-              <h3 className="text-xl font-semibold mb-2">Sécurisé & V��rifié</h3>
+              <h3 className="text-xl font-semibold mb-2">Sécurisé & Vérifié</h3>
               <p className="text-muted-foreground">Tous les exploits sont testés et vérifiés.</p>
             </div>
             <div className="glass p-6 rounded-xl border-border/50">
