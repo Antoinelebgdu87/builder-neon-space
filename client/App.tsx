@@ -11,6 +11,7 @@ import { useAdminShortcut } from "@/hooks/useAdminShortcut";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useBanChecker } from "@/hooks/useBanChecker";
+import { useBanSync } from "@/hooks/useBanSync";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
