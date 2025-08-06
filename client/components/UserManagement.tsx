@@ -399,6 +399,61 @@ export function UserManagement({ className }: UserManagementProps) {
         </Card>
       </div>
 
+      {/* Session Management Stats */}
+      {isOnline && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="glass border-border/50">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Globe className="w-5 h-5 text-cyan-400" />
+                <div>
+                  <div className="text-2xl font-bold text-cyan-400">{cleanupStats.totalSessions}</div>
+                  <div className="text-xs text-muted-foreground">Sessions actives</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-border/50">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Clock className="w-5 h-5 text-yellow-400" />
+                <div>
+                  <div className="text-2xl font-bold text-yellow-400">{cleanupStats.staleUsers}</div>
+                  <div className="text-xs text-muted-foreground">Sessions inactives</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-border/50">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <XCircle className="w-5 h-5 text-red-400" />
+                <div>
+                  <div className="text-2xl font-bold text-red-400">{cleanupStats.expiredSessions}</div>
+                  <div className="text-xs text-muted-foreground">Sessions expirées</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-border/50">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Settings className="w-5 h-5 text-primary" />
+                <div>
+                  <div className="text-sm font-bold text-primary">
+                    {cleanupRunning ? 'Actif' : 'Inactif'}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Nettoyage auto</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Controls */}
       <Card className="glass border-border/50">
         <CardContent className="p-6">
