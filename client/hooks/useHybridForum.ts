@@ -59,9 +59,20 @@ export function useHybridForum() {
     }
   };
 
+  // Update Firebase usage based on connectivity
   useEffect(() => {
-    // Try Firebase first
-    if (useFirebase) {
+    if (hasChecked) {
+      setUseFirebase(firebaseOnline);
+    }
+  }, [firebaseOnline, hasChecked]);
+
+  useEffect(() => {
+    // Always load from localStorage first for instant data
+    loadFromLocalStorage();
+    setLoading(false);
+
+    // Try Firebase if online
+    if (useFirebase && firebaseOnline) {
       let unsubscribe: (() => void) | null = null;
 
       try {
