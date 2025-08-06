@@ -8,6 +8,7 @@ import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useHybridForum } from "@/hooks/useHybridForum";
 import { useAdvancedUserManagement } from "@/hooks/useAdvancedUserManagement";
+import { useGlobalDisplayName } from "@/hooks/useGlobalDisplayName";
 import { DisplayNameEditor } from "@/components/DisplayNameEditor";
 
 export default function Header() {
