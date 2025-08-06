@@ -416,7 +416,7 @@ export default function Admin() {
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <div className="flex items-center justify-between">
-              <TabsList className="glass border-border/50">
+              <TabsList className="glass border-border/50" style={{ margin: "auto 0" }}>
                 <TabsTrigger value="exploits" className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
                   <span>Exploits</span>
