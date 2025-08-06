@@ -82,25 +82,20 @@ export default function Header() {
 
 
             {/* Auth Actions */}
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground hidden sm:inline">
                   {user?.username}
                 </span>
-                <Button 
+                <Button
                   onClick={handleLogout}
-                  variant="outline" 
+                  variant="outline"
                   className="hover:bg-destructive/20 hover:text-destructive"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </Button>
               </div>
-            ) : (
-              <Button className="bg-gradient-primary hover:opacity-90 text-white font-medium px-6 glow-hover">
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
             )}
 
             {/* Mobile Menu Button */}
