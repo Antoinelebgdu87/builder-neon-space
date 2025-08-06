@@ -235,7 +235,10 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
                   />
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">
-                      Commentaire en tant que <span className="font-medium">{user?.username}</span>
+                      Commentaire en tant que <span className="font-medium">{currentUser?.username}</span>
+                      {!isAuthenticated && (
+                        <span className="ml-1 text-xs text-blue-400">(Anonyme)</span>
+                      )}
                     </div>
                     <Button
                       onClick={handleAddComment}
