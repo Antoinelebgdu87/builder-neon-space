@@ -77,16 +77,25 @@ export function useDisplayNameManager(userId: string | null) {
       };
 
       const docRef = doc(db, 'userDisplayNames', userId);
-      const docSnap = await safeFirebaseOperation(
-        () => getDoc(docRef),
-        null,
-        'load-display-name'
-      );
 
-      if (docSnap && docSnap.exists()) {
-        setDisplayNameData(docSnap.data() as DisplayNameData);
-      } else {
-        setDisplayNameData(defaultData);
+      try {
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setDisplayNameData(docSnap.data() as DisplayNameData);
+        } else {
+          setDisplayNameData(defaultData);
+        }
+      } catch (error: any) {
+        console.warn('Firebase indisponible, utilisation mode local:', error);
+        // Mode fallback local
+        const localKey = `displayName_${userId}`;
+        const localData = localStorage.getItem(localKey);
+        if (localData) {
+          setDisplayNameData(JSON.parse(localData));
+        } else {
+          setDisplayNameData(defaultData);
+        }
       }
     } catch (err: any) {
       console.error('Erreur lors du chargement des données:', err);
