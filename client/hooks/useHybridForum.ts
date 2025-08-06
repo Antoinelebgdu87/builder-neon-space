@@ -88,7 +88,11 @@ export function useHybridForum() {
           // Fallback to localStorage
           loadFromLocalStorage();
           setUseFirebase(false);
-          setError('Mode hors ligne - Firebase inaccessible');
+          if (err.code === 'permission-denied') {
+            setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+          } else {
+            setError('Mode hors ligne - Firebase inaccessible');
+          }
           setLoading(false);
         }
       );
