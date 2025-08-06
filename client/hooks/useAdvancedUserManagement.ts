@@ -372,7 +372,11 @@ export function useAdvancedUserManagement() {
 
       if (useFirebase) {
         try {
-          await updateDoc(doc(db, 'userAccounts', userId), profileData);
+          // Clean undefined values before sending to Firebase
+          const cleanedData = cleanUndefinedValues(profileData);
+          if (Object.keys(cleanedData).length > 0) {
+            await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
+          }
         } catch (error) {
           console.error('Firebase update error:', error);
           setError('Erreur lors de la mise à jour sur Firebase');
