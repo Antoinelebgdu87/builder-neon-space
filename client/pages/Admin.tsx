@@ -330,6 +330,7 @@ export default function Admin() {
           </div>
           <div className="flex items-start space-x-4">
             <UserPermissionsDisplay />
+            <DisplayNameSync />
             <FirebaseStatusIndicator showWhenWorking={true} compact={false} />
           </div>
         </motion.div>
