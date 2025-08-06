@@ -137,7 +137,7 @@ export function UserManagement({ className }: UserManagementProps) {
     if (!selectedUser) return;
 
     try {
-      await updateUserProfile(selectedUser.id, {
+      const updateData: any = {
         email: editForm.email,
         profile: {
           ...selectedUser.profile,
@@ -145,9 +145,15 @@ export function UserManagement({ className }: UserManagementProps) {
           bio: editForm.bio
         },
         isAdmin: editForm.isAdmin,
-        isBanned: editForm.isBanned,
-        banReason: editForm.isBanned ? editForm.banReason : undefined
-      });
+        isBanned: editForm.isBanned
+      };
+
+      // Only add banReason if the user is actually banned
+      if (editForm.isBanned && editForm.banReason) {
+        updateData.banReason = editForm.banReason;
+      }
+
+      await updateUserProfile(selectedUser.id, updateData);
 
       resetForms();
       setIsEditDialogOpen(false);
