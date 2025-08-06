@@ -34,6 +34,9 @@ function AppContent() {
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  // Surveillance automatique des bans
+  useAutoBanDetection(anonymousUser?.username || null);
+
   // Simple ban system - no complex synchronization
   // useBanChecker();
 
