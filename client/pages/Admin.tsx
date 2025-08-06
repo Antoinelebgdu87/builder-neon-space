@@ -227,7 +227,7 @@ export default function Admin() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <FirebaseStatus
-            isOnline={maintenanceState.isOnline || false}
+            isOnline={isOnline}
             error={maintenanceError}
           />
         </motion.div>
