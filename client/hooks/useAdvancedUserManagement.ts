@@ -451,7 +451,8 @@ export function useAdvancedUserManagement() {
 
       if (useFirebase) {
         try {
-          await setDoc(doc(db, 'onlineSessions', userId), session);
+          const cleanedSession = cleanUndefinedValues(session);
+          await setDoc(doc(db, 'onlineSessions', userId), cleanedSession);
         } catch (error) {
           console.error('Firebase session error:', error);
         }
