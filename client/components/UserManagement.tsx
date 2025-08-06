@@ -87,6 +87,7 @@ export function UserManagement({ className }: UserManagementProps) {
     hours: 24
   });
   const [userToBan, setUserToBan] = useState<UserAccount | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states
   const [createForm, setCreateForm] = useState({
