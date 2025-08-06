@@ -53,7 +53,7 @@ export default function UserDisplay() {
     const isBanned = firebaseBanned || localBanned;
 
     return (
-      <div className="fixed top-4 right-4 z-50 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 text-white">
+      <div className="fixed top-4 right-4 z-50 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg text-white" style={{ padding: "0 12px 8px" }}>
         <div className="flex items-center space-x-2">
           <User className="w-4 h-4 text-blue-400" />
           <span className="text-sm font-medium">{anonymousUser.username}</span>
