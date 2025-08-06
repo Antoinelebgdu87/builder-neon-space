@@ -428,6 +428,11 @@ export default function Admin() {
                   <span>Forum</span>
                   <Badge variant="secondary" className="ml-1">{posts.length}</Badge>
                 </TabsTrigger>
+                <TabsTrigger value="bans" className="flex items-center space-x-2">
+                  <Ban className="w-4 h-4" />
+                  <span>Bans</span>
+                  <Badge variant="secondary" className="ml-1">Firebase</Badge>
+                </TabsTrigger>
                 <TabsTrigger value="warnings" className="flex items-center space-x-2">
                   <MessageSquare className="w-4 h-4" />
                   <span>Avertissements</span>
