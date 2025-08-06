@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { FirebaseSafeWrapper, safeFirebaseRead, safeFirebaseWrite } from '@/lib/firebaseSafeWrapper';
 
 export interface UserAccount {
   id: string;
