@@ -76,6 +76,7 @@ export function useAdvancedUserManagement() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline } = useFirebaseConnectivity();
+  const { isAvailable: globalFirebaseAvailable } = useFirebaseAvailable();
   const [useFirebase, setUseFirebase] = useState(false);
   const heartbeatInterval = useRef<NodeJS.Timeout | null>(null);
   const unsubscribes = useRef<(() => void)[]>([]);
