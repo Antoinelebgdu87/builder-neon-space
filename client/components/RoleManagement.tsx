@@ -131,6 +131,17 @@ export function RoleManagement() {
         </div>
       </div>
 
+      {/* Message informatif mode local */}
+      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+          <span className="text-sm text-blue-400 font-medium">Mode Local Actif</span>
+        </div>
+        <p className="text-xs text-blue-300 mt-1">
+          Les rôles sont gérés localement. Les changements seront synchronisés avec Firebase lorsque la connexion sera rétablie.
+        </p>
+      </div>
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-400">
           {error}
