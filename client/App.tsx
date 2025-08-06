@@ -16,7 +16,6 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import BanProtection from "@/components/BanProtection";
-import AdminBanNotifications from "@/components/AdminBanNotifications";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
 import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
