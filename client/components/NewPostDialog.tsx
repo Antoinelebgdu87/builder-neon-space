@@ -162,13 +162,13 @@ export default function NewPostDialog() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              <Label htmlFor="author">Votre nom</Label>
+              <Label htmlFor="author">Nom d'affichage</Label>
               <Input
                 id="author"
                 value={formData.author}
                 onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
                 className="glass border-border/50 transition-all duration-300 focus:glow"
-                placeholder="Votre nom (optionnel)"
+                placeholder="Votre nom d'affichage"
               />
             </motion.div>
           </div>
