@@ -14,6 +14,7 @@ import { useBanChecker } from "@/hooks/useBanChecker";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
+import BanProtection from "@/components/BanProtection";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
 import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
