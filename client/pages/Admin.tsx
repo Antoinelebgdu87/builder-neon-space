@@ -860,7 +860,7 @@ export default function Admin() {
             {/* Users Management Tab */}
             <TabsContent value="users" className="space-y-6">
               <ErrorBoundary>
-                <UserManagement />
+                <InstantBanSystem />
               </ErrorBoundary>
             </TabsContent>
           </Tabs>
