@@ -23,6 +23,7 @@ export default function Admin() {
   const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript, error: scriptsError } = useHybridScripts();
   const { posts, loading: postsLoading, addPost, updatePost, deletePost, deleteComment, error: forumError } = useHybridForum();
   const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError, isOnline } = useHybridMaintenance();
+  const { bans, banUser, unbanUser, loading: bansLoading } = useBanSystem();
   const { user } = useAuth();
   
   const [activeTab, setActiveTab] = useState("exploits");
