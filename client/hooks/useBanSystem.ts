@@ -119,14 +119,19 @@ export function useBanSystem() {
     if (useFirebase) {
       try {
         await setDoc(doc(db, 'bans', user.id), banRecord);
+        console.log('Ban successfully added to Firebase');
         return;
       } catch (error) {
         console.error('Firebase ban error, falling back to localStorage:', error);
+        if (error instanceof Error) {
+          console.error('Error details:', error.message);
+        }
         setUseFirebase(false);
       }
     }
 
     // localStorage fallback
+    console.log('Using localStorage for ban operation');
     const updatedBans = [...bans, banRecord];
     saveToLocalStorage(updatedBans);
   };
