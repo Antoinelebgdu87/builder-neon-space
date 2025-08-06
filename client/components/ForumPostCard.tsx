@@ -90,7 +90,7 @@ export default function ForumPostCard({
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1 text-sm text-muted-foreground">
               <MessageSquare className="w-4 h-4" />
-              <span>{replies}</span>
+              <span>{comments.length || replies}</span>
             </div>
             <div className="flex items-center space-x-1 text-sm text-muted-foreground">
               <Eye className="w-4 h-4" />
