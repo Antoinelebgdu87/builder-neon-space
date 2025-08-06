@@ -514,6 +514,23 @@ export function UserManagement({ className }: UserManagementProps) {
                 <span>Exporter</span>
               </Button>
 
+              {isOnline && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleManualCleanup}
+                  disabled={isCleaningUp}
+                  className="flex items-center space-x-2"
+                >
+                  {isCleaningUp ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Settings className="w-4 h-4" />
+                  )}
+                  <span>{isCleaningUp ? 'Nettoyage...' : 'Nettoyer'}</span>
+                </Button>
+              )}
+
               {/* Create User Dialog */}
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
