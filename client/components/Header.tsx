@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Youtube, MessageSquare, LogIn, LogOut, Search, Menu, Shield, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/LocalAuthContext";
-import { useFirebaseMaintenance } from "@/hooks/useFirebaseMaintenance";
+import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
