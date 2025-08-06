@@ -149,19 +149,37 @@ export function useUserAccounts() {
       // First check Firebase if online
       if (useFirebase) {
         try {
+          // Add timeout for Firebase operations
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+          );
+
           const docRef = doc(db, 'userAccounts', username);
-          const docSnap = await getDoc(docRef);
-          
+          const docSnap = await Promise.race([
+            getDoc(docRef),
+            timeoutPromise
+          ]) as any;
+
           if (docSnap.exists()) {
             const account = docSnap.data() as UserAccount;
             if (account.passwordHash === passwordHash) {
-              // Update last login
-              await setDoc(docRef, { ...account, lastLogin: new Date().toISOString() });
+              // Update last login with timeout protection
+              try {
+                await Promise.race([
+                  setDoc(docRef, { ...account, lastLogin: new Date().toISOString() }),
+                  setTimeout(() => Promise.reject(new Error('Update timeout')), 3000)
+                ]);
+              } catch (updateError) {
+                console.log('Could not update last login time');
+              }
               return true;
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error('Firebase login error:', error);
+          if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
+            console.log('Firebase unavailable for login check');
+          }
           setUseFirebase(false);
         }
       }
