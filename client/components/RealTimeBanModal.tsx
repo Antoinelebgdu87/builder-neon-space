@@ -196,14 +196,11 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
 
           {/* Actions */}
           <div className="flex flex-col space-y-2">
-            <Button 
-              onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Se déconnecter
-            </Button>
-            
+            <div className="p-4 bg-black rounded-lg border border-gray-800">
+              <p className="text-center text-gray-400 text-sm">
+                Votre accès est suspendu
+              </p>
+            </div>
           </div>
         </motion.div>
       </DialogContent>
