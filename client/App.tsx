@@ -17,7 +17,6 @@ import { RealTimeBanModal } from "@/components/RealTimeBanModal";
 import { WarningModal } from "@/components/WarningModal";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
 import { DevToolsProtection } from "@/components/DevToolsProtection";
-import { LocalModeBanner } from "@/components/LocalModeBanner";
 import { useAutoBanDetection } from "@/hooks/useAutoBanDetection";
 import UserAuthManager from "@/components/UserAuthManager";
 import AdminLogin from "@/components/AdminLogin";
@@ -82,7 +81,6 @@ function AppContent() {
 
   return (
     <>
-      <LocalModeBanner />
       <DevToolsProtection />
       <Header />
       <UserAuthManager />

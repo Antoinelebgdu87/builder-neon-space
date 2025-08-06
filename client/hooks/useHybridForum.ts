@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp, db } from '@/lib/firebaseMock';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface ForumComment {
