@@ -17,6 +17,7 @@ import { firebaseOptimizer } from "@/utils/firebaseOptimization";
 import { FirebaseErrorHandler } from "@/utils/firebaseErrorHandler";
 import performFirebaseHealthCheck from "@/utils/firebaseHealthCheck";
 import EmergencyMode from "@/utils/emergencyMode";
+import EmergencyModeToggle from "@/components/EmergencyModeToggle";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
