@@ -88,7 +88,7 @@ export default function Header() {
                     <div className="flex items-center space-x-2">
                       <Shield className="w-4 h-4 text-red-400" />
                       <span className="text-sm font-medium text-white">{user.username}</span>
-                      <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">Admin</span>
+                      <span className="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded-full">Fondateur</span>
                     </div>
                     <Button
                       onClick={handleLogout}
