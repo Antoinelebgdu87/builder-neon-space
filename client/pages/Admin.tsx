@@ -304,7 +304,7 @@ export default function Admin() {
     >
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="flex items-center justify-between mb-8"
           initial={{ y: -20 }}
           animate={{ y: 0 }}
@@ -318,7 +318,11 @@ export default function Admin() {
               Gestion complète avec Firebase
             </p>
           </div>
+          <FirebaseStatusIndicator showWhenWorking={true} compact={false} />
         </motion.div>
+
+        {/* Status général Firebase */}
+        <FirebaseStatusIndicator />
 
 
         {/* Maintenance Control */}
