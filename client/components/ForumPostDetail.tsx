@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useHybridForum, type ForumPost, type ForumComment } from "@/hooks/useHybridForum";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
+import { UserDisplayName } from "@/components/UserDisplayName";
 
 interface ForumPostDetailProps {
   post: ForumPost;
