@@ -84,6 +84,7 @@ function AppContent() {
       <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <RealTimeBanModal userId={anonymousUser?.username || null} />
+      <WarningModal userId={anonymousUser?.id || null} />
       <MaintenanceMode />
       <ConnectivityStatus />
       <Routes>
