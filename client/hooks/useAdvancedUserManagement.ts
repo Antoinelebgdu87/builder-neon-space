@@ -68,12 +68,17 @@ export function useAdvancedUserManagement() {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
       const storedSessions = localStorage.getItem(ONLINE_SESSIONS_KEY);
-      
+
       if (stored) {
         const parsedAccounts = JSON.parse(stored);
-        setAccounts(parsedAccounts);
+        // Ensure all accounts have a profile object
+        const accountsWithProfile = parsedAccounts.map((account: any) => ({
+          ...account,
+          profile: account.profile || { displayName: account.username }
+        }));
+        setAccounts(accountsWithProfile);
       }
-      
+
       if (storedSessions) {
         const parsedSessions = JSON.parse(storedSessions);
         setOnlineSessions(parsedSessions);
