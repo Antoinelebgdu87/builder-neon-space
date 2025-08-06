@@ -32,8 +32,8 @@ export function UserDisplayName({
   let roleIcon = User;
   let roleBadgeClass = 'bg-gray-500/20 text-gray-400 border-gray-500/30';
   
-  // Vérifier si c'est le fondateur (Admin Antoine80)
-  if (username === 'Admin' && adminUser?.username === 'Admin') {
+  // Vérifier si c'est le fondateur (Admin officiel authentifié)
+  if (username === 'Admin' && adminUser?.username === 'Admin' && adminUser?.id === 'admin-1') {
     role = 'fondateur';
     roleColor = 'text-amber-400';
     roleIcon = Crown;
