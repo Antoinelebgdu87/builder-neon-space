@@ -13,7 +13,6 @@ import { useBanSystem } from "@/hooks/useBanSystem";
 import { useBanChecker } from "@/hooks/useBanChecker";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
-import UserDisplay from "@/components/UserDisplay";
 import BanNotification from "@/components/BanNotification";
 import AdminLogin from "@/components/AdminLogin";
 import ProtectedRoute from "@/components/ProtectedRoute";
