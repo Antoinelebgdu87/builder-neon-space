@@ -76,6 +76,8 @@ export function UserManagement({ className }: UserManagementProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [cleanupStats, setCleanupStats] = useState({ totalSessions: 0, expiredSessions: 0, staleUsers: 0 });
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
 
   // Form states
   const [createForm, setCreateForm] = useState({
