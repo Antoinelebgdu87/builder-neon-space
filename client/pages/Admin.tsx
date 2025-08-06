@@ -301,6 +301,87 @@ export default function Admin() {
           </Dialog>
         </div>
 
+        {/* Maintenance Control */}
+        <Card className="glass border-border/50 mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Settings className="w-5 h-5" />
+              <span>Contrôle de Maintenance</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Current Status */}
+            <div className="flex items-center justify-between p-4 glass rounded-lg border border-border/50">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${maintenanceState.isActive ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}></div>
+                <div>
+                  <span className="font-medium">
+                    Statut: {maintenanceState.isActive ? 'En maintenance' : 'En ligne'}
+                  </span>
+                  {maintenanceState.isActive && maintenanceState.enabledAt && (
+                    <p className="text-sm text-muted-foreground">
+                      Activé le {new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')} par {maintenanceState.enabledBy}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <Button
+                onClick={handleMaintenanceToggle}
+                variant={maintenanceState.isActive ? "destructive" : "default"}
+                className={maintenanceState.isActive ? "hover:bg-destructive/80" : "bg-gradient-primary hover:opacity-90 text-white"}
+              >
+                {maintenanceState.isActive ? (
+                  <>
+                    <Power className="w-4 h-4 mr-2" />
+                    Désactiver
+                  </>
+                ) : (
+                  <>
+                    <PowerOff className="w-4 h-4 mr-2" />
+                    Activer
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Maintenance Message */}
+            <div className="space-y-4">
+              <Label htmlFor="maintenanceMessage">Message de maintenance</Label>
+              <div className="flex space-x-2">
+                <Textarea
+                  id="maintenanceMessage"
+                  value={maintenanceMessage}
+                  onChange={(e) => setMaintenanceMessage(e.target.value)}
+                  placeholder="Site en maintenance. Nous reviendrons bientôt!"
+                  className="glass border-border/50 flex-1"
+                  rows={3}
+                />
+                <Button
+                  onClick={handleMaintenanceMessageUpdate}
+                  variant="outline"
+                  className="self-start"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save
+                </Button>
+              </div>
+            </div>
+
+            {/* Warning */}
+            {maintenanceState.isActive && (
+              <div className="flex items-start space-x-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <AlertTriangle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-orange-400">Site en mode maintenance</p>
+                  <p className="text-orange-300/80">
+                    Les visiteurs verront le message de maintenance et ne pourront pas accéder au contenu principal.
+                  </p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="glass border-border/50">
