@@ -33,7 +33,16 @@ export function useInstantFirebaseBan() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { isOnline } = useFirebaseConnectivity();
+  const { user: adminUser } = useAuth();
   const listenersRef = useRef<(() => void)[]>([]);
+
+  // Fonction pour obtenir le nom de l'admin qui fait l'action
+  const getAdminName = (): string => {
+    if (adminUser?.id === 'admin-1') {
+      return 'Fondateur Antoine80';
+    }
+    return adminUser?.username || 'Admin';
+  };
 
   // Initialize real-time listeners
   useEffect(() => {
