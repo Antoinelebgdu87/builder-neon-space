@@ -870,6 +870,13 @@ export default function Admin() {
                 <InstantBanSystem />
               </ErrorBoundary>
             </TabsContent>
+
+            {/* Firebase User Activation Tab */}
+            <TabsContent value="activation" className="space-y-6">
+              <ErrorBoundary>
+                <FirebaseUserActivation />
+              </ErrorBoundary>
+            </TabsContent>
           </Tabs>
         </motion.div>
       </div>
