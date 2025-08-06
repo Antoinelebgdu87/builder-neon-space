@@ -21,6 +21,8 @@ import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { FirebaseStatusIndicator } from "@/components/FirebaseStatusIndicator";
 import { WarningSystem } from "@/components/WarningSystem";
 import { InstantBanSystem } from "@/components/InstantBanSystem";
+import { RoleManagement } from "@/components/RoleManagement";
+import { useRoleSystem } from "@/hooks/useRoleSystem";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
