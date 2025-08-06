@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, db } from '@/lib/firebaseSafe';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface WarningData {

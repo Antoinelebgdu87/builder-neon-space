@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, doc, setDoc, deleteDoc, onSnapshot, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, doc, setDoc, deleteDoc, onSnapshot, getDocs, db } from '@/lib/firebaseSafe';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import type { AnonymousUser } from './useAnonymousUser';
 
