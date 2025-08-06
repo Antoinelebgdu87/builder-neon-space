@@ -353,7 +353,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-blue-400" />
               <div>
-                <div className="text-2xl font-bold text-blue-400">{statistics.total}</div>
+                <div className="text-2xl font-bold text-blue-400">{safeStatistics.total}</div>
                 <div className="text-xs text-muted-foreground">Total</div>
               </div>
             </div>
@@ -365,7 +365,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Globe className="w-5 h-5 text-green-400" />
               <div>
-                <div className="text-2xl font-bold text-green-400">{statistics.online}</div>
+                <div className="text-2xl font-bold text-green-400">{safeStatistics.online}</div>
                 <div className="text-xs text-muted-foreground">En ligne</div>
               </div>
             </div>
@@ -377,7 +377,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <WifiOff className="w-5 h-5 text-gray-400" />
               <div>
-                <div className="text-2xl font-bold text-gray-400">{statistics.offline}</div>
+                <div className="text-2xl font-bold text-gray-400">{safeStatistics.offline}</div>
                 <div className="text-xs text-muted-foreground">Hors ligne</div>
               </div>
             </div>
@@ -389,7 +389,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Ban className="w-5 h-5 text-red-400" />
               <div>
-                <div className="text-2xl font-bold text-red-400">{statistics.banned}</div>
+                <div className="text-2xl font-bold text-red-400">{safeStatistics.banned}</div>
                 <div className="text-xs text-muted-foreground">Bannis</div>
               </div>
             </div>
@@ -401,7 +401,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5 text-purple-400" />
               <div>
-                <div className="text-2xl font-bold text-purple-400">{statistics.admins}</div>
+                <div className="text-2xl font-bold text-purple-400">{safeStatistics.admins}</div>
                 <div className="text-xs text-muted-foreground">Admins</div>
               </div>
             </div>
@@ -413,7 +413,7 @@ export function UserManagement({ className }: UserManagementProps) {
             <div className="flex items-center space-x-2">
               <Activity className="w-5 h-5 text-orange-400" />
               <div>
-                <div className="text-2xl font-bold text-orange-400">{statistics.activeUsers}</div>
+                <div className="text-2xl font-bold text-orange-400">{safeStatistics.activeUsers}</div>
                 <div className="text-xs text-muted-foreground">Actifs 24h</div>
               </div>
             </div>
