@@ -692,7 +692,7 @@ export function UserManagement({ className }: UserManagementProps) {
                           <p className="text-sm text-muted-foreground mb-1">{user.email}</p>
                         )}
 
-                        {user.profile.bio && (
+                        {user.profile?.bio && (
                           <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{user.profile.bio}</p>
                         )}
 
