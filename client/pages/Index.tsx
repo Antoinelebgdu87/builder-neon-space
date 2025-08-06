@@ -26,9 +26,7 @@ export default function Index() {
         <div className="container mx-auto relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
-                SysBreak
-              </span>
+              SysBreak
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
               Exploits professionnels et sécurisés. Administration contrôlée.
