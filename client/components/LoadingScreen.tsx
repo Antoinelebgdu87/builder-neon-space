@@ -68,7 +68,7 @@ export function LoadingScreen() {
             className="text-xl text-gray-300 mt-2"
           >
             France
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Loading animation */}
@@ -154,7 +154,7 @@ export function LoadingScreen() {
               ease: "easeInOut"
             }}
           >
-            Chargement de l'interface...
+            Chargement de l&apos;interface...
           </motion.p>
         </motion.div>
       </div>
@@ -164,12 +164,12 @@ export function LoadingScreen() {
         <motion.div
           key={i}
           initial={{ 
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+            y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
             opacity: 0
           }}
           animate={{ 
-            y: [null, Math.random() * window.innerHeight],
+            y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
             opacity: [0, 0.6, 0],
             scale: [0, 1, 0]
           }}
