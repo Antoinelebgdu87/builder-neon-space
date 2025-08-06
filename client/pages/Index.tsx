@@ -38,11 +38,17 @@ export default function Index() {
             <div className="max-w-2xl mx-auto mb-8">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input 
-                  placeholder="Rechercher des exploits..." 
+                <Input
+                  placeholder="Rechercher des exploits..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-12 pr-4 py-4 text-lg glass border-border/50 focus:border-primary/50 focus:ring-primary/20"
+                  style={{
+                    backgroundImage: "url(https://img.freepik.com/free-vector/grey-hexagons-black-background_78370-2098.jpg?semt=ais_hybrid&w=740&q=80)",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover"
+                  }}
                 />
               </div>
             </div>
