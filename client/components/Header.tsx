@@ -118,7 +118,7 @@ export default function Header() {
                       <User className="w-4 h-4 text-blue-400" />
                     )}
                     <span className="text-sm font-medium text-white">
-                      {anonymousUserAccount?.profile?.displayName || anonymousUser.username}
+                      {effectiveDisplayName}
                     </span>
 
                     {isAnonymousAdmin && (
