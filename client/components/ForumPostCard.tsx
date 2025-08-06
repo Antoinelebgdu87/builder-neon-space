@@ -78,10 +78,11 @@ export default function ForumPostCard({
         {/* Stats */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-              <User className="w-4 h-4" />
-              <span>{author}</span>
-            </div>
+            <UserDisplayName
+              username={author}
+              size="sm"
+              className="text-muted-foreground"
+            />
             <div className="flex items-center space-x-1 text-sm text-muted-foreground">
               <Clock className="w-4 h-4" />
               <span>{formatDate(createdAt)}</span>
