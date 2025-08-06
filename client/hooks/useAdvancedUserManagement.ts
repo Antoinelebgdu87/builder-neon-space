@@ -49,6 +49,25 @@ const hashPassword = async (password: string): Promise<string> => {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 };
 
+// Clean undefined values from object for Firebase
+const cleanUndefinedValues = (obj: any): any => {
+  const cleaned: any = {};
+  for (const key in obj) {
+    if (obj[key] !== undefined) {
+      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+        // Recursively clean nested objects
+        const cleanedNested = cleanUndefinedValues(obj[key]);
+        if (Object.keys(cleanedNested).length > 0) {
+          cleaned[key] = cleanedNested;
+        }
+      } else {
+        cleaned[key] = obj[key];
+      }
+    }
+  }
+  return cleaned;
+};
+
 export function useAdvancedUserManagement() {
   const [accounts, setAccounts] = useState<UserAccount[]>([]);
   const [onlineSessions, setOnlineSessions] = useState<OnlineSession[]>([]);
