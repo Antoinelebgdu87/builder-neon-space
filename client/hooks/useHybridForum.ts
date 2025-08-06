@@ -3,6 +3,7 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimest
 import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
+import { isFirebaseDisabled, handleFirebaseError } from '@/utils/firebaseProtection';
 
 export interface ForumComment {
   id: string;
@@ -42,7 +43,7 @@ export function useHybridForum() {
 
   useEffect(() => {
     // Firebase listener uniquement
-    if (useFirebase && firebaseOnline) {
+    if (useFirebase && firebaseOnline && !isFirebaseDisabled()) {
       console.log('Setting up Firebase listener for forum');
       const unsubscribe = onSnapshot(
         collection(db, 'forum'),
@@ -74,8 +75,14 @@ export function useHybridForum() {
         },
         (err) => {
           console.error('Firebase forum listener error:', err);
+          const isNetworkError = handleFirebaseError(err);
           setUseFirebase(false);
-          setError('Erreur Firebase - Tentative de reconnexion...');
+
+          if (isNetworkError) {
+            setError('📶 Connexion Firebase impossible - Mode hors ligne');
+          } else {
+            setError('Erreur Firebase - Tentative de reconnexion...');
+          }
         }
       );
 

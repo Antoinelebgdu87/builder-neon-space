@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
+import { isFirebaseDisabled, handleFirebaseError } from '@/utils/firebaseProtection';
 
 export interface Script {
   id?: string;
@@ -27,7 +28,7 @@ export function useHybridScripts() {
   const [useFirebase, setUseFirebase] = useState(true);
 
   useEffect(() => {
-    if (useFirebase) {
+    if (useFirebase && !isFirebaseDisabled()) {
       try {
         const unsubscribe = onSnapshot(
           collection(db, 'scripts'),
@@ -54,9 +55,12 @@ export function useHybridScripts() {
           },
           (err) => {
             console.error('Firebase permission error:', err);
+            const isNetworkError = handleFirebaseError(err);
             setUseFirebase(false);
 
-            if (err.code === 'permission-denied') {
+            if (isNetworkError) {
+              setError('📶 Connexion Firebase impossible - Mode hors ligne');
+            } else if (err.code === 'permission-denied') {
               setError('⚠️ Firebase: Permissions insuffisantes');
             } else {
               setError('Erreur Firebase - Tentative de reconnexion...');
@@ -68,6 +72,7 @@ export function useHybridScripts() {
         return () => unsubscribe();
       } catch (error) {
         console.error('Failed to setup Firebase listener:', error);
+        handleFirebaseError(error);
         setUseFirebase(false);
         setLoading(false);
       }
