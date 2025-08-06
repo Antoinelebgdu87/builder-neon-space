@@ -24,12 +24,16 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
   const { user: anonymousUser } = useAnonymousUser();
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [optimisticComments, setOptimisticComments] = useState<ForumComment[]>([]);
 
   // Get current user (admin or anonymous)
   const currentUser = isAuthenticated ? adminUser : anonymousUser;
 
   // Get live post data from the forum hook
   const post = posts.find(p => p.id === initialPost.id) || initialPost;
+
+  // Combine real comments with optimistic comments for instant display
+  const allComments = [...(post.comments || []), ...optimisticComments];
 
   // Check if user has already viewed this post
   const hasAlreadyViewed = (postId: string): boolean => {
