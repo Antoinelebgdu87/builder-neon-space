@@ -166,10 +166,14 @@ export default function NewPostDialog() {
               <Input
                 id="author"
                 value={formData.author}
-                onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
-                className="glass border-border/50 transition-all duration-300 focus:glow"
+                readOnly
+                disabled
+                className="glass border-border/50 transition-all duration-300 bg-muted/30 cursor-not-allowed"
                 placeholder="Votre nom d'affichage"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Le nom d'affichage est automatiquement rempli et ne peut pas être modifié.
+              </p>
             </motion.div>
           </div>
 
