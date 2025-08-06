@@ -148,23 +148,38 @@ export function useDisplayNameManager(userId: string | null) {
         canChangeUntil: new Date(Date.now() + (CHANGE_COOLDOWN_HOURS * 60 * 60 * 1000)).toISOString()
       };
 
-      // Sauvegarder dans Firebase avec protection
+      // Sauvegarder dans Firebase ET localement pour assurer la synchronisation
       const docRef = doc(db, 'userDisplayNames', userId);
-      await safeFirebaseOperation(
-        () => setDoc(docRef, updatedData),
-        Promise.resolve(),
-        'save-display-name'
-      );
-
-      // Mettre à jour aussi le profil utilisateur dans userAccounts
       const userDocRef = doc(db, 'userAccounts', userId);
-      await safeFirebaseOperation(
-        () => updateDoc(userDocRef, {
+
+      try {
+        // Tentative Firebase
+        await setDoc(docRef, updatedData);
+        await updateDoc(userDocRef, {
           'profile.displayName': newDisplayName.trim()
-        }),
-        Promise.resolve(),
-        'update-user-profile'
-      );
+        });
+
+        console.log('✅ Nom d\'affichage sauvegardé sur Firebase');
+      } catch (error: any) {
+        console.warn('⚠️ Firebase indisponible, sauvegarde locale:', error);
+      }
+
+      // Toujours sauvegarder localement comme backup
+      const localKey = `displayName_${userId}`;
+      localStorage.setItem(localKey, JSON.stringify(updatedData));
+
+      // Sauvegarder aussi dans les données utilisateur locales
+      const localUserKey = 'sysbreak_anonymous_user';
+      const localUser = localStorage.getItem(localUserKey);
+      if (localUser) {
+        try {
+          const userData = JSON.parse(localUser);
+          userData.displayName = newDisplayName.trim();
+          localStorage.setItem(localUserKey, JSON.stringify(userData));
+        } catch (err) {
+          console.error('Erreur sauvegarde utilisateur local:', err);
+        }
+      }
 
       setDisplayNameData(updatedData);
 
