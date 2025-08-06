@@ -259,7 +259,7 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
             </div>
           )}
 
-          {post.isLocked && isAuthenticated && (
+          {post.isLocked && currentUser && (
             <div className="text-center py-4 text-muted-foreground">
               <p>Ce post est verrouillé. Aucun nouveau commentaire ne peut être ajouté.</p>
             </div>
