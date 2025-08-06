@@ -29,8 +29,9 @@ export default function ForumPostCard({
   lastReply,
   tags = []
 }: ForumPostCardProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateInput: any) => {
+    // Handle different date formats (Firebase timestamp vs ISO string)
+    const date = dateInput?.toDate ? dateInput.toDate() : new Date(dateInput);
     return date.toLocaleDateString('fr-FR', {
       day: '2-digit',
       month: '2-digit',
