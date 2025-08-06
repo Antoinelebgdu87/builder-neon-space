@@ -76,6 +76,7 @@ function AppContent() {
   return (
     <>
       <Header />
+      <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
       <MaintenanceMode />
       <ConnectivityStatus />
