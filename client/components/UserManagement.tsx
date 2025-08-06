@@ -37,6 +37,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { useAdvancedUserManagement, type UserAccount } from '@/hooks/useAdvancedUserManagement';
+import { useOnlineStatusCleanup } from '@/hooks/useOnlineStatusCleanup';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
