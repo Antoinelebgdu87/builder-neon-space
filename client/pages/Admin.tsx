@@ -19,6 +19,7 @@ import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { UserManagement } from "@/components/UserManagement";
 import { InstantBanSystem } from "@/components/InstantBanSystem";
 import { FirebaseUserActivation } from "@/components/FirebaseUserActivation";
+import { BanTestSystem } from "@/components/BanTestSystem";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
