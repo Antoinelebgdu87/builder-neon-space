@@ -193,7 +193,7 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold flex items-center space-x-2">
               <MessageSquare className="w-5 h-5" />
-              <span>Commentaires ({post.comments?.length || 0})</span>
+              <span>Commentaires ({allComments.length})</span>
             </h3>
 
             {/* Comments List */}
