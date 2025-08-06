@@ -136,7 +136,7 @@ export function useInstantFirebaseBan() {
         banReason: reason,
         banType,
         bannedAt: now,
-        bannedBy: 'Admin',
+        bannedBy: getAdminName(),
         banId
       };
 
