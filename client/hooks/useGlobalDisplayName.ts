@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAnonymousUser } from './useAnonymousUser';
 import { useAdvancedUserManagement } from './useAdvancedUserManagement';
+import { useFirebaseDisplayNameSync } from './useFirebaseDisplayNameSync';
 
 interface GlobalDisplayNameState {
   displayName: string;
