@@ -137,7 +137,8 @@ export function useInstantFirebaseBan() {
 
       // 1. Update user account with ban data
       const userRef = doc(db, 'userAccounts', userId);
-      batch.update(userRef, banData);
+      const cleanedBanData = cleanFirebaseData(banData);
+      batch.update(userRef, cleanedBanData);
 
       // 2. Add to banned users collection for quick reference
       const bannedUserRef = doc(db, 'bannedUsers', banId);
