@@ -10,6 +10,7 @@ import { Crown, Shield, Users, UserCheck, UserX, Search } from 'lucide-react';
 import { useLocalRoleSystem, type Role } from '@/hooks/useLocalRoleSystem';
 import { useAdvancedUserManagement } from '@/hooks/useAdvancedUserManagement';
 import { useAuth } from '@/contexts/LocalAuthContext';
+import { CustomRoleCreator } from '@/components/CustomRoleCreator';
 import { motion } from 'framer-motion';
 
 export function RoleManagement() {
