@@ -14,19 +14,27 @@ export function useOnlineStatusCleanup() {
 
   const cleanupExpiredSessions = async () => {
     if (!firebaseOnline || isRunning.current) return;
-    
+
     isRunning.current = true;
-    
+
     try {
       console.log('Starting session cleanup...');
-      
-      // Get all online sessions
-      const sessionsSnapshot = await getDocs(collection(db, 'onlineSessions'));
+
+      // Get all online sessions with timeout
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Firebase timeout')), 10000)
+      );
+
+      const sessionsSnapshot = await Promise.race([
+        getDocs(collection(db, 'onlineSessions')),
+        timeoutPromise
+      ]) as any;
+
       const now = new Date().getTime();
       const expiredSessions: string[] = [];
       const offlineUsers: string[] = [];
 
-      sessionsSnapshot.forEach((doc) => {
+      sessionsSnapshot.forEach((doc: any) => {
         const session = doc.data();
         const lastHeartbeat = new Date(session.lastHeartbeat).getTime();
         const timeSinceHeartbeat = now - lastHeartbeat;
@@ -41,30 +49,36 @@ export function useOnlineStatusCleanup() {
         }
       });
 
-      // Remove expired sessions
-      const deletePromises = expiredSessions.map(userId => 
-        deleteDoc(doc(db, 'onlineSessions', userId))
+      // Remove expired sessions with error handling
+      const deletePromises = expiredSessions.map(userId =>
+        deleteDoc(doc(db, 'onlineSessions', userId)).catch(err => {
+          console.warn(`Failed to delete session for user ${userId}:`, err);
+        })
       );
 
-      // Mark users as offline
-      const offlinePromises = offlineUsers.map(userId => 
-        updateDoc(doc(db, 'userAccounts', userId), { 
+      // Mark users as offline with error handling
+      const offlinePromises = offlineUsers.map(userId =>
+        updateDoc(doc(db, 'userAccounts', userId), {
           isOnline: false,
           lastActive: new Date().toISOString()
+        }).catch(err => {
+          console.warn(`Failed to mark user ${userId} offline:`, err);
         })
       );
 
       // Mark expired session users as offline too
-      const expiredOfflinePromises = expiredSessions.map(userId => 
-        updateDoc(doc(db, 'userAccounts', userId), { 
+      const expiredOfflinePromises = expiredSessions.map(userId =>
+        updateDoc(doc(db, 'userAccounts', userId), {
           isOnline: false,
           lastActive: new Date().toISOString()
+        }).catch(err => {
+          console.warn(`Failed to mark expired user ${userId} offline:`, err);
         })
       );
 
-      await Promise.all([
+      await Promise.allSettled([
         ...deletePromises,
-        ...offlinePromises, 
+        ...offlinePromises,
         ...expiredOfflinePromises
       ]);
 
@@ -72,8 +86,11 @@ export function useOnlineStatusCleanup() {
         console.log(`Cleanup completed: ${expiredSessions.length} expired sessions, ${offlineUsers.length} offline users`);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error during session cleanup:', error);
+      if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
+        console.log('Firebase unavailable for cleanup, will retry later');
+      }
     } finally {
       isRunning.current = false;
     }
