@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
+import { safeFirebaseWrite, safeFirebaseBatch, cleanForFirebase, withRetry } from '@/lib/firebaseSafeWrapper';
 
 export interface BanData {
   isBanned: boolean;
