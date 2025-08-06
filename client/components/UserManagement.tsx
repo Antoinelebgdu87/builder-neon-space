@@ -308,6 +308,31 @@ export function UserManagement({ className }: UserManagementProps) {
     );
   }
 
+  // Ensure accounts is always an array
+  const safeAccounts = Array.isArray(accounts) ? accounts : [];
+  const safeOnlineSessions = Array.isArray(onlineSessions) ? onlineSessions : [];
+
+  // Recalculate with safe data
+  const safeStatistics = {
+    total: safeAccounts.length,
+    online: safeAccounts.filter(acc => acc?.isOnline).length,
+    offline: safeAccounts.length - safeAccounts.filter(acc => acc?.isOnline).length,
+    banned: safeAccounts.filter(acc => acc?.isBanned).length,
+    admins: safeAccounts.filter(acc => acc?.isAdmin).length,
+    activeUsers: safeAccounts.filter(acc => {
+      if (!acc?.lastActive) return false;
+      const lastActive = new Date(acc.lastActive);
+      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      return lastActive > dayAgo;
+    }).length
+  };
+
+  const safeAllUsersWithStatus = safeAccounts.map(account => ({
+    ...account,
+    profile: account?.profile || { displayName: account?.username },
+    sessionInfo: safeOnlineSessions.find(session => session?.userId === account?.id)
+  }));
+
   return (
     <div className={cn("space-y-6", className)}>
       {/* Error Display */}
@@ -736,7 +761,7 @@ export function UserManagement({ className }: UserManagementProps) {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Supprimer l'utilisateur</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous sûr de vouloir supprimer l'utilisateur "{user.username}" ? 
+                              Êtes-vous s��r de vouloir supprimer l'utilisateur "{user.username}" ? 
                               Cette action est irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
