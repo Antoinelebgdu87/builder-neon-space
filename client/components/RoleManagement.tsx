@@ -150,6 +150,9 @@ export function RoleManagement() {
         </div>
       )}
 
+      {/* Créateur de rôles personnalisés */}
+      <CustomRoleCreator />
+
       {/* Liste des utilisateurs */}
       <div className="grid gap-4">
         {filteredUsers.map((user) => {
