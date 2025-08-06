@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
+import { WarningModal } from "@/components/WarningModal";
 import { ConnectivityStatus } from "@/components/ConnectivityStatus";
 import { useAutoBanDetection } from "@/hooks/useAutoBanDetection";
 import UserAuthManager from "@/components/UserAuthManager";
