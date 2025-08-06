@@ -238,7 +238,9 @@ export function useAdvancedUserManagement() {
         isAdmin: false,
         isBanned: false,
         profile: {
-          displayName: username
+          displayName: username,
+          avatar: undefined,
+          bio: undefined
         },
         statistics: {
           loginCount: 0,
