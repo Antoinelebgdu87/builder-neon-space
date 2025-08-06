@@ -922,6 +922,15 @@ export default function Admin() {
                 <WarningSystem />
               </ErrorBoundary>
             </TabsContent>
+
+            {/* Role Management Tab - Fondateur seulement */}
+            {currentUserPermissions?.canAssignRoles && (
+              <TabsContent value="roles" className="space-y-6">
+                <ErrorBoundary>
+                  <RoleManagement />
+                </ErrorBoundary>
+              </TabsContent>
+            )}
           </Tabs>
         </motion.div>
       </div>
