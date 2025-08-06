@@ -6,7 +6,7 @@ import { useFirebaseScripts } from "@/hooks/useFirebaseScripts";
 import { useState } from "react";
 
 export default function Scripts() {
-  const { scripts, loading } = useLocalScripts();
+  const { scripts, loading } = useFirebaseScripts();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredScripts = scripts.filter(script =>
