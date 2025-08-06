@@ -2,7 +2,7 @@ import ExploitCard from "@/components/ExploitCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2 } from "lucide-react";
-import { useFirebaseExploits as useExploits } from "@/hooks/useFirebaseExploits";
+import { useHybridExploits as useExploits } from "@/hooks/useHybridExploits";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -30,7 +30,7 @@ export default function Index() {
               SysBreak
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-              Exploits professionnels et sécurisés. Administration contr��lée.
+              Exploits professionnels et sécurisés. Administration contrôlée.
             </p>
             
             {/* Search Bar */}
