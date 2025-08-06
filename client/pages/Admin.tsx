@@ -16,6 +16,7 @@ import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
+import { UserManagement } from "@/components/UserManagement";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Admin() {
@@ -259,7 +260,7 @@ export default function Admin() {
       }));
       window.dispatchEvent(new CustomEvent('banStatusChanged'));
 
-      alert('Utilisateur débanni avec succès');
+      alert('Utilisateur débanni avec succ��s');
     } catch (error: any) {
       alert(error.message || 'Erreur lors du débannissement');
     }
