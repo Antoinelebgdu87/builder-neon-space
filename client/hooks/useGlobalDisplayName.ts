@@ -12,6 +12,7 @@ interface GlobalDisplayNameState {
 export function useGlobalDisplayName() {
   const { user: anonymousUser, updateUser } = useAnonymousUser();
   const { getUserById } = useAdvancedUserManagement();
+  const { pushToFirebase } = useFirebaseDisplayNameSync();
   const [displayState, setDisplayState] = useState<GlobalDisplayNameState>({
     displayName: '',
     username: '',
