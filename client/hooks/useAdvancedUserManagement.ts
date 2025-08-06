@@ -364,13 +364,17 @@ export function useAdvancedUserManagement() {
 
       // Force Firebase save
       if (firebaseOnline) {
-        try {
-          await updateDoc(doc(db, 'userAccounts', userId), unbanData);
-          console.log('Unban saved to Firebase successfully:', userId);
-        } catch (error) {
-          console.error('Failed to save unban to Firebase:', error);
-          throw new Error('Erreur lors de la sauvegarde du déban sur Firebase');
+        const unbanResult = await safeFirebaseWrite(
+          () => updateDoc(doc(db, 'userAccounts', userId), unbanData),
+          'unban-user'
+        );
+
+        if (!unbanResult.success) {
+          console.error('Failed to save unban to Firebase:', unbanResult.error);
+          throw new Error(unbanResult.error || 'Erreur lors de la sauvegarde du déban sur Firebase');
         }
+
+        console.log('Unban saved to Firebase successfully:', userId);
       } else {
         throw new Error('Firebase nécessaire pour sauvegarder les débans');
       }
