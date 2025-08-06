@@ -85,15 +85,6 @@ export default function Header() {
               <Search className="h-4 w-4" />
             </Button>
 
-            {/* Social Links */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-400">
-                <Youtube className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" className="text-primary hover:text-primary/80">
-                <MessageSquare className="h-4 w-4" />
-              </Button>
-            </div>
 
             {/* Auth Actions */}
             {isAuthenticated ? (
