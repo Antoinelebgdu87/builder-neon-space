@@ -28,11 +28,31 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { isAdminLoginOpen, closeAdminLogin } = useAdminShortcut();
-  const { user: anonymousUser, loading: userLoading } = useAnonymousUser();
+  const { user: anonymousUser, loading: userLoading, refreshUserStatus } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Enable real-time ban checking
   useBanChecker();
+
+  // Listen for instant ban updates and force refresh
+  useEffect(() => {
+    const handleInstantRefresh = () => {
+      console.log('Forcing instant refresh...');
+      setRefreshTrigger(prev => prev + 1);
+      refreshUserStatus();
+    };
+
+    window.addEventListener('banStatusChanged', handleInstantRefresh);
+    window.addEventListener('userBanned', handleInstantRefresh);
+    window.addEventListener('userUnbanned', handleInstantRefresh);
+
+    return () => {
+      window.removeEventListener('banStatusChanged', handleInstantRefresh);
+      window.removeEventListener('userBanned', handleInstantRefresh);
+      window.removeEventListener('userUnbanned', handleInstantRefresh);
+    };
+  }, [refreshUserStatus]);
 
   // Check if current user is banned by username (Firebase) or locally
   const firebaseBanStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
