@@ -73,83 +73,48 @@ export function useHybridForum() {
 
     // Try Firebase if online
     if (useFirebase && firebaseOnline) {
-      let unsubscribe: (() => void) | null = null;
+      console.log('Setting up Firebase listener for forum');
+      const unsubscribe = onSnapshot(
+        collection(db, 'forum'),
+        (snapshot) => {
+          console.log('Firebase forum data received');
+          const postsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as ForumPost[];
 
-      try {
-        unsubscribe = onSnapshot(
-          collection(db, 'forum'),
-          (snapshot) => {
+          // Sort by sticky first, then by creation date
+          postsData.sort((a, b) => {
+            if (a.isSticky && !b.isSticky) return -1;
+            if (!a.isSticky && b.isSticky) return 1;
+
+            if (!a.createdAt || !b.createdAt) return 0;
             try {
-              const postsData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-              })) as ForumPost[];
-
-              // Sort by sticky first, then by creation date
-              postsData.sort((a, b) => {
-                if (a.isSticky && !b.isSticky) return -1;
-                if (!a.isSticky && b.isSticky) return 1;
-
-                if (!a.createdAt || !b.createdAt) return 0;
-                try {
-                  return new Date(b.createdAt.toDate()).getTime() - new Date(a.createdAt.toDate()).getTime();
-                } catch {
-                  // Fallback for non-Firebase timestamps
-                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                }
-              });
-
-              setPosts(postsData);
-              setError(null);
-              setLoading(false);
-
-              // Also save to localStorage as backup
-              saveToLocalStorage(postsData);
-            } catch (err) {
-              console.error('Error processing Firebase forum data:', err);
-              // Fallback to localStorage
-              loadFromLocalStorage();
-              setUseFirebase(false);
-              setLoading(false);
+              return new Date(b.createdAt.toDate()).getTime() - new Date(a.createdAt.toDate()).getTime();
+            } catch {
+              // Fallback for non-Firebase timestamps
+              return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
             }
-          },
-          (err) => {
-            console.error('Firebase forum connection error:', err);
-            console.log('Switching to localStorage mode for forum');
-            // Fallback to localStorage
-            loadFromLocalStorage();
-            setUseFirebase(false);
-            if (err.code === 'permission-denied') {
-              setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
-            } else {
-              setError('Mode hors ligne - Firebase inaccessible');
-            }
-            setLoading(false);
-          }
-        );
-      } catch (error) {
-        console.error('Failed to initialize Firebase forum listener:', error);
-        console.log('Using localStorage mode for forum');
-        loadFromLocalStorage();
-        setUseFirebase(false);
-        setError('Mode local - Firebase indisponible');
-        setLoading(false);
-        return;
-      }
+          });
 
-      return () => {
-        if (unsubscribe) {
-          try {
-            unsubscribe();
-          } catch (error) {
-            console.error('Error unsubscribing from Firebase forum:', error);
+          setPosts(postsData);
+          setError(null);
+
+          // Also save to localStorage as backup
+          saveToLocalStorage(postsData);
+        },
+        (err) => {
+          console.error('Firebase forum listener error:', err);
+          setUseFirebase(false);
+          if (err.code === 'permission-denied') {
+            setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+          } else {
+            setError('Mode hors ligne - Firebase inaccessible');
           }
         }
-      };
-    } else {
-      // Use localStorage only
-      loadFromLocalStorage();
-      setLoading(false);
+      );
+
+      return () => unsubscribe();
     }
   }, [useFirebase]);
 
