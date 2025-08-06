@@ -50,7 +50,7 @@ export function useHybridScripts() {
   };
 
   useEffect(() => {
-    if (useFirebase && !FirebaseErrorHandler.isBlocked()) {
+    if (useFirebase) {
       try {
         const unsubscribe = onSnapshot(
           collection(db, 'scripts'),
@@ -79,17 +79,12 @@ export function useHybridScripts() {
           },
           (err) => {
             console.error('Firebase permission error:', err);
-            const shouldFallback = FirebaseErrorHandler.handleError(err);
-
-            loadFromLocalStorage();
             setUseFirebase(false);
 
-            if (shouldFallback) {
-              setError('⚠️ Mode hors ligne - Données locales utilisées');
-            } else if (err.code === 'permission-denied') {
-              setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
+            if (err.code === 'permission-denied') {
+              setError('⚠️ Firebase: Permissions insuffisantes');
             } else {
-              setError('Mode hors ligne - Firebase inaccessible');
+              setError('Erreur Firebase - Tentative de reconnexion...');
             }
             setLoading(false);
           }
@@ -98,9 +93,7 @@ export function useHybridScripts() {
         return () => unsubscribe();
       } catch (error) {
         console.error('Failed to setup Firebase listener:', error);
-        FirebaseErrorHandler.handleError(error);
         setUseFirebase(false);
-        loadFromLocalStorage();
         setLoading(false);
       }
     } else {
