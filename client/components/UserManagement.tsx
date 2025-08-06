@@ -102,11 +102,8 @@ export function UserManagement({ className }: UserManagementProps) {
     confirmPassword: ''
   });
 
-  const statistics = getUserStatistics();
-  const allUsersWithStatus = getAllUsersWithStatus();
-
   // Filter users based on search and status
-  const filteredUsers = allUsersWithStatus.filter(user => {
+  const filteredUsers = safeAllUsersWithStatus.filter(user => {
     const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.profile?.displayName?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -761,7 +758,7 @@ export function UserManagement({ className }: UserManagementProps) {
                           <AlertDialogHeader>
                             <AlertDialogTitle>Supprimer l'utilisateur</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Êtes-vous s��r de vouloir supprimer l'utilisateur "{user.username}" ? 
+                              Êtes-vous sûr de vouloir supprimer l'utilisateur "{user.username}" ? 
                               Cette action est irréversible.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
