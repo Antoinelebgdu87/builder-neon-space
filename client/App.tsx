@@ -83,7 +83,7 @@ function AppContent() {
   }
 
   return (
-    <BanProtection>
+    <>
       <Header />
       <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
@@ -101,7 +101,7 @@ function AppContent() {
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BanProtection>
+    </>
   );
 }
 
