@@ -1,6 +1,6 @@
 // Mode d'urgence - Force le mode local pour éviter les erreurs Firebase
 export class EmergencyMode {
-  private static isActive = true; // Activé par défaut pour éviter les erreurs
+  private static isActive = true; // Activé par défaut - Firebase complètement désactivé
   
   static isEnabled(): boolean {
     return this.isActive;

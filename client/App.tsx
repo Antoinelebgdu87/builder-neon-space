@@ -63,12 +63,8 @@ function AppContent() {
     // Initialiser le mode d'urgence
     EmergencyMode.initialize();
 
-    if (EmergencyMode.isEnabled()) {
-      console.log('🚨 Mode d\'urgence actif - Firebase désactivé');
-    } else {
-      // Effectuer un test de santé Firebase seulement si pas en mode d'urgence
-      performFirebaseHealthCheck();
-    }
+    // Mode local pur actif
+    console.log('💾 Mode local pur - Firebase complètement désactivé pour éviter les erreurs');
   }, []);
 
   // Simple ban system - no complex synchronization
