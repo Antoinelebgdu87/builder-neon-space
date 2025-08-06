@@ -14,10 +14,10 @@ export default function Forum() {
   const [selectedPost, setSelectedPost] = useState<ForumPost | null>(null);
 
   const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.author.toLowerCase().includes(searchTerm.toLowerCase())
+    (post.title?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (post.content?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (post.category?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (post.author?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   // Sort posts - sticky first, then by creation date
