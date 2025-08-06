@@ -82,6 +82,7 @@ function AppContent() {
 
   return (
     <>
+      <LocalModeBanner />
       <DevToolsProtection />
       <Header />
       <UserAuthManager />
