@@ -341,7 +341,8 @@ export function useAdvancedUserManagement() {
 
       if (useFirebase) {
         try {
-          await updateDoc(doc(db, 'userAccounts', userId), { passwordHash });
+          const cleanedData = cleanUndefinedValues({ passwordHash });
+          await updateDoc(doc(db, 'userAccounts', userId), cleanedData);
         } catch (error) {
           console.error('Firebase update error:', error);
           setError('Erreur lors de la mise à jour sur Firebase');
