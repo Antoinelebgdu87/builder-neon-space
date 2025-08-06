@@ -21,6 +21,10 @@ export default function Header() {
   // Check if Firebase is working for any service
   const isFirebaseOnline = maintenanceOnline || banSystemOnline || forumOnline;
 
+  // Vérifier si l'utilisateur anonyme est admin
+  const anonymousUserAccount = anonymousUser ? getUserById(anonymousUser.id) : null;
+  const isAnonymousAdmin = anonymousUserAccount?.isAdmin || false;
+
   const handleLogout = async () => {
     try {
       await logout();
