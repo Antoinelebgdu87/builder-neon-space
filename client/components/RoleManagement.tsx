@@ -16,10 +16,13 @@ import { motion } from 'framer-motion';
 export function RoleManagement() {
   const {
     userRoles,
+    customRoles,
     loading,
     error,
     getUserRole,
     getUserPermissions,
+    getRoleDisplayName,
+    getRoleColor,
     assignRole,
     revokeRole
   } = useLocalRoleSystem();
