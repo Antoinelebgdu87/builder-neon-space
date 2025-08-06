@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export type Role = 'fondateur' | 'admin' | 'moderateur' | 'user';
+export type Role = 'fondateur' | 'admin' | 'moderateur' | 'user' | string; // Support des rôles personnalisés
 
 export interface RolePermissions {
   canManageMaintenance: boolean;
