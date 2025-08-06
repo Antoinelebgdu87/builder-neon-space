@@ -112,10 +112,22 @@ export function useUserAccounts() {
 
       if (useFirebase) {
         try {
-          await setDoc(doc(db, 'userAccounts', username), newAccount);
+          // Add timeout for Firebase operations
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+          );
+
+          await Promise.race([
+            setDoc(doc(db, 'userAccounts', username), newAccount),
+            timeoutPromise
+          ]);
+
           console.log('Account created in Firebase');
-        } catch (error) {
+        } catch (error: any) {
           console.error('Firebase create error, falling back to localStorage:', error);
+          if (error.message.includes('Failed to fetch') || error.message.includes('timeout')) {
+            console.log('Firebase unavailable for account creation');
+          }
           setUseFirebase(false);
         }
       }
