@@ -43,7 +43,7 @@ export default function AdminLogin({ isOpen, onClose }: AdminLoginProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md glass border-border/50">
+      <DialogContent className="sm:max-w-md glass border-border/50 z-[10000]">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
             Administration SysBreak
