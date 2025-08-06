@@ -689,6 +689,10 @@ export function useAdvancedUserManagement() {
     updateUserProfile,
     deleteUser,
 
+    // Ban management
+    banUser,
+    unbanUser,
+
     // Authentication
     validateLogin,
 
@@ -706,7 +710,7 @@ export function useAdvancedUserManagement() {
     accountExists: (username: string) => accounts.some(acc => acc.username === username),
     getUserById: (id: string) => accounts.find(acc => acc.id === id),
     getUserByUsername: (username: string) => accounts.find(acc => acc.username === username),
-    
+
     // Refresh data
     refresh: () => {
       if (useFirebase && firebaseOnline) {
