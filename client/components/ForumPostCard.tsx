@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { MessageSquare, Eye, Pin, Lock, User, Clock } from "lucide-react";
+import { MessageSquare, Eye, Pin, Lock, Clock } from "lucide-react";
 import { type ForumPost } from "@/hooks/useHybridForum";
+import { UserDisplayName } from "@/components/UserDisplayName";
 
 interface ForumPostCardProps {
   post: ForumPost;
