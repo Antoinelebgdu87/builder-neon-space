@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
-import { doc, onSnapshot, db } from '@/lib/firebaseMock';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 
 export interface BanProtectionState {

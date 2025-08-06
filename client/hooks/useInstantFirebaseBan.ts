@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
-import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch, db } from '@/lib/firebaseMock';
+import { collection, doc, setDoc, getDoc, query, getDocs, updateDoc, deleteDoc, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { useAuth } from '@/contexts/LocalAuthContext';
 import { safeFirebaseWrite, safeFirebaseBatch, cleanForFirebase, withRetry } from '@/lib/firebaseSafeWrapper';
@@ -214,7 +214,7 @@ export function useInstantFirebaseBan() {
         detail: { userId, username, reason, banType }
       }));
 
-      console.log(`�� User ${username} banned instantly with ID: ${banId}`);
+      console.log(`✅ User ${username} banned instantly with ID: ${banId}`);
 
     } catch (error: any) {
       console.error('Error banning user instantly:', error);
