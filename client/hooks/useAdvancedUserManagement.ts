@@ -219,9 +219,12 @@ export function useAdvancedUserManagement() {
       const firebaseAccounts: UserAccount[] = [];
       accountsSnapshot.forEach((doc: any) => {
         const data = doc.data();
-        // Ensure profile object exists for backward compatibility
+        // Ensure profile object and statistics exist for backward compatibility
         if (!data.profile) {
           data.profile = { displayName: data.username };
+        }
+        if (!data.statistics) {
+          data.statistics = { loginCount: 0, totalTimeOnline: 0 };
         }
         firebaseAccounts.push({ id: doc.id, ...data } as UserAccount);
       });
