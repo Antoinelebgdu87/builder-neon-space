@@ -219,6 +219,11 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                               <span className="text-xs text-muted-foreground">
                                 {formatDate(comment.createdAt)}
                               </span>
+                              {comment.id.startsWith('temp_') && (
+                                <span className="text-xs text-blue-400 bg-blue-500/10 px-1 rounded">
+                                  En cours...
+                                </span>
+                              )}
                             </div>
                             <p className="mt-2 text-sm whitespace-pre-wrap">{comment.content}</p>
                           </div>
