@@ -282,14 +282,6 @@ export function UserManagement({ className }: UserManagementProps) {
     }
   }, [isOnline]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <span className="ml-2 text-muted-foreground">Chargement des utilisateurs...</span>
-      </div>
-    );
-  }
 
   // Ensure accounts is always an array and handle loading state properly
   const safeAccounts = Array.isArray(accounts) ? accounts : [];
