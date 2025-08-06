@@ -205,6 +205,53 @@ export default function Admin() {
   const currentLoading = getCurrentLoading();
   const currentError = getCurrentError();
 
+  const handleBanUser = async () => {
+    if (!banFormData.username.trim() || !banFormData.reason.trim()) {
+      alert('Veuillez remplir tous les champs requis');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Create a mock user object for the ban (since we only have username)
+      const mockUser = {
+        id: `user_${banFormData.username}_${Date.now()}`, // Generate unique ID based on username
+        username: banFormData.username,
+        isBanned: false,
+        createdAt: new Date().toISOString()
+      };
+
+      await banUser(
+        mockUser,
+        banFormData.reason,
+        banFormData.banType,
+        banFormData.banType === 'temporary' ? banFormData.hours : undefined
+      );
+
+      setBanFormData({
+        username: "",
+        reason: "",
+        banType: "temporary",
+        hours: 24
+      });
+      setIsBanDialogOpen(false);
+      alert('Utilisateur banni avec succès');
+    } catch (error: any) {
+      alert(error.message || 'Erreur lors du bannissement');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUnbanUser = async (userId: string) => {
+    try {
+      await unbanUser(userId);
+      alert('Utilisateur débanni avec succès');
+    } catch (error: any) {
+      alert(error.message || 'Erreur lors du débannissement');
+    }
+  };
+
   return (
     <motion.div 
       className="min-h-screen bg-background p-6"
