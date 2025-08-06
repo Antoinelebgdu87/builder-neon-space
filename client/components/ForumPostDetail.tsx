@@ -60,11 +60,11 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
   }, [isOpen, post.id, incrementViews]);
 
   const handleAddComment = async () => {
-    if (!commentContent.trim() || !post.id || !user?.username) return;
+    if (!commentContent.trim() || !post.id || !currentUser?.username) return;
 
     setIsSubmitting(true);
     try {
-      await addComment(post.id, commentContent.trim(), user.username);
+      await addComment(post.id, commentContent.trim(), currentUser.username);
       setCommentContent("");
     } catch (error) {
       console.error('Error adding comment:', error);
