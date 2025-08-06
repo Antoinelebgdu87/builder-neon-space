@@ -220,7 +220,11 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center space-x-2">
-                              <span className="font-medium text-sm">{comment.author}</span>
+                              <UserDisplayName
+                                username={comment.author}
+                                size="sm"
+                                className="font-medium"
+                              />
                               <span className="text-xs text-muted-foreground">
                                 {formatDate(comment.createdAt)}
                               </span>
