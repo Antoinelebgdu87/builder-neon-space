@@ -255,7 +255,13 @@ export default function Admin() {
                     </span>
                     {maintenanceState.isActive && maintenanceState.enabledAt && (
                       <p className="text-sm text-muted-foreground">
-                        Activé le {new Date(maintenanceState.enabledAt.toDate()).toLocaleString('fr-FR')} par {maintenanceState.enabledBy}
+                        Activé le {
+                          typeof maintenanceState.enabledAt === 'string'
+                            ? new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')
+                            : maintenanceState.enabledAt.toDate
+                              ? new Date(maintenanceState.enabledAt.toDate()).toLocaleString('fr-FR')
+                              : new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')
+                        } par {maintenanceState.enabledBy}
                       </p>
                     )}
                   </div>
