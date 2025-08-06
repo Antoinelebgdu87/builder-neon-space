@@ -277,8 +277,25 @@ export default function Admin() {
     }
   };
 
+  // Vérifier l'accès admin
+  if (!hasAdminAccess) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <Shield className="w-16 h-16 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold text-red-500">Accès refusé</h1>
+          <p className="text-muted-foreground">
+            Vous devez être administrateur pour accéder à cette page.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-background p-6"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
