@@ -12,12 +12,6 @@ import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useState, useEffect } from "react";
 import SmoothTransition from "@/components/SmoothTransition";
-import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
-import { firebaseOptimizer } from "@/utils/firebaseOptimization";
-import { FirebaseErrorHandler } from "@/utils/firebaseErrorHandler";
-import performFirebaseHealthCheck from "@/utils/firebaseHealthCheck";
-import EmergencyMode from "@/utils/emergencyMode";
-import EmergencyModeToggle from "@/components/EmergencyModeToggle";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
@@ -47,24 +41,9 @@ function AppContent() {
   useAutoBanDetection(anonymousUser?.username || null);
 
 
-  // Log de l'environnement au démarrage et optimisation Firebase
+  // Initialisation Firebase
   useEffect(() => {
-    if (shouldUseFirebaseOnly()) {
-      console.log('🚀 Mode Production: Firebase exclusivement');
-      // Optimiser Firebase pour la production
-      firebaseOptimizer.optimizeForProduction();
-    } else {
-      console.log('🔧 Mode Développement: Firebase avec fallback local');
-    }
-
-    // Initialiser le gestionnaire d'erreurs Firebase
-    console.log('🛡️ Protection Firebase activée');
-
-    // Initialiser le mode d'urgence
-    EmergencyMode.initialize();
-
-    // Mode local pur actif
-    console.log('💾 Mode local pur - Firebase complètement désactivé pour éviter les erreurs');
+    console.log('🔥 Firebase activé avec les nouvelles clés');
   }, []);
 
   // Simple ban system - no complex synchronization
@@ -117,7 +96,6 @@ function AppContent() {
       <WarningModal userId={anonymousUser?.username || null} />
       <MaintenanceMode />
       <ConnectivityStatus />
-      <EmergencyModeToggle />
       <SmoothTransition>
         <Routes>
           <Route path="/" element={<Index />} />
