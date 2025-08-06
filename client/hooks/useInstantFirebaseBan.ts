@@ -163,7 +163,8 @@ export function useInstantFirebaseBan() {
         bannedUserData.banExpiry = banData.banExpiry;
       }
 
-      batch.set(bannedUserRef, bannedUserData);
+      const cleanedBannedUserData = cleanFirebaseData(bannedUserData);
+      batch.set(bannedUserRef, cleanedBannedUserData);
 
       // 3. Remove active session if exists
       const sessionRef = doc(db, 'onlineSessions', userId);
