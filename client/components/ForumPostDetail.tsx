@@ -18,8 +18,8 @@ interface ForumPostDetailProps {
 
 const VIEWED_POSTS_KEY = 'sysbreak_viewed_posts';
 
-export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDetailProps) {
-  const { incrementViews, addComment, deleteComment } = useHybridForum();
+export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: ForumPostDetailProps) {
+  const { posts, incrementViews, addComment, deleteComment } = useHybridForum();
   const { user: adminUser, isAuthenticated } = useAuth();
   const { user: anonymousUser } = useAnonymousUser();
   const [commentContent, setCommentContent] = useState("");
@@ -27,6 +27,9 @@ export default function ForumPostDetail({ post, isOpen, onClose }: ForumPostDeta
 
   // Get current user (admin or anonymous)
   const currentUser = isAuthenticated ? adminUser : anonymousUser;
+
+  // Get live post data from the forum hook
+  const post = posts.find(p => p.id === initialPost.id) || initialPost;
 
   // Check if user has already viewed this post
   const hasAlreadyViewed = (postId: string): boolean => {
