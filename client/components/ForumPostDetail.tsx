@@ -198,7 +198,7 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
 
             {/* Comments List */}
             <AnimatePresence>
-              {post.comments?.map((comment, index) => (
+              {allComments.map((comment, index) => (
                 <motion.div
                   key={comment.id}
                   initial={{ opacity: 0, x: -20 }}
