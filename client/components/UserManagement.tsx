@@ -704,12 +704,12 @@ export function UserManagement({ className }: UserManagementProps) {
 
                           <div className="flex items-center space-x-1">
                             <TrendingUp className="w-3 h-3" />
-                            <span>{user.statistics.loginCount} connexions</span>
+                            <span>{user.statistics?.loginCount || 0} connexions</span>
                           </div>
 
                           <div className="flex items-center space-x-1">
                             <Activity className="w-3 h-3" />
-                            <span>{formatDuration(user.statistics.totalTimeOnline)} total</span>
+                            <span>{formatDuration(user.statistics?.totalTimeOnline || 0)} total</span>
                           </div>
 
                           {user.sessionInfo && (
