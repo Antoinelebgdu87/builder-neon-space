@@ -17,10 +17,10 @@ import { useAuth } from "@/contexts/LocalAuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Admin() {
-  const { exploits, loading: exploitsLoading, addExploit, updateExploit, deleteExploit, error: exploitsError } = useFirebaseExploits();
-  const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript, error: scriptsError } = useFirebaseScripts();
-  const { posts, loading: postsLoading, addPost, updatePost, deletePost, error: forumError } = useFirebaseForum();
-  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError } = useFirebaseMaintenance();
+  const { exploits, loading: exploitsLoading, addExploit, updateExploit, deleteExploit, error: exploitsError } = useHybridExploits();
+  const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript, error: scriptsError } = useHybridScripts();
+  const { posts, loading: postsLoading, addPost, updatePost, deletePost, error: forumError } = useHybridForum();
+  const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage, loading: maintenanceLoading, error: maintenanceError } = useHybridMaintenance();
   const { user } = useAuth();
   
   const [activeTab, setActiveTab] = useState("exploits");
