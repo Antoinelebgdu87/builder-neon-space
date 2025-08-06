@@ -80,7 +80,6 @@ function AppContent() {
 
   return (
     <div style={{ pointerEvents: 'auto', position: 'relative', zIndex: 1 }}>
-      <InteractionTest />
       <Header />
       {/* <UserAuthManager />
       <AdminLogin isOpen={isAdminLoginOpen} onClose={closeAdminLogin} />
