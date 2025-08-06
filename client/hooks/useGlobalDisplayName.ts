@@ -66,30 +66,24 @@ export function useGlobalDisplayName() {
   useEffect(() => {
     if (anonymousUser) {
       let currentDisplayName = '';
-      
+
       // 1. Vérifier d'abord le nom d'affichage local de l'utilisateur
       if (anonymousUser.displayName) {
         currentDisplayName = anonymousUser.displayName;
       } else {
-        // 2. Vérifier dans les données de compte avancées
-        const userAccount = getUserById(anonymousUser.id);
-        if (userAccount?.profile?.displayName) {
-          currentDisplayName = userAccount.profile.displayName;
-        } else {
-          // 3. Vérifier dans localStorage
-          const localKey = `displayName_${anonymousUser.id}`;
-          const localData = localStorage.getItem(localKey);
-          if (localData) {
-            try {
-              const parsedData = JSON.parse(localData);
-              currentDisplayName = parsedData.displayName || '';
-            } catch (err) {
-              console.error('Erreur parsing nom local:', err);
-            }
+        // 2. Vérifier dans localStorage
+        const localKey = `displayName_${anonymousUser.id}`;
+        const localData = localStorage.getItem(localKey);
+        if (localData) {
+          try {
+            const parsedData = JSON.parse(localData);
+            currentDisplayName = parsedData.displayName || '';
+          } catch (err) {
+            console.error('Erreur parsing nom local:', err);
           }
         }
       }
-      
+
       setDisplayState({
         displayName: currentDisplayName,
         username: anonymousUser.username,
@@ -102,7 +96,7 @@ export function useGlobalDisplayName() {
         isLoading: false
       });
     }
-  }, [anonymousUser, getUserById]);
+  }, [anonymousUser?.id, anonymousUser?.username, anonymousUser?.displayName]); // Dépendances spécifiques
 
   // Fonction pour obtenir le nom à afficher (nom d'affichage ou username)
   const getEffectiveDisplayName = (): string => {
