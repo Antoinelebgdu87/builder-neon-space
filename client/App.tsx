@@ -11,8 +11,7 @@ import { useAdminShortcut } from "@/hooks/useAdminShortcut";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
 import { useState, useEffect } from "react";
-import LoadingScreen from "@/components/LoadingScreen";
-import PageTransition from "@/components/PageTransition";
+import SmoothTransition from "@/components/SmoothTransition";
 import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
 import { firebaseOptimizer } from "@/utils/firebaseOptimization";
 import Header from "@/components/Header";
@@ -39,19 +38,10 @@ function AppContent() {
   const { user: anonymousUser, loading: userLoading, refreshUserStatus } = useAnonymousUser();
   const { isUsernameBanned } = useBanSystem();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   // Surveillance automatique des bans
   useAutoBanDetection(anonymousUser?.username || null);
 
-  // Gestion du chargement initial
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 3000); // Chargement pendant 3 secondes
-
-    return () => clearTimeout(timer);
-  }, []);
 
   // Log de l'environnement au démarrage et optimisation Firebase
   useEffect(() => {
@@ -90,11 +80,6 @@ function AppContent() {
   const firebaseBanStatus = anonymousUser ? isUsernameBanned(anonymousUser.username) : { isBanned: false };
   const localBanStatus = anonymousUser?.isBanned || false;
 
-  // Afficher l'écran de chargement au démarrage
-  if (isInitialLoading) {
-    return <LoadingScreen />;
-  }
-
   // Show ban notification if user is banned (either locally or in Firebase)
   if (!userLoading && (firebaseBanStatus.isBanned || localBanStatus)) {
     const banRecord = firebaseBanStatus.banRecord || {
@@ -119,7 +104,7 @@ function AppContent() {
       <WarningModal userId={anonymousUser?.username || null} />
       <MaintenanceMode />
       <ConnectivityStatus />
-      <PageTransition>
+      <SmoothTransition>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/scripts" element={<Scripts />} />
@@ -132,7 +117,7 @@ function AppContent() {
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </PageTransition>
+      </SmoothTransition>
     </>
   );
 }
