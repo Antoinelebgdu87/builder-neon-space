@@ -3,6 +3,7 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimest
 import { useFirebaseConnectivity } from './useFirebaseConnectivity';
 import { shouldUseFirebaseOnly } from '@/utils/cleanupLocalStorage';
 import { FirebaseErrorHandler, safeFirebaseOperation } from '@/utils/firebaseErrorHandler';
+import EmergencyMode from '@/utils/emergencyMode';
 
 export interface ForumComment {
   id: string;
@@ -35,7 +36,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(!FirebaseErrorHandler.isBlocked() && shouldUseFirebaseOnly() ? true : true);
+  const [useFirebase, setUseFirebase] = useState(!EmergencyMode.isEnabled() && !FirebaseErrorHandler.isBlocked());
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
@@ -77,8 +78,8 @@ export function useHybridForum() {
     loadFromLocalStorage();
     setLoading(false);
 
-    // Try Firebase if online and not blocked
-    if (useFirebase && firebaseOnline && !FirebaseErrorHandler.isBlocked()) {
+    // Try Firebase if online, not blocked, and not in emergency mode
+    if (useFirebase && firebaseOnline && !FirebaseErrorHandler.isBlocked() && !EmergencyMode.isEnabled()) {
       console.log('Setting up Firebase listener for forum');
 
       const setupListener = () => {
@@ -113,10 +114,13 @@ export function useHybridForum() {
           },
           (err) => {
             console.error('Firebase forum listener error:', err);
+            EmergencyMode.recordFirebaseError();
             const shouldFallback = FirebaseErrorHandler.handleError(err);
 
-            if (shouldFallback) {
-              setUseFirebase(false);
+            setUseFirebase(false);
+            if (EmergencyMode.isEnabled()) {
+              setError('⚙️ Mode local actif - Données sauvegardées localement');
+            } else if (shouldFallback) {
               setError('⚠️ Mode hors ligne - Données locales utilisées');
             } else if (err.code === 'permission-denied') {
               setError('⚠️ Firebase: Permissions insuffisantes - Mode local activé');
