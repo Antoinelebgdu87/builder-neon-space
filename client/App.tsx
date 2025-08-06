@@ -59,8 +59,15 @@ function AppContent() {
     // Initialiser le gestionnaire d'erreurs Firebase
     console.log('🛡️ Protection Firebase activée');
 
-    // Effectuer un test de santé Firebase
-    performFirebaseHealthCheck();
+    // Initialiser le mode d'urgence
+    EmergencyMode.initialize();
+
+    if (EmergencyMode.isEnabled()) {
+      console.log('🚨 Mode d\'urgence actif - Firebase désactivé');
+    } else {
+      // Effectuer un test de santé Firebase seulement si pas en mode d'urgence
+      performFirebaseHealthCheck();
+    }
   }, []);
 
   // Simple ban system - no complex synchronization
