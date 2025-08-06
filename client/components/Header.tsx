@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/LocalAuthContext";
 import { useHybridMaintenance } from "@/hooks/useHybridMaintenance";
 import { useAnonymousUser } from "@/hooks/useAnonymousUser";
 import { useBanSystem } from "@/hooks/useBanSystem";
+import { useHybridForum } from "@/hooks/useHybridForum";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
