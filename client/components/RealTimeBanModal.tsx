@@ -204,13 +204,6 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
               Se déconnecter
             </Button>
             
-            <Button 
-              variant="outline" 
-              onClick={dismissBanModal}
-              className="text-muted-foreground"
-            >
-              Fermer cette notification
-            </Button>
           </div>
         </motion.div>
       </DialogContent>
