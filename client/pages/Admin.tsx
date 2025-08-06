@@ -337,12 +337,13 @@ export default function Admin() {
         <FirebaseStatusIndicator />
 
 
-        {/* Maintenance Control */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
+        {/* Maintenance Control - Fondateur seulement */}
+        {currentUserPermissions?.canManageMaintenance && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
           <Card className="glass border-border/50 mb-8">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -445,7 +446,8 @@ export default function Admin() {
               </AnimatePresence>
             </CardContent>
           </Card>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Content Management Tabs */}
         <motion.div
