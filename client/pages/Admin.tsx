@@ -228,6 +228,12 @@ export default function Admin() {
         banFormData.banType === 'temporary' ? banFormData.hours : undefined
       );
 
+      // Trigger instant ban update event
+      window.dispatchEvent(new CustomEvent('userBanned', {
+        detail: { username: banFormData.username }
+      }));
+      window.dispatchEvent(new CustomEvent('banStatusChanged'));
+
       setBanFormData({
         username: "",
         reason: "",
