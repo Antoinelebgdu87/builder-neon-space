@@ -1,9 +1,10 @@
 import ForumPostCard from "@/components/ForumPostCard";
+import ForumPostDetail from "@/components/ForumPostDetail";
 import NewPostDialog from "@/components/NewPostDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2, MessageSquare } from "lucide-react";
-import { useHybridForum } from "@/hooks/useHybridForum";
+import { useHybridForum, type ForumPost } from "@/hooks/useHybridForum";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
