@@ -16,7 +16,7 @@ export default function Header() {
               <div className="w-6 h-6 bg-white rounded-sm"></div>
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              DevExploits
+              SysBreak
             </span>
           </Link>
 
