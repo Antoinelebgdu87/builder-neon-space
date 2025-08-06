@@ -5,7 +5,6 @@ import { Search, Filter, SortDesc, Loader2 } from "lucide-react";
 import { useHybridExploits as useExploits } from "@/hooks/useHybridExploits";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import CategoryTransition from "@/components/CategoryTransition";
 
 export default function Index() {
   const { exploits, loading } = useExploits();
@@ -17,8 +16,7 @@ export default function Index() {
   );
 
   return (
-    <CategoryTransition direction="right">
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Effects */}
@@ -164,7 +162,6 @@ export default function Index() {
           </div>
         </div>
       </section>
-      </div>
-    </CategoryTransition>
+    </div>
   );
 }
