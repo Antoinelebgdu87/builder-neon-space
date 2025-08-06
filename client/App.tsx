@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import SmoothTransition from "@/components/SmoothTransition";
 import { shouldUseFirebaseOnly } from "@/utils/cleanupLocalStorage";
 import { firebaseOptimizer } from "@/utils/firebaseOptimization";
+import { FirebaseErrorHandler } from "@/utils/firebaseErrorHandler";
 import Header from "@/components/Header";
 import BanNotification from "@/components/BanNotification";
 import { RealTimeBanModal } from "@/components/RealTimeBanModal";
@@ -52,6 +53,9 @@ function AppContent() {
     } else {
       console.log('🔧 Mode Développement: Firebase avec fallback local');
     }
+
+    // Initialiser le gestionnaire d'erreurs Firebase
+    console.log('🛡️ Protection Firebase activée');
   }, []);
 
   // Simple ban system - no complex synchronization
