@@ -306,9 +306,13 @@ export function UserManagement({ className }: UserManagementProps) {
     admins: safeAccounts.filter(acc => acc?.isAdmin).length,
     activeUsers: safeAccounts.filter(acc => {
       if (!acc?.lastActive) return false;
-      const lastActive = new Date(acc.lastActive);
-      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      return lastActive > dayAgo;
+      try {
+        const lastActive = new Date(acc.lastActive);
+        const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        return lastActive > dayAgo;
+      } catch (error) {
+        return false;
+      }
     }).length
   };
 
