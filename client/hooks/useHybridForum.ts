@@ -34,7 +34,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(false); // Start with false
+  const [useFirebase, setUseFirebase] = useState(true);
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
