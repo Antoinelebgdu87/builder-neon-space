@@ -8,6 +8,7 @@ import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const { maintenanceState } = useMaintenanceMode();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
