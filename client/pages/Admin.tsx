@@ -16,11 +16,17 @@ import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { useAuth } from "@/contexts/LocalAuthContext";
 
 export default function Admin() {
-  const { exploits, loading, addExploit, updateExploit, deleteExploit } = useExploits();
+  const { exploits, loading: exploitsLoading, addExploit, updateExploit, deleteExploit } = useExploits();
+  const { scripts, loading: scriptsLoading, addScript, updateScript, deleteScript } = useLocalScripts();
+  const { posts, loading: postsLoading, addPost, updatePost, deletePost } = useLocalForum();
   const { maintenanceState, enableMaintenance, disableMaintenance, updateMaintenanceMessage } = useMaintenanceMode();
   const { user } = useAuth();
+
+  const [activeTab, setActiveTab] = useState("exploits");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingExploit, setEditingExploit] = useState<Exploit | null>(null);
+  const [editingScript, setEditingScript] = useState<Script | null>(null);
+  const [editingPost, setEditingPost] = useState<ForumPost | null>(null);
   const [maintenanceMessage, setMaintenanceMessage] = useState(maintenanceState.message);
 
   const [formData, setFormData] = useState<Partial<Exploit>>({
