@@ -104,7 +104,16 @@ export function useAdvancedUserManagement() {
 
   // Initialize and cleanup
   useEffect(() => {
-    setUseFirebase(firebaseOnline);
+    // Only enable Firebase if explicitly online and connectivity is good
+    if (firebaseOnline) {
+      // Add a delay to prevent immediate connection attempts
+      const timer = setTimeout(() => {
+        setUseFirebase(firebaseOnline);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setUseFirebase(false);
+    }
   }, [firebaseOnline]);
 
   useEffect(() => {
@@ -112,13 +121,30 @@ export function useAdvancedUserManagement() {
     setLoading(false);
 
     if (useFirebase && firebaseOnline) {
-      syncWithFirebase();
-      setupRealtimeListeners();
+      // Add error handling for initial sync
+      syncWithFirebase().catch((error) => {
+        console.error('Initial sync failed:', error);
+        setUseFirebase(false);
+        setError('Impossible de se connecter à Firebase - mode local activé');
+      });
+
+      try {
+        setupRealtimeListeners();
+      } catch (error) {
+        console.error('Failed to setup listeners:', error);
+        setUseFirebase(false);
+      }
     }
 
     return () => {
       // Cleanup listeners
-      unsubscribes.current.forEach(unsubscribe => unsubscribe());
+      unsubscribes.current.forEach(unsubscribe => {
+        try {
+          unsubscribe();
+        } catch (error) {
+          console.error('Error unsubscribing:', error);
+        }
+      });
       if (heartbeatInterval.current) {
         clearInterval(heartbeatInterval.current);
       }
