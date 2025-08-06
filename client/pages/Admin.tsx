@@ -17,6 +17,7 @@ import { useBanSystem } from "@/hooks/useBanSystem";
 import { useAuth } from "@/contexts/LocalAuthContext";
 import { FirebaseStatus } from "@/components/FirebaseStatus";
 import { WarningSystem } from "@/components/WarningSystem";
+import { InstantBanSystem } from "@/components/InstantBanSystem";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
