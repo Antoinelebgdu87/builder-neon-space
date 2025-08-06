@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2 } from "lucide-react";
 import { useLocalExploits as useExploits } from "@/hooks/useLocalExploits";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Index() {
   const { exploits, loading } = useExploits();
