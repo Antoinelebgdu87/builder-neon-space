@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Wrench, Clock, AlertTriangle } from "lucide-react";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
+import { useAuth } from "@/contexts/LocalAuthContext";
 
 export default function MaintenanceMode() {
   const { maintenanceState } = useMaintenanceMode();
+  const { isAuthenticated } = useAuth();
 
-  if (!maintenanceState.isActive) {
+  // Don't show maintenance mode if admin is authenticated
+  if (!maintenanceState.isActive || isAuthenticated) {
     return null;
   }
 
