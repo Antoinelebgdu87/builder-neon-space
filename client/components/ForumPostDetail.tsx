@@ -161,7 +161,11 @@ export default function ForumPostDetail({ post: initialPost, isOpen, onClose }: 
                       <User className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <div className="font-medium">{post.author}</div>
+                      <UserDisplayName
+                        username={post.author}
+                        size="md"
+                        className="font-medium"
+                      />
                       <div className="text-sm text-muted-foreground flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
                         <span>{formatDate(post.createdAt)}</span>
