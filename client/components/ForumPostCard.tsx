@@ -1,34 +1,31 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { MessageSquare, Eye, Pin, Lock, User, Clock } from "lucide-react";
+import { type ForumPost } from "@/hooks/useHybridForum";
 
 interface ForumPostCardProps {
-  title: string;
-  content: string;
-  author: string;
-  category: string;
-  isSticky?: boolean;
-  isLocked?: boolean;
-  replies: number;
-  views: number;
-  createdAt: string;
-  lastReply?: string;
-  tags?: string[];
+  post: ForumPost;
+  onClick?: () => void;
 }
 
 export default function ForumPostCard({
-  title,
-  content,
-  author,
-  category,
-  isSticky = false,
-  isLocked = false,
-  replies,
-  views,
-  createdAt,
-  lastReply,
-  tags = []
+  post,
+  onClick
 }: ForumPostCardProps) {
+  const {
+    title,
+    content,
+    author,
+    category,
+    isSticky = false,
+    isLocked = false,
+    replies,
+    views,
+    createdAt,
+    lastReply,
+    tags = [],
+    comments = []
+  } = post;
   const formatDate = (dateInput: any) => {
     // Handle different date formats (Firebase timestamp vs ISO string)
     const date = dateInput?.toDate ? dateInput.toDate() : new Date(dateInput);
