@@ -34,7 +34,7 @@ export function useAutoBanDetection(currentUsername: string | null) {
         
         if (banStatus.isBanned) {
           console.log(`🚫 Ban détecté pour ${currentUsername}:`, banStatus);
-          
+
           // Éviter les déclenchements multiples
           const banSignature = `${banStatus.banId || banStatus.bannedAt}`;
           if (lastCheckRef.current === banSignature) {
@@ -42,7 +42,13 @@ export function useAutoBanDetection(currentUsername: string | null) {
           }
           lastCheckRef.current = banSignature;
 
-          // Déclencher le modal de ban
+          // Arrêter les vérifications répétées pour les utilisateurs bannis
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+
+          // Déclencher le modal de ban UNE SEULE FOIS
           window.dispatchEvent(new CustomEvent('userBanDetected', {
             detail: {
               isBanned: true,
@@ -52,35 +58,13 @@ export function useAutoBanDetection(currentUsername: string | null) {
               bannedAt: banStatus.bannedAt,
               bannedBy: banStatus.bannedBy,
               showBanModal: true,
-              timeRemaining: banStatus.banType === 'temporary' && banStatus.banExpiry 
+              timeRemaining: banStatus.banType === 'temporary' && banStatus.banExpiry
                 ? calculateTimeRemaining(banStatus.banExpiry)
                 : undefined
             }
           }));
 
-          // Forcer la déconnexion après un délai
-          setTimeout(() => {
-            console.log(`🚪 Déconnexion automatique de ${currentUsername}`);
-            
-            // Nettoyer le localStorage
-            localStorage.removeItem('firebase_auth_user');
-            localStorage.removeItem('firebase_session_id');
-            localStorage.removeItem('sysbreak_currentUser');
-            
-            // Déclencher l'événement de déconnexion
-            window.dispatchEvent(new CustomEvent('forceLogout', {
-              detail: {
-                username: currentUsername,
-                reason: banStatus.banReason || 'Compte banni'
-              }
-            }));
-
-            // Recharger la page après 3 secondes
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
-            
-          }, 5000); // 5 secondes pour lire le message
+          // PAS de rechargement automatique de page - laisser l'utilisateur tranquille
 
         } else {
           console.log(`✅ ${currentUsername} n'est pas banni`);
