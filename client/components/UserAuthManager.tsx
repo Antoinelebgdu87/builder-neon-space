@@ -59,6 +59,16 @@ export default function UserAuthManager() {
     }
   }, [user?.isLoggedIn, user?.hasPassword]);
 
+  // Listen for logout events
+  useEffect(() => {
+    const handleLogoutEvent = () => {
+      handleLogout();
+    };
+
+    window.addEventListener('userLogout', handleLogoutEvent);
+    return () => window.removeEventListener('userLogout', handleLogoutEvent);
+  }, []);
+
   return (
     <>
       {user && (
