@@ -38,13 +38,8 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="bg-gradient-primary p-2 rounded-lg glow-hover">
-              <div className="w-6 h-6 bg-white rounded-sm"></div>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              SysBreak
-            </span>
+          <Link to="/" className="text-xl font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent pl-2">
+            SysBreak
           </Link>
 
           {/* Desktop Navigation */}
