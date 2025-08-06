@@ -20,7 +20,7 @@ export function UserDisplayName({
 }: UserDisplayNameProps) {
   const { getUserByUsername } = useAdvancedUserManagement();
   const { user: adminUser } = useAuth();
-  const { getUserRole } = useRoleSystem();
+  const { getUserRole } = useLocalRoleSystem();
 
   // Chercher l'utilisateur dans la base de données
   const userAccount = getUserByUsername(username);
