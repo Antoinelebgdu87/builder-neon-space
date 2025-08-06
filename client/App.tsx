@@ -57,6 +57,9 @@ function AppContent() {
 
     // Initialiser le gestionnaire d'erreurs Firebase
     console.log('🛡️ Protection Firebase activée');
+
+    // Effectuer un test de santé Firebase
+    performFirebaseHealthCheck();
   }, []);
 
   // Simple ban system - no complex synchronization
