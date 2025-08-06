@@ -79,7 +79,7 @@ export function useBanSystem() {
 
       return () => unsubscribe();
     }
-  }, [useFirebase]);
+  }, [useFirebase, firebaseOnline]);
 
   const banUser = async (user: AnonymousUser, reason: string, banType: 'temporary' | 'permanent', hours?: number) => {
     const banRecord: BanRecord = {
