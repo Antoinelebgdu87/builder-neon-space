@@ -92,20 +92,29 @@ export function useGlobalDisplayName() {
     return displayState.username || 'Utilisateur';
   };
 
-  // Fonction pour forcer la synchronisation
+  // Fonction pour forcer la synchronisation (simplifiée)
   const forceSync = () => {
     if (anonymousUser) {
-      const userAccount = getUserById(anonymousUser.id);
-      const effectiveName = userAccount?.profile?.displayName || anonymousUser.displayName || '';
-      
+      // Relire depuis localStorage
+      const localKey = `displayName_${anonymousUser.id}`;
+      const localData = localStorage.getItem(localKey);
+      let effectiveName = '';
+
+      if (localData) {
+        try {
+          const parsedData = JSON.parse(localData);
+          effectiveName = parsedData.displayName || '';
+        } catch (err) {
+          console.error('Erreur parsing nom local:', err);
+        }
+      }
+
       setDisplayState(prev => ({
         ...prev,
         displayName: effectiveName
       }));
-      
-      if (effectiveName && effectiveName !== anonymousUser.displayName) {
-        updateUser({ displayName: effectiveName });
-      }
+
+      console.log('🔄 Synchronisation forcée:', effectiveName);
     }
   };
 
