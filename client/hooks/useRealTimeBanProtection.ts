@@ -102,12 +102,14 @@ export function useRealTimeBanProtection(userId: string | null) {
             }));
           }
         } else {
-          // User document doesn't exist - might be deleted
-          setBanState(prev => ({ 
-            ...prev, 
-            isBanned: true, 
-            banReason: 'Compte supprimé',
-            showBanModal: true 
+          // User document doesn't exist - user might be logged out or document missing
+          // Don't automatically assume account is deleted
+          setBanState(prev => ({
+            ...prev,
+            isBanned: false,
+            showBanModal: false,
+            banReason: undefined,
+            banType: undefined
           }));
         }
         
