@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { safeFirebaseOperation } from './useFirebaseGlobalControl';
 
 export interface DisplayNameData {
   displayName: string;
