@@ -172,17 +172,24 @@ export function useInstantFirebaseBan() {
 
       // 4. Add to ban log for audit trail
       const banLogRef = doc(collection(db, 'banLogs'));
-      batch.set(banLogRef, {
+      const banLogData: any = {
         action: 'ban',
         userId,
         username,
         reason,
         banType,
-        banExpiry: banData.banExpiry,
         timestamp: now,
         adminId: 'admin',
         banId
-      });
+      };
+
+      // Only add banExpiry if it exists
+      if (banData.banExpiry) {
+        banLogData.banExpiry = banData.banExpiry;
+      }
+
+      const cleanedBanLogData = cleanFirebaseData(banLogData);
+      batch.set(banLogRef, cleanedBanLogData);
 
       // Execute all operations atomically
       await batch.commit();
