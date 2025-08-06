@@ -36,7 +36,7 @@ export function useHybridForum() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isOnline: firebaseOnline, hasChecked } = useFirebaseConnectivity();
-  const [useFirebase, setUseFirebase] = useState(!EmergencyMode.isEnabled() && !FirebaseErrorHandler.isBlocked());
+  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
 
   // Load from localStorage initially
   const loadFromLocalStorage = () => {
@@ -61,17 +61,10 @@ export function useHybridForum() {
     }
   };
 
-  // Update Firebase usage based on connectivity
+  // Mode local forcé - pas de Firebase
   useEffect(() => {
-    if (hasChecked) {
-      // En production, toujours essayer Firebase d'abord
-      if (shouldUseFirebaseOnly()) {
-        setUseFirebase(true);
-      } else {
-        setUseFirebase(firebaseOnline);
-      }
-    }
-  }, [firebaseOnline, hasChecked]);
+    setUseFirebase(false);
+  }, []);
 
   useEffect(() => {
     // Always load from localStorage first for instant data

@@ -27,7 +27,7 @@ export function useHybridScripts() {
   const [scripts, setScripts] = useState<Script[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(!EmergencyMode.isEnabled() && !FirebaseErrorHandler.isBlocked());
+  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
 
   const loadFromLocalStorage = () => {
     try {
