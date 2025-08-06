@@ -38,7 +38,7 @@ export function useAutoBanDetection(currentUsername: string | null) {
           // Éviter les déclenchements multiples
           const banSignature = `${banStatus.banId || banStatus.bannedAt}`;
           if (lastCheckRef.current === banSignature) {
-            return; // Déjà traité
+            return; // Déj�� traité
           }
           lastCheckRef.current = banSignature;
 
@@ -79,8 +79,8 @@ export function useAutoBanDetection(currentUsername: string | null) {
     // Vérifier immédiatement
     checkCurrentUserBan();
 
-    // Puis vérifier toutes les 30 secondes
-    intervalRef.current = setInterval(checkCurrentUserBan, 30000);
+    // Puis vérifier seulement toutes les 5 minutes (300 secondes)
+    intervalRef.current = setInterval(checkCurrentUserBan, 300000);
 
     // Cleanup
     return () => {
