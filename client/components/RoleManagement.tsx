@@ -269,6 +269,17 @@ export function RoleManagement() {
                         <span>Modérateur</span>
                       </div>
                     </SelectItem>
+                    {customRoles.map((customRole) => (
+                      <SelectItem key={customRole.id} value={customRole.id}>
+                        <div className="flex items-center space-x-2">
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: customRole.color }}
+                          />
+                          <span>{customRole.displayName}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
