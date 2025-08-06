@@ -8,7 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Forum() {
-  const { posts, loading } = useLocalForum();
+  const { posts, loading } = useFirebaseForum();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredPosts = posts.filter(post =>
