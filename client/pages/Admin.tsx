@@ -20,6 +20,7 @@ import { UserManagement } from "@/components/UserManagement";
 import { InstantBanSystem } from "@/components/InstantBanSystem";
 import { FirebaseUserActivation } from "@/components/FirebaseUserActivation";
 import { BanTestSystem } from "@/components/BanTestSystem";
+import { WarningSystem } from "@/components/WarningSystem";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -368,7 +369,7 @@ export default function Admin() {
                     id="maintenanceMessage"
                     value={maintenanceMessage}
                     onChange={(e) => setMaintenanceMessage(e.target.value)}
-                    placeholder="Site en maintenance. Nous reviendrons bient��t!"
+                    placeholder="Site en maintenance. Nous reviendrons bientôt!"
                     className="glass border-border/50 flex-1"
                     rows={3}
                   />
