@@ -201,9 +201,41 @@ export function useHybridForum() {
   const addReply = async (postId: string) => {
     const post = posts.find(p => p.id === postId);
     if (post) {
-      await updatePost(postId, { 
+      await updatePost(postId, {
         replies: (post.replies || 0) + 1,
         lastReply: new Date().toISOString()
+      });
+    }
+  };
+
+  const addComment = async (postId: string, content: string, author: string) => {
+    const newComment: ForumComment = {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      postId,
+      content,
+      author,
+      createdAt: new Date().toISOString()
+    };
+
+    const post = posts.find(p => p.id === postId);
+    if (post) {
+      const updatedComments = [...(post.comments || []), newComment];
+      await updatePost(postId, {
+        comments: updatedComments,
+        replies: updatedComments.length,
+        lastReply: new Date().toISOString()
+      });
+    }
+  };
+
+  const deleteComment = async (postId: string, commentId: string) => {
+    const post = posts.find(p => p.id === postId);
+    if (post && post.comments) {
+      const updatedComments = post.comments.filter(c => c.id !== commentId);
+      await updatePost(postId, {
+        comments: updatedComments,
+        replies: updatedComments.length,
+        lastReply: updatedComments.length > 0 ? updatedComments[updatedComments.length - 1].createdAt : post.createdAt
       });
     }
   };
