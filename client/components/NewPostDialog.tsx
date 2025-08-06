@@ -16,9 +16,12 @@ const forumCategories = ["General", "Support", "Scripts", "Exploits", "Bugs", "S
 
 export default function NewPostDialog() {
   const { addPost } = useHybridForum();
+  const { user: anonymousUser } = useAnonymousUser();
+  const { isAuthenticated, user: adminUser } = useAuth();
+  const { getUserById } = useAdvancedUserManagement();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -27,6 +30,31 @@ export default function NewPostDialog() {
     tags: [] as string[],
     currentTag: ""
   });
+
+  // Auto-remplir le nom lors de l'ouverture du modal
+  useEffect(() => {
+    if (isOpen) {
+      let displayName = "";
+
+      if (isAuthenticated && adminUser) {
+        // Utilisateur admin connecté
+        displayName = adminUser.username;
+      } else if (anonymousUser) {
+        // Utilisateur anonyme
+        const userAccount = getUserById(anonymousUser.id);
+        if (userAccount?.profile?.displayName) {
+          displayName = userAccount.profile.displayName;
+        } else {
+          displayName = anonymousUser.username;
+        }
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        author: displayName
+      }));
+    }
+  }, [isOpen, isAuthenticated, adminUser, anonymousUser, getUserById]);
 
   const resetForm = () => {
     setFormData({
