@@ -58,25 +58,10 @@ export default function Header() {
             >
               Forum
             </Link>
-            {isAuthenticated && (
-              <Link
-                to="/admin"
-                className="text-primary hover:text-primary/80 transition-colors font-medium flex items-center space-x-1"
-              >
-                <Shield className="w-4 h-4" />
-                <span>Admin</span>
-              </Link>
-            )}
           </nav>
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
-            {/* Auth Actions */}
-            {isAuthenticated && (
-              <div className="text-sm text-muted-foreground ml-4">
-                Admin
-              </div>
-            )}
 
             {/* Mobile Menu Button */}
             <Button
