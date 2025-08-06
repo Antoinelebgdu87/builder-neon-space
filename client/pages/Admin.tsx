@@ -412,6 +412,11 @@ export default function Admin() {
                   <span>Forum</span>
                   <Badge variant="secondary" className="ml-1">{posts.length}</Badge>
                 </TabsTrigger>
+                <TabsTrigger value="users" className="flex items-center space-x-2">
+                  <Users className="w-4 h-4" />
+                  <span>Utilisateurs</span>
+                  <Badge variant="secondary" className="ml-1">{bans.length}</Badge>
+                </TabsTrigger>
               </TabsList>
 
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
