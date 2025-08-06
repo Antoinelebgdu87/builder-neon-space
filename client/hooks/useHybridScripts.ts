@@ -79,66 +79,39 @@ export function useHybridScripts() {
   }, [useFirebase]);
 
   const addScript = async (script: Omit<Script, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newScript: Script = {
-      ...script,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    try {
+      const docRef = await addDoc(collection(db, 'scripts'), {
+        ...script,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
 
-    if (useFirebase) {
-      try {
-        const docRef = await addDoc(collection(db, 'scripts'), {
-          ...script,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        });
-        
-        return { id: docRef.id, ...script };
-      } catch (error) {
-        console.error('Firebase add error, falling back to localStorage:', error);
-        setUseFirebase(false);
-      }
+      return { id: docRef.id, ...script };
+    } catch (error) {
+      console.error('Erreur ajout script:', error);
+      throw error;
     }
-
-    const updatedScripts = [newScript, ...scripts];
-    saveToLocalStorage(updatedScripts);
-    return newScript;
   };
 
   const updateScript = async (id: string, updates: Partial<Script>) => {
-    if (useFirebase) {
-      try {
-        await updateDoc(doc(db, 'scripts', id), {
-          ...updates,
-          updatedAt: serverTimestamp()
-        });
-        return;
-      } catch (error) {
-        console.error('Firebase update error, falling back to localStorage:', error);
-        setUseFirebase(false);
-      }
+    try {
+      await updateDoc(doc(db, 'scripts', id), {
+        ...updates,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error('Erreur mise à jour script:', error);
+      throw error;
     }
-
-    const updatedScripts = scripts.map(script => 
-      script.id === id ? { ...script, ...updates } : script
-    );
-    saveToLocalStorage(updatedScripts);
   };
 
   const deleteScript = async (id: string) => {
-    if (useFirebase) {
-      try {
-        await deleteDoc(doc(db, 'scripts', id));
-        return;
-      } catch (error) {
-        console.error('Firebase delete error, falling back to localStorage:', error);
-        setUseFirebase(false);
-      }
+    try {
+      await deleteDoc(doc(db, 'scripts', id));
+    } catch (error) {
+      console.error('Erreur suppression script:', error);
+      throw error;
     }
-
-    const updatedScripts = scripts.filter(script => script.id !== id);
-    saveToLocalStorage(updatedScripts);
   };
 
   return {
