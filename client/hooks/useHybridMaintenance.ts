@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-// Temporairement remplacé par mock pour éviter erreurs "Failed to fetch"
-import { doc, onSnapshot, setDoc, serverTimestamp, db } from '@/lib/firebaseMock';
+import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface MaintenanceState {
   isActive: boolean;
@@ -20,7 +20,7 @@ export function useHybridMaintenance() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useFirebase, setUseFirebase] = useState(false); // Force mode local
+  const [useFirebase, setUseFirebase] = useState(true);
 
   const loadFromLocalStorage = () => {
     try {
