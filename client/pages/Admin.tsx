@@ -219,18 +219,6 @@ export default function Admin() {
           </div>
         </motion.div>
 
-        {/* Firebase Status */}
-        <motion.div
-          className="mb-6"
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <FirebaseStatus
-            isOnline={isOnline}
-            error={maintenanceError}
-          />
-        </motion.div>
 
         {/* Maintenance Control */}
         <motion.div
