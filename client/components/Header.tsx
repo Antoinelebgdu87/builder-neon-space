@@ -67,6 +67,43 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
+            {/* User Display */}
+            {!userLoading && (
+              <>
+                {/* Admin User Display */}
+                {isAuthenticated && user && (
+                  <div className="flex items-center space-x-3 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+                    <div className="flex items-center space-x-2">
+                      <Shield className="w-4 h-4 text-red-400" />
+                      <span className="text-sm font-medium text-white">{user.username}</span>
+                      <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">Admin</span>
+                    </div>
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-red-300 hover:text-red-200 hover:bg-red-500/20 h-7 px-2"
+                    >
+                      <LogOut className="w-3 h-3 mr-1" />
+                      Déconnexion
+                    </Button>
+                  </div>
+                )}
+
+                {/* Anonymous User Display */}
+                {!isAuthenticated && anonymousUser && (
+                  <div className="flex items-center space-x-2 bg-blue-500/10 border border-blue-500/30 rounded-lg px-3 py-2">
+                    <User className="w-4 h-4 text-blue-400" />
+                    <span className="text-sm font-medium text-white">{anonymousUser.username}</span>
+                    {(isUserBanned(anonymousUser.id).isBanned || anonymousUser.isBanned) && (
+                      <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full">
+                        Banni
+                      </span>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
 
             {/* Mobile Menu Button */}
             <Button
