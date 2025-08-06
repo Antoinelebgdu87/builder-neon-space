@@ -192,15 +192,19 @@ export function useInstantFirebaseBan() {
       const cleanedBanLogData = cleanFirebaseData(banLogData);
       batch.set(banLogRef, cleanedBanLogData);
 
-      // Execute all operations atomically
-      await batch.commit();
+      // Execute all operations atomically with safety wrapper
+      const batchResult = await safeFirebaseBatch(batch, 'ban user');
+
+      if (!batchResult.success) {
+        throw new Error(batchResult.error || 'Erreur lors du bannissement Firebase');
+      }
 
       // Trigger real-time event for immediate UI updates
       window.dispatchEvent(new CustomEvent('userBannedInstant', {
         detail: { userId, username, reason, banType }
       }));
 
-      console.log(`User ${username} banned instantly with ID: ${banId}`);
+      console.log(`✅ User ${username} banned instantly with ID: ${banId}`);
 
     } catch (error: any) {
       console.error('Error banning user instantly:', error);
