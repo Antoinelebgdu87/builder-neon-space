@@ -71,14 +71,14 @@ export function RealTimeBanModal({ userId, onForceLogout }: RealTimeBanModalProp
         }}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center space-x-2 text-red-400">
-            <Ban className="w-6 h-6" />
-            <span>Compte Banni</span>
-            <Badge 
-              variant={isPermanent ? "destructive" : "secondary"}
-              className={isPermanent ? "" : "bg-orange-500/20 text-orange-400 border-orange-500/30"}
+          <DialogTitle className="flex items-center space-x-2 text-red-400 text-center justify-center">
+            <Ban className="w-8 h-8 text-red-500" />
+            <span className="text-red-500 font-bold text-xl">COMPTE BANNI</span>
+            <Badge
+              variant="destructive"
+              className="bg-red-600 text-white border-red-500"
             >
-              {isPermanent ? 'Permanent' : 'Temporaire'}
+              {isPermanent ? 'PERMANENT' : 'TEMPORAIRE'}
             </Badge>
           </DialogTitle>
         </DialogHeader>
