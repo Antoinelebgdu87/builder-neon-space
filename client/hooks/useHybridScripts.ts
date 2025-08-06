@@ -46,7 +46,6 @@ export function useHybridScripts() {
               setScripts(scriptsData);
               setError(null);
               setLoading(false);
-              saveToLocalStorage(scriptsData);
             } catch (err) {
               console.error('Error processing Firebase data:', err);
               loadFromLocalStorage();
