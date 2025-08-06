@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Plus, Edit, Trash2, Save, X } from "lucide-react";
-import { useExploits, type Exploit } from "@/hooks/useExploits";
+import { useLocalExploits as useExploits, type Exploit } from "@/hooks/useLocalExploits";
 
 export default function Admin() {
   const { exploits, loading, addExploit, updateExploit, deleteExploit } = useExploits();
