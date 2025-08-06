@@ -2,7 +2,7 @@ import ExploitCard from "@/components/ExploitCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, SortDesc, Loader2 } from "lucide-react";
-import { useExploits } from "@/hooks/useExploits";
+import { useLocalExploits as useExploits } from "@/hooks/useLocalExploits";
 import { useState } from "react";
 
 export default function Index() {
