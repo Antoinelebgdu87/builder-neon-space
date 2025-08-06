@@ -191,7 +191,12 @@ export function useAdvancedUserManagement() {
 
       const firebaseAccounts: UserAccount[] = [];
       accountsSnapshot.forEach((doc: any) => {
-        firebaseAccounts.push({ id: doc.id, ...doc.data() } as UserAccount);
+        const data = doc.data();
+        // Ensure profile object exists for backward compatibility
+        if (!data.profile) {
+          data.profile = { displayName: data.username };
+        }
+        firebaseAccounts.push({ id: doc.id, ...data } as UserAccount);
       });
 
       // Sync sessions
