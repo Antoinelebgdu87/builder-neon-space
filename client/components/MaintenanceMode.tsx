@@ -188,7 +188,7 @@ export default function MaintenanceMode() {
                   >
                     <Clock className="w-5 h-5 text-primary" />
                   </motion.div>
-                  <span>Activé le {maintenanceState.enabledAt ? new Date(maintenanceState.enabledAt).toLocaleString('fr-FR') : 'maintenant'}</span>
+                  <span>Activé le {maintenanceState.enabledAt ? (maintenanceState.enabledAt.toDate ? maintenanceState.enabledAt.toDate().toLocaleString('fr-FR') : new Date(maintenanceState.enabledAt).toLocaleString('fr-FR')) : 'maintenant'}</span>
                 </motion.div>
                 
                 {maintenanceState.enabledBy && (
