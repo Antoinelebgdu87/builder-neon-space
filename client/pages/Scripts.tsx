@@ -6,7 +6,7 @@ import { useHybridScripts } from "@/hooks/useHybridScripts";
 import { useState } from "react";
 
 export default function Scripts() {
-  const { scripts, loading } = useFirebaseScripts();
+  const { scripts, loading } = useHybridScripts();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredScripts = scripts.filter(script =>
