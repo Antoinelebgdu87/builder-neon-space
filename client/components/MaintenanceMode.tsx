@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Wrench, Clock, AlertTriangle } from "lucide-react";
+import { Wrench, Clock, AlertTriangle, Settings, RefreshCw } from "lucide-react";
 import { useMaintenanceMode } from "@/hooks/useMaintenanceMode";
 import { useAuth } from "@/contexts/LocalAuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function MaintenanceMode() {
   const { maintenanceState } = useMaintenanceMode();
